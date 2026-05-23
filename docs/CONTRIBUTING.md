@@ -148,12 +148,6 @@ Link ADRs from PR descriptions: `Implements X per ADR-NNNN.` Inline code comment
 
 ## Pre-push self-review (agent convention)
 
-<!-- When you adopt this convention, write an ADR describing why pre-push
-     rather than CI-based review, and link it from here. A sample ADR is
-     sketched in docs/decisions/ADR-TEMPLATE.md. -->
-
-*See <!-- ADR link --> for the decision rationale and the alternatives considered.*
-
 Before every `git push` on a PR branch, Claude agents working on this repo should launch a reviewer agent on the local diff and act on what it flags. This catches the "I would have caught that if I thought about it harder" class of bugs before they burn CI minutes, PR-thread attention, or reviewer time.
 
 ### Reviewer prompt
