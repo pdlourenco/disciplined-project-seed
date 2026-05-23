@@ -193,44 +193,18 @@ Launch a `general-purpose` or `Explore` subagent with the diff plus this prompt 
 
 Catching issues before CI runs saves minutes, dollars, and reviewer attention. A reviewer in CI would re-analyze every push on every PR (≈ 5–10× more runs for similar signal) and clutter PR threads with comments mostly ignored. Pre-push keeps the cost low and the signal high; if too many cross-cutting issues slip through, promote it to CI with a dedicated workflow.
 
-## Pre-push CI run (agent convention)
+## Pre-push CI run (once CI exists)
 
-Companion to §"Pre-push self-review" above. The two checks are complementary, not redundant: the reviewer subagent catches **cross-cutting / principle / scope / terminology** issues; running the project's CI checks locally catches **mechanical / contract / quality** issues — type errors, test failures, contract-consistency drift, formatter or lint regressions. Neither subsumes the other.
+Once the CI suite defined in §CI strategy lands, **run it locally before every push**, in addition to (not in place of) the pre-push self-review above. The reviewer subagent and the CI suite are complementary: the reviewer catches cross-cutting / principle / scope / terminology issues; the CI catches mechanical failures (contract-enforcement, lint, test, coverage). Both are pre-push disciplines for the same reason — catch issues before CI minutes burn, before the PR thread fills with red checks, and before reviewer attention is wasted on noise the contributor could have fixed locally.
 
-Before every `git push` on a PR branch, run the project's CI suite locally. Same exceptions as the reviewer subagent: one-line typo fixes, formatting-only changes, and pure reverts skip this. Note the outcome in the PR description so the human reviewer can see it ran — `local CI: green` mirrors the `pre-push review: no findings` line.
+**Rules of engagement** (mirroring the pre-push reviewer):
 
-### What to run
+- Run before every push, including fix-up pushes on a branch that already has open CI.
+- Fix failures before pushing; don't rely on CI to catch what the local run already would have.
+- **Exceptions**: same narrow list as the reviewer — one-line typo fixes, formatting-only changes, pure reverts. The ceremony costs more than the signal for these.
+- Note the outcome briefly in the PR description: `local CI: green` or `local CI: <job> failed, fixed in <sha>`.
 
-<!-- Settled in Phase N; see issue #NN -->
-
-<!-- The placeholder above uses a "Settled in Phase N; see issue #NN"
-     shape so the slot is unambiguous: it marks a value that will be
-     filled in once a specific phase converges on the answer. Replace it
-     with a single shell invocation that runs the project's CI checks
-     locally — type-check, tests, lint/format, contract-consistency. The
-     canonical shape is one command, not a checklist, so the convention
-     is "run X before pushing", not "remember to run six things before
-     pushing".
-
-     Example shapes (pick the one that fits the project's stack):
-
-         pre-commit run --all-files && pytest && mypy .
-         cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test
-         pnpm lint && pnpm typecheck && pnpm test
-
-     Until Phase N fills this in, agents should run whatever local
-     checks the project already supports and note the outcome. -->
-
-### Why pre-push rather than only CI
-
-The same logic as the reviewer subagent. CI minutes, PR-thread attention, and reviewer time are all more expensive than a local run; round-tripping a mechanical failure through CI is a worse experience than catching it locally. Pre-push keeps the cost low and the signal high.
-
-### Rules of engagement
-
-- Run before **every** push, including fix-up pushes on a branch that already has open CI.
-- If local CI fails, fix it before pushing. If a failure is environmental (e.g. requires a service the local machine doesn't have), note that in the PR description and let CI confirm; do not push silently.
-- **Exceptions**: one-line typo fixes, formatting-only changes, pure reverts. The ceremony costs more than the signal.
-- Note the outcome briefly in the PR description — e.g. `local CI: green` or `local CI: failed Y, fixed in <sha>`.
+**Commands.** <!-- Project-specific; fill in once the tech stack lands. -->
 
 ## When you change a contract in `docs/SPEC.md`
 
