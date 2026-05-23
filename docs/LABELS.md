@@ -1,96 +1,111 @@
-# Issue & PR labels
+# [PROJECT] — Issue & PR Labels
 
-This document is the source of truth for the label taxonomy used on issues and PRs. The taxonomy has three categories:
+The label taxonomy for GitHub issues and pull requests. Labels are how reviewers and contributors filter, prioritise, and track work across the project.
 
-- **Lifecycle** — applied to decision-bearing issues. Apply one.
-- **Topic** — what an issue or PR is about. Apply one or more.
-- **Phase** — which delivery phase from [`ROADMAP.md`](ROADMAP.md) the work belongs to. Apply one when applicable; not pre-created.
+This file is the **single source of truth** for label names, descriptions, and conventions. The GitHub repo's actual labels (Settings → Labels) should match the catalogue below exactly. When drift is found, this file wins — the repo labels get fixed to match.
 
-Changes to this taxonomy are a major decision in the sense of [`../CLAUDE.md`](../CLAUDE.md) §4 — see [Adding a new label](#adding-a-new-label) below.
+Changing this taxonomy is a major decision per [`../CLAUDE.md`](../CLAUDE.md) §4 (changing it affects every future issue and PR). Routine labelling — applying existing labels to existing issues — is not.
 
-## Lifecycle (apply one)
+## Catalogue
 
-Used on decision-bearing issues — typically those routed through the issue-per-decision workflow described in [`decisions/README.md`](decisions/README.md). The progression is linear: `discussion → decided → ready`. `deferred` is a parallel state with a named return trigger.
+### Lifecycle (apply exactly one, on decision-bearing issues)
 
-- **`discussion`** — open question. The issue describes context, alternatives, and where the decision would land. Comments converge toward a recommendation.
-- **`decided`** — the question has been resolved in the thread. If the decision needs to stick (see ADR criteria in [`CONTRIBUTING.md`](CONTRIBUTING.md) §"Design decisions (ADRs)"), a follow-up writes the ADR; otherwise the issue closes with the decision summarized in the final comment.
-- **`ready`** — the decision is captured (ADR merged or noted in the appropriate doc) and any implementation follow-up is scheduled. The issue is ready to close or hand off.
-- **`deferred`** — the decision is parked **with a named return trigger**. This applies the *deferred-with-conditions discipline* used across the project's docs (`Deferred (not yet wired)` in `CONTRIBUTING.md` §CI strategy, `Deferred` in `SPEC.md`, `Future extensions` in `DESIGN.md`, `Future Phases` in `ROADMAP.md`, `Follow-ups` in each phase plan): nothing is "later" without saying what brings it back. Without a named trigger in the issue body, do not apply this label — close with "won't fix" instead.
+| Name | Color | Description |
+|---|---|---|
+| `discussion` | `FBCA04` | Decision is open; alternatives on the table, no resolution yet |
+| `decided` | `0E8A16` | Decision is locked; awaiting follow-up implementation / ADR |
+| `ready` | `1D76DB` | All prerequisites met; ready to implement |
+| `deferred` | `C5DEF5` | Postponed with a named trigger condition (deferred-with-conditions, not deferred-forever) |
+
+State machine: `discussion → decided → ready`; `deferred` is the parallel state.
+
+The `deferred` label is the labels-layer expression of the *deferred-with-conditions* discipline used elsewhere in the project's docs (`Deferred (not yet wired)` in [`CONTRIBUTING.md`](CONTRIBUTING.md) §CI strategy, `Deferred` in [`SPEC.md`](SPEC.md), `Future extensions` in [`DESIGN.md`](DESIGN.md), `Future Phases` in [`ROADMAP.md`](ROADMAP.md), `Follow-ups` in each phase plan). Nothing is "later" without saying what brings it back; without a named trigger in the issue body, do not apply `deferred` — close with "won't fix" instead.
 
 Lifecycle labels are only meaningful on decision-bearing issues. Pure implementation tickets, bug reports, and chores don't need them.
 
-## Topic (apply one or more)
+### Topic (apply one or more)
 
-Topic labels say what an issue or PR is about. Apply as many as fit.
+| Name | Color | Description |
+|---|---|---|
+| `schema` | `5319E7` | Data shape / migrations / contract-bearing field changes |
+| `spec` | `0052CC` | Contract layer: changes to `docs/SPEC.md` |
+| `design` | `8E44AD` | Design rationale: `docs/DESIGN.md` and `docs/design/*.md` |
+| `documentation` | `0075CA` | Root-level docs (README, CONTRIBUTING, REVIEW_CONTEXT, STRUCTURE, decisions/, plans/, this file) |
+| `implementation` | `2EA44F` | Application code, not docs |
+| `UX` | `BFD4F2` | User experience: flow, interaction, copy |
+| `UI` | `F9D0C4` | Visual surface: layout, components, styling |
+| `bug` | `D73A4A` | Defect; expected vs actual mismatch |
+| `security` | `B60205` | Security-relevant: auth, encryption, isolation, PII |
 
-- **`schema`** — changes to a binding shared data shape (field names, types, on-disk artifact layout). The contract itself, not its prose description.
-- **`spec`** — changes to `docs/SPEC.md`. The prose form of a contract. Often paired with `schema`.
-- **`design`** — changes to `docs/DESIGN.md` or rationale-only documents.
-- **`documentation`** — changes to docs that are not themselves contracts (README, CONTRIBUTING, REVIEW_CONTEXT, STRUCTURE, decisions/, plans/, this file).
-- **`implementation`** — code changes that realize an existing contract.
-- **`UX`** — user-facing experience: flows, copy, what the user reaches for and finds.
-- **`UI`** — user-facing surface: layout, widgets, visual treatment.
-- **`bug`** — something is broken against a stated invariant or contract.
-- **`security`** — security-relevant: authn/authz, data exposure, supply chain, sandboxing.
+#### Disambiguation
 
-### Disambiguation
-
-- **`design` vs `documentation`** — `design` is for changes to rationale/architecture docs that carry load (`DESIGN.md`, the ADR set). `documentation` is for everything else doc-shaped.
+- **`design` vs `documentation`** — `design` is for changes to rationale / architecture docs (`DESIGN.md`, `docs/design/*.md`, the ADR set). `documentation` is for everything else doc-shaped.
 - **`schema` vs `implementation`** — a PR that adds or changes a field on a shared artifact is `schema` (the contract surface moved); a PR that adds code consuming an unchanged field is `implementation`. PRs that move both together get both labels.
-- **`spec` vs `schema` vs `design`** — `spec` flags that `SPEC.md` prose changed; `schema` flags that the contract itself changed; `design` flags rationale changes. A typical contract update touches all three. Apply all that fit.
+- **`spec` vs `schema` vs `design`** — `spec` flags that `SPEC.md` prose changed; `schema` flags that the contract itself changed; `design` flags rationale changes. A typical contract update touches all three.
 - **`UX` vs `UI`** — `UX` describes the flow ("user completes checkout without confirming twice"); `UI` describes the surface ("checkout button colour, position, label"). Most PRs touch both — apply both.
 
-## Phase (apply one when applicable)
+### Phase (apply at most one)
 
-Phase labels mark which delivery phase from [`ROADMAP.md`](ROADMAP.md) the issue or PR belongs to. Use the form `phase-0`, `phase-1`, etc.
+| Name | Color | Description |
+|---|---|---|
+| `phase-0`, `phase-1`, … | `D4C5F9` | Per-phase work, created on demand |
 
-**Do not pre-create the full set.** Create a phase label on demand, the first time an issue or PR is filed against that phase. Pre-creating clutters the label picker with phases that don't yet exist.
+Don't pre-create all phase labels. Add `phase-N` the first time an issue or PR targets that phase; pre-creating clutters the label picker with phases that don't yet exist. When an issue spans phases (e.g. a decision made in Phase 0 implemented in Phase 1), apply the label of the *deciding* phase, not the implementing one — the issue's purpose is the decision.
 
-When an issue spans phases (e.g. a decision made in Phase 0 implemented in Phase 1), apply the label of the *deciding* phase, not the implementing one — the issue's purpose is the decision.
+## Usage examples
 
-## Seeding the catalogue
-
-Run once at project setup. Adjust colours to taste; descriptions below are the canonical short forms.
-
-```bash
-# Lifecycle
-gh label create discussion --description "Open question; converging on a decision"
-gh label create decided    --description "Question resolved; ADR / doc update pending or done"
-gh label create ready      --description "Decision captured; ready to close or hand off"
-gh label create deferred   --description "Parked with a named return trigger"
-
-# Topic
-gh label create schema         --description "Changes to a binding shared data shape"
-gh label create spec           --description "Changes to docs/SPEC.md"
-gh label create design         --description "Changes to docs/DESIGN.md or rationale"
-gh label create documentation  --description "Doc changes outside the contract surface"
-gh label create implementation --description "Code change realizing an existing contract"
-gh label create UX             --description "User-facing experience: flows, copy"
-gh label create UI             --description "User-facing surface: layout, visuals"
-gh label create bug            --description "Broken against a stated invariant or contract"
-gh label create security       --description "Authn/authz, data exposure, supply chain"
-```
-
-Phase labels are added on demand — see above.
-
-## Examples
-
-- **"Phase 0 decision about [error-handling policy]"** — `phase-0`, `discussion` while the thread is open; `decided` after it converges; `ready` once the ADR lands.
-- **"[Shared artifact] gains optional [field]"** — `schema`, `spec`, `implementation` together. Lifecycle labels not needed.
-- **"[Feature] flow needs fewer confirmations"** — `UX`, plus `UI` if visual changes follow.
+| Issue / PR shape | Lifecycle | Topic | Phase |
+|---|---|---|---|
+| "Phase 0 decision about [error-handling policy]" | `discussion` → `decided` → `ready` | — | `phase-0` |
+| "[Shared artifact] gains optional [field]" | — | `schema`, `spec`, `implementation` | (varies) |
+| "[Feature] flow needs fewer confirmations" | — | `UX`, `UI` | (varies) |
+| "[Bug] in [module]" | — | `bug`, `implementation` | (varies) |
+| "Deferred until [trigger]: [topic]" | `deferred` | (varies) | (varies) |
+| "Update [doc] to reflect [change]" | — | `documentation` | — |
 
 ## Adding a new label
 
-The label taxonomy is load-bearing for issue and PR hygiene. Adding, renaming, removing, or repurposing a label is a **major decision** in the sense of [`../CLAUDE.md`](../CLAUDE.md) §4: surface the proposal (name, category, definition, disambiguation against neighbours) before adding it. If the change sticks, update this file in the same PR that introduces the label.
+The label taxonomy is load-bearing for issue and PR hygiene. Adding, renaming, removing, or repurposing a label is a **major decision** per [`../CLAUDE.md`](../CLAUDE.md) §4: surface the proposal (name, category, colour, description, disambiguation against neighbours) before adding it. If the change sticks, update this file in the same PR that introduces the label, and update the repo's catalogue (Settings → Labels) to match.
 
 A new label should:
 
 - Have a clear definition that doesn't overlap an existing one — or, if it overlaps deliberately, update the disambiguation entry in the same PR.
 - Sit in one of the three existing categories. Proposing a new category is itself a major decision and warrants surfacing the case for why an existing category won't do.
 
-## Rename and remove
+## Seeding the catalogue
 
-Renames and removes affect history: every old issue and PR carrying the old label loses its categorization unless mass-relabelled.
+Run once at project setup. The snippet below recreates the catalogue above exactly — same names, colours, descriptions — so a fresh repo's labels match this file from the first PR onward.
 
-- Before renaming, confirm the rename is worth the churn. Clearer category names usually are; stylistic preferences usually aren't. `gh label edit <old> --name <new>` preserves existing assignments.
-- Before removing, prefer marking the label as deprecated in this file with a "use X instead" note for one release cycle before deleting it. Removing a label deletes its assignments.
+```bash
+# Lifecycle
+gh label create discussion --color FBCA04 --description "Decision is open; alternatives on the table"
+gh label create decided    --color 0E8A16 --description "Decision is locked; awaiting follow-up implementation / ADR"
+gh label create ready      --color 1D76DB --description "All prerequisites met; ready to implement"
+gh label create deferred   --color C5DEF5 --description "Postponed with a named trigger condition"
+
+# Topic
+gh label create schema         --color 5319E7 --description "Data shape / migrations / contract-bearing field changes"
+gh label create spec           --color 0052CC --description "Contract layer: changes to docs/SPEC.md"
+gh label create design         --color 8E44AD --description "Design rationale: docs/DESIGN.md and docs/design/*.md"
+gh label create documentation  --color 0075CA --description "Root-level docs"
+gh label create implementation --color 2EA44F --description "Application code, not docs"
+gh label create UX             --color BFD4F2 --description "User experience: flow, interaction, copy"
+gh label create UI             --color F9D0C4 --description "Visual surface: layout, components, styling"
+gh label create bug            --color D73A4A --description "Defect; expected vs actual mismatch"
+gh label create security       --color B60205 --description "Security-relevant: auth, encryption, isolation, PII"
+```
+
+Phase labels are added on demand — see above.
+
+## Renaming and removing
+
+Renames and removes affect history: every old issue and PR carrying the old label loses its categorisation unless mass-relabelled.
+
+- **Renaming.** Confirm the rename is worth the churn. Clearer category names usually are; stylistic preferences usually aren't. `gh label edit <old> --name <new>` preserves existing assignments. Update this file in the same PR.
+- **Removing.** Prefer marking the label as deprecated in this file with a "use X instead" note for one release cycle before deleting it from the catalogue. Removing a label deletes its assignments — preserve the migration path.
+
+## See also
+
+- [`../CLAUDE.md`](../CLAUDE.md) §4 — major-decision policy that gates taxonomy changes.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) §"Issue & PR labels" — pointer back to this file from the contributor workflow.
+- [`decisions/README.md`](decisions/README.md) §"Optional: issue-per-decision workflow" — the lifecycle labels are the labels-layer of that workflow.
