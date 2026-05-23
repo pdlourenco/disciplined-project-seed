@@ -95,17 +95,10 @@ Phase N implementation work does not begin until the items below land.
 
 ## 3. PR sequence
 
-<!-- DESIGN-MEETING VARIANT: if the phase produces decisions rather than
-     engineering output — e.g. a Phase 0 that converges on the project's
-     foundational ADRs — replace this section with a "Decision agenda"
-     that enumerates the issues / ADRs the phase produces. There are no
-     PRs in the phase itself; PRs follow as decisions close and are
-     scheduled by the later phases that consume them.
-
-     Both ADR shapes work for the agenda items — see
-     docs/decisions/README.md §"ADR lifecycle" for ADR-first vs
-     issue-first; the lifecycle labels in docs/LABELS.md track
-     issue-first agenda items through discussion → decided → ready. -->
+<!-- If the phase produces decisions rather than engineering output (e.g. a
+     design-meeting phase), replace this section with a "Decision agenda"
+     enumerating the issues / ADRs the phase produces. No PRs in the phase
+     itself; PRs follow as decisions close. -->
 
 After §2 prerequisites land, Phase N implementation decomposes into N PRs. Each lands in a sideloadable / deployable / CI-green state. Per-PR depth lives in §4–§7; this section is the order-of-operations and the visible outcome that gates each merge.
 
