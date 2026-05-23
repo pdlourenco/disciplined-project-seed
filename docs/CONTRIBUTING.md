@@ -158,24 +158,27 @@ Before every `git push` on a PR branch, Claude agents working on this repo shoul
 
 ### Reviewer prompt
 
-Launch a `general-purpose` or `Explore` subagent with the diff plus this prompt (adjust context as needed). **Replace the example pitfalls in bullet 1 with the project's actual principles from [`REVIEW_CONTEXT.md`](REVIEW_CONTEXT.md), phrased as numbered assertions the reviewer can cite by number.** Inlining the principles grounds the reviewer in this project's load-bearing invariants instead of generic engineering hazards; a finding of the shape "violates principle 3: [shared artifact] is the contract" is far more actionable than "cross-cutting issue: ...". Vague prompts get vague reviews.
+Launch a `general-purpose` or `Explore` subagent with the diff plus this prompt.
+
+**Replace the example pitfalls below with your project's actual principles from [`REVIEW_CONTEXT.md`](REVIEW_CONTEXT.md), phrased as numbered assertions the reviewer can cite by number.** What's listed below is shaped as a guide, not as boilerplate to ship verbatim.
 
 > Review the diff below for:
 >
-> 1. **Project principles** — <!-- Inline the numbered principles from
->    REVIEW_CONTEXT.md here, verbatim, so the reviewer can cite them by
->    number. Example shape (substitute the project's actual principles):
+> 1. **<!-- Project-specific pitfalls -->** — <!-- Calibrate this list to
+>    concrete bug classes the project has actually shipped, or to the
+>    numbered principles in REVIEW_CONTEXT.md so findings can cite them
+>    by number ("violates principle 3: [shared artifact] is the contract"
+>    is more actionable than "cross-cutting issue: ..."). Examples from
+>    other projects to illustrate the shape:
 >
->      1. The [shared artifact] is the contract — processes coordinate
->         through it, not through runtime communication.
->      2. Permissive licenses only — MIT, Apache-2.0, BSD; GPL/AGPL
->         excluded.
->      3. Polyglot by design — shared surfaces must be language-agnostic.
->      4. [Latency target] matters — [component] targets [X] ms.
->      5. ...
+>    - Cross-platform issues (Windows path handling, line endings, shell syntax)
+>    - Encoding assumptions (assumed UTF-8, assumed locale)
+>    - Timezone handling (naive datetimes crossing boundaries)
+>    - Licensing obligations (new dependency, check license compatibility)
+>    - Binary-vs-text file handling (pre-commit hooks mutating binary fixtures)
 >
->    Flag any place the diff appears to violate one of the principles
->    above and cite the principle by number. -->
+>    Swap in your project's actual failure modes or principles. Vague
+>    prompts get vague reviews. -->
 > 2. **Scope drift** from the PR's stated purpose — touching files outside the declared scope, unrelated refactors piggybacking on the PR.
 > 3. **Design choices deserving an ADR** (see `docs/decisions/`) — new magic numbers, non-obvious fallback chains, thresholds, backwards-compat seams.
 > 4. **Missing or stale ADR links** in the PR description; missing docstring `See ADR-NNNN` markers beside tactical values.
