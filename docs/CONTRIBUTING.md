@@ -253,9 +253,9 @@ This keeps the contract and its implementations in lock-step. The contract-enfor
 
 ## Issue & PR labels
 
-Label taxonomy lives in [`LABELS.md`](LABELS.md). Three categories: **lifecycle** (decision-bearing issues — one per issue), **topic** (what the change is about — one or more), and **phase** (which `ROADMAP.md` phase — one when applicable, added on demand).
+Labels follow the taxonomy in [`LABELS.md`](LABELS.md). Apply at least one **lifecycle** label (`discussion` / `decided` / `ready` / `deferred`) on decision-bearing issues, one or more **topic** labels matching the surfaces the issue or PR touches, and an optional **phase** label (`phase-0`, `phase-1`, …) when the work belongs to a specific phase.
 
-Adding, renaming, or removing a label is a major decision per [`../CLAUDE.md`](../CLAUDE.md) §4; the taxonomy is load-bearing for issue and PR hygiene.
+Adding a new label or changing the taxonomy is a major decision (see [`../CLAUDE.md`](../CLAUDE.md) §4 and [`LABELS.md`](LABELS.md) §Adding a new label); routine labelling is not.
 
 ## When CI fails
 
