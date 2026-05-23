@@ -158,12 +158,17 @@ Before every `git push` on a PR branch, Claude agents working on this repo shoul
 
 ### Reviewer prompt
 
-Launch a `general-purpose` or `Explore` subagent with the diff plus this prompt (adjust context as needed):
+Launch a `general-purpose` or `Explore` subagent with the diff plus this prompt.
+
+**Replace the example pitfalls below with your project's actual principles from [`REVIEW_CONTEXT.md`](REVIEW_CONTEXT.md), phrased as numbered assertions the reviewer can cite by number.** What's listed below is shaped as a guide, not as boilerplate to ship verbatim.
 
 > Review the diff below for:
 >
 > 1. **<!-- Project-specific pitfalls -->** — <!-- Calibrate this list to
->    concrete bug classes the project has actually shipped. Examples from
+>    concrete bug classes the project has actually shipped, or to the
+>    numbered principles in REVIEW_CONTEXT.md so findings can cite them
+>    by number ("violates principle 3: [shared artifact] is the contract"
+>    is more actionable than "cross-cutting issue: ..."). Examples from
 >    other projects to illustrate the shape:
 >
 >    - Cross-platform issues (Windows path handling, line endings, shell syntax)
@@ -172,8 +177,8 @@ Launch a `general-purpose` or `Explore` subagent with the diff plus this prompt 
 >    - Licensing obligations (new dependency, check license compatibility)
 >    - Binary-vs-text file handling (pre-commit hooks mutating binary fixtures)
 >
->    Swap in your project's actual failure modes. Vague prompts get vague
->    reviews. -->
+>    Swap in your project's actual failure modes or principles. Vague
+>    prompts get vague reviews. -->
 > 2. **Scope drift** from the PR's stated purpose — touching files outside the declared scope, unrelated refactors piggybacking on the PR.
 > 3. **Design choices deserving an ADR** (see `docs/decisions/`) — new magic numbers, non-obvious fallback chains, thresholds, backwards-compat seams.
 > 4. **Missing or stale ADR links** in the PR description; missing docstring `See ADR-NNNN` markers beside tactical values.
@@ -190,6 +195,19 @@ Launch a `general-purpose` or `Explore` subagent with the diff plus this prompt 
 ### Why pre-push rather than CI
 
 Catching issues before CI runs saves minutes, dollars, and reviewer attention. A reviewer in CI would re-analyze every push on every PR (≈ 5–10× more runs for similar signal) and clutter PR threads with comments mostly ignored. Pre-push keeps the cost low and the signal high; if too many cross-cutting issues slip through, promote it to CI with a dedicated workflow.
+
+## Pre-push CI run (once CI exists)
+
+Once the CI suite defined in §CI strategy lands, **run it locally before every push**, in addition to (not in place of) the pre-push self-review above. The reviewer subagent and the CI suite are complementary: the reviewer catches cross-cutting / principle / scope / terminology issues; the CI catches mechanical failures (contract-enforcement, lint, test, coverage). Both are pre-push disciplines for the same reason — catch issues before CI minutes burn, before the PR thread fills with red checks, and before reviewer attention is wasted on noise the contributor could have fixed locally.
+
+**Rules of engagement** (mirroring the pre-push reviewer):
+
+- Run before every push, including fix-up pushes on a branch that already has open CI.
+- Fix failures before pushing; don't rely on CI to catch what the local run already would have.
+- **Exceptions**: same narrow list as the reviewer — one-line typo fixes, formatting-only changes, pure reverts. The ceremony costs more than the signal for these.
+- Note the outcome briefly in the PR description: `local CI: green` or `local CI: <job> failed, fixed in <sha>`.
+
+**Commands.** <!-- Project-specific; fill in once the tech stack lands. -->
 
 ## When you change a contract in `docs/SPEC.md`
 
@@ -209,6 +227,12 @@ This keeps the contract and its implementations in lock-step. The contract-enfor
 - Feature branches: `<!-- e.g. claude/<topic>-<short-hash> for agent work, <user>/<topic> for humans -->`.
 - Commits: imperative subject line, ≤70 chars. Follow the existing style in `git log`.
 - One topic per commit where practical; it keeps CI failures diagnosable.
+
+## Issue & PR labels
+
+Labels follow the taxonomy in [`LABELS.md`](LABELS.md). Apply at least one **lifecycle** label (`discussion` / `decided` / `ready` / `deferred`) on decision-bearing issues, one or more **topic** labels matching the surfaces the issue or PR touches, and an optional **phase** label (`phase-0`, `phase-1`, …) when the work belongs to a specific phase.
+
+Adding a new label or changing the taxonomy is a major decision (see [`../CLAUDE.md`](../CLAUDE.md) §4 and [`LABELS.md`](LABELS.md) §Adding a new label); routine labelling is not.
 
 ## When CI fails
 

@@ -11,10 +11,11 @@ A coordinated set of documents for grounding parallel software development on ex
 
 **Docs (`docs/`)**
 
-- `CONTRIBUTING.md` — CI strategy, pre-push review convention, ADR policy, contract-change workflow. The authoritative source for contributor mechanics.
+- `CONTRIBUTING.md` — CI strategy, pre-push review and pre-push CI conventions, ADR policy, contract-change workflow, label conventions. The authoritative source for contributor mechanics.
 - `DESIGN.md` — architectural rationale. Not a contract; answers "why is it shaped this way".
 - `SPEC.md` — binding external contracts. The surfaces that cross language, process, or module boundaries.
 - `ROADMAP.md` — phased delivery plan. Terse per-phase summaries that link to detailed plans.
+- `LABELS.md` — issue and PR label taxonomy (lifecycle / topic / phase). Load-bearing for hygiene; changes are a major decision per `CLAUDE.md` §4.
 - `REVIEW_CONTEXT.md` — seed context for a reviewer agent (and new contributors).
 - `STRUCTURE.md` — target project layout. Aspirational, updated as the repo evolves.
 

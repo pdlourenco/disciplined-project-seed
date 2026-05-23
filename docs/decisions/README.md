@@ -15,6 +15,15 @@ This directory holds the project's Architecture Decision Records. Each ADR docum
 
 When to write one vs. not is also covered in [`docs/CONTRIBUTING.md`](../CONTRIBUTING.md) §"Design decisions (ADRs)".
 
+## ADR lifecycle
+
+ADRs can be written in either of two shapes:
+
+- **ADR-first**: the ADR is opened as a PR; the discussion happens on the PR; the ADR captures the decision when the PR merges.
+- **Issue-first**: a GitHub issue is opened for the decision (with Context + Alternatives + Where it lands); discussion / resolution happens in the issue; once the issue closes, a follow-up PR writes the ADR from the closed-issue thread.
+
+Issue-first is useful when the decision is part of a batch (e.g. a design meeting's agenda) where opening N empty ADR-PRs would be heavier than opening N issues. Either shape produces the same ADR in `docs/decisions/`; the difference is where the discussion lives.
+
 ## Format
 
 Use [`ADR-TEMPLATE.md`](ADR-TEMPLATE.md) as the starting point. Required sections:

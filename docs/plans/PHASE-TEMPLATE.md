@@ -95,6 +95,11 @@ Phase N implementation work does not begin until the items below land.
 
 ## 3. PR sequence
 
+<!-- If the phase produces decisions rather than engineering output (e.g. a
+     design-meeting phase), replace this section with a "Decision agenda"
+     enumerating the issues / ADRs the phase produces. No PRs in the phase
+     itself; PRs follow as decisions close. -->
+
 After §2 prerequisites land, Phase N implementation decomposes into N PRs. Each lands in a sideloadable / deployable / CI-green state. Per-PR depth lives in §4–§7; this section is the order-of-operations and the visible outcome that gates each merge.
 
 <!-- PR labeling scheme — pick one:

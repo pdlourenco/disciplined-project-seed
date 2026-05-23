@@ -39,7 +39,7 @@ Rationale and the narrow exceptions (one-line typo, formatting-only, pure revert
 
 A "major decision" is anything that:
 
-- changes a contract in `docs/SPEC.md`, `docs/DESIGN.md`, `docs/ROADMAP.md`, or <!-- any other source-of-truth artifact, e.g. docs/schema.toml -->;
+- changes a contract in `docs/SPEC.md`, `docs/DESIGN.md`, `docs/ROADMAP.md`, `docs/LABELS.md` (whose taxonomy is load-bearing for issue / PR hygiene), or <!-- any other source-of-truth artifact, e.g. docs/schema.toml -->;
 - introduces a new external dependency, a new process boundary, or a new on-disk artifact;
 - locks in a trade-off a future PR could reasonably want to revisit (thresholds, fallback ordering, error-handling policy, schema seams);
 - materially changes the scope or shape of the phase being worked on.
