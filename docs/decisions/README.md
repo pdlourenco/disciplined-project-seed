@@ -15,6 +15,14 @@ This directory holds the project's Architecture Decision Records. Each ADR docum
 
 When to write one vs. not is also covered in [`docs/CONTRIBUTING.md`](../CONTRIBUTING.md) §"Design decisions (ADRs)".
 
+## Optional: issue-per-decision workflow
+
+One workflow that works well for ADR-worthy decisions: open a GitHub issue per decision (with Context + Alternatives + Where it lands), discuss and decide in the issue thread, then write the ADR from the closed issue. This is cleaner than a long-lived "Proposed" ADR stub gathering not-yet-decided commentary, and the issue thread doubles as the discussion record.
+
+The lifecycle labels in [`../LABELS.md`](../LABELS.md) (`discussion → decided → ready`, plus `deferred` for parked questions) line up directly with this flow: an issue moves through them as the decision converges. Once the issue lands at `decided`, write the ADR; once the ADR merges and any implementation follow-up is scheduled, the issue moves to `ready` and closes.
+
+This is **one** valid lifecycle, not the mandated one. Decisions reached in PR review threads, in design conversations, or asynchronously in chat are equally legitimate — the test is whether the resulting ADR captures the decision and its alternatives, not how the conversation got there.
+
 ## Format
 
 Use [`ADR-TEMPLATE.md`](ADR-TEMPLATE.md) as the starting point. Required sections:

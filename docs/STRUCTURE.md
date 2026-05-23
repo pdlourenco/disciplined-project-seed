@@ -43,14 +43,17 @@
 │   ├── SPEC.md
 │   ├── ROADMAP.md
 │   ├── CONTRIBUTING.md
+│   ├── LABELS.md                   # issue + PR label taxonomy
 │   ├── REVIEW_CONTEXT.md
 │   ├── STRUCTURE.md                # this file
 │   ├── decisions/
 │   │   ├── README.md               # ADR convention + index
 │   │   └── ADR-NNNN-*.md
-│   └── plans/
-│       ├── README.md               # phase-plan index
-│       └── PHASE-N.md
+│   ├── plans/
+│   │   ├── README.md               # phase-plan index
+│   │   └── PHASE-N.md
+│   └── design/                     # optional: per-topic depth when
+│       └── <topic>.md              # DESIGN.md outgrows ~300 lines
 │
 ├── <component>/                    # e.g. indexer/, backend/, service/
 │   ├── <manifest>                  # e.g. pyproject.toml, Cargo.toml

@@ -158,22 +158,24 @@ Before every `git push` on a PR branch, Claude agents working on this repo shoul
 
 ### Reviewer prompt
 
-Launch a `general-purpose` or `Explore` subagent with the diff plus this prompt (adjust context as needed):
+Launch a `general-purpose` or `Explore` subagent with the diff plus this prompt (adjust context as needed). **Replace the example pitfalls in bullet 1 with the project's actual principles from [`REVIEW_CONTEXT.md`](REVIEW_CONTEXT.md), phrased as numbered assertions the reviewer can cite by number.** Inlining the principles grounds the reviewer in this project's load-bearing invariants instead of generic engineering hazards; a finding of the shape "violates principle 3: [shared artifact] is the contract" is far more actionable than "cross-cutting issue: ...". Vague prompts get vague reviews.
 
 > Review the diff below for:
 >
-> 1. **<!-- Project-specific pitfalls -->** — <!-- Calibrate this list to
->    concrete bug classes the project has actually shipped. Examples from
->    other projects to illustrate the shape:
+> 1. **Project principles** — <!-- Inline the numbered principles from
+>    REVIEW_CONTEXT.md here, verbatim, so the reviewer can cite them by
+>    number. Example shape (substitute the project's actual principles):
 >
->    - Cross-platform issues (Windows path handling, line endings, shell syntax)
->    - Encoding assumptions (assumed UTF-8, assumed locale)
->    - Timezone handling (naive datetimes crossing boundaries)
->    - Licensing obligations (new dependency, check license compatibility)
->    - Binary-vs-text file handling (pre-commit hooks mutating binary fixtures)
+>      1. The [shared artifact] is the contract — processes coordinate
+>         through it, not through runtime communication.
+>      2. Permissive licenses only — MIT, Apache-2.0, BSD; GPL/AGPL
+>         excluded.
+>      3. Polyglot by design — shared surfaces must be language-agnostic.
+>      4. [Latency target] matters — [component] targets [X] ms.
+>      5. ...
 >
->    Swap in your project's actual failure modes. Vague prompts get vague
->    reviews. -->
+>    Flag any place the diff appears to violate one of the principles
+>    above and cite the principle by number. -->
 > 2. **Scope drift** from the PR's stated purpose — touching files outside the declared scope, unrelated refactors piggybacking on the PR.
 > 3. **Design choices deserving an ADR** (see `docs/decisions/`) — new magic numbers, non-obvious fallback chains, thresholds, backwards-compat seams.
 > 4. **Missing or stale ADR links** in the PR description; missing docstring `See ADR-NNNN` markers beside tactical values.
@@ -190,6 +192,45 @@ Launch a `general-purpose` or `Explore` subagent with the diff plus this prompt 
 ### Why pre-push rather than CI
 
 Catching issues before CI runs saves minutes, dollars, and reviewer attention. A reviewer in CI would re-analyze every push on every PR (≈ 5–10× more runs for similar signal) and clutter PR threads with comments mostly ignored. Pre-push keeps the cost low and the signal high; if too many cross-cutting issues slip through, promote it to CI with a dedicated workflow.
+
+## Pre-push CI run (agent convention)
+
+Companion to §"Pre-push self-review" above. The two checks are complementary, not redundant: the reviewer subagent catches **cross-cutting / principle / scope / terminology** issues; running the project's CI checks locally catches **mechanical / contract / quality** issues — type errors, test failures, contract-consistency drift, formatter or lint regressions. Neither subsumes the other.
+
+Before every `git push` on a PR branch, run the project's CI suite locally. Same exceptions as the reviewer subagent: one-line typo fixes, formatting-only changes, and pure reverts skip this. Note the outcome in the PR description so the human reviewer can see it ran — `local CI: green` mirrors the `pre-push review: no findings` line.
+
+### What to run
+
+<!-- Settled in Phase N; see issue #NN -->
+
+<!-- The placeholder above uses a "Settled in Phase N; see issue #NN"
+     shape so the slot is unambiguous: it marks a value that will be
+     filled in once a specific phase converges on the answer. Replace it
+     with a single shell invocation that runs the project's CI checks
+     locally — type-check, tests, lint/format, contract-consistency. The
+     canonical shape is one command, not a checklist, so the convention
+     is "run X before pushing", not "remember to run six things before
+     pushing".
+
+     Example shapes (pick the one that fits the project's stack):
+
+         pre-commit run --all-files && pytest && mypy .
+         cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test
+         pnpm lint && pnpm typecheck && pnpm test
+
+     Until Phase N fills this in, agents should run whatever local
+     checks the project already supports and note the outcome. -->
+
+### Why pre-push rather than only CI
+
+The same logic as the reviewer subagent. CI minutes, PR-thread attention, and reviewer time are all more expensive than a local run; round-tripping a mechanical failure through CI is a worse experience than catching it locally. Pre-push keeps the cost low and the signal high.
+
+### Rules of engagement
+
+- Run before **every** push, including fix-up pushes on a branch that already has open CI.
+- If local CI fails, fix it before pushing. If a failure is environmental (e.g. requires a service the local machine doesn't have), note that in the PR description and let CI confirm; do not push silently.
+- **Exceptions**: one-line typo fixes, formatting-only changes, pure reverts. The ceremony costs more than the signal.
+- Note the outcome briefly in the PR description — e.g. `local CI: green` or `local CI: failed Y, fixed in <sha>`.
 
 ## When you change a contract in `docs/SPEC.md`
 
@@ -209,6 +250,12 @@ This keeps the contract and its implementations in lock-step. The contract-enfor
 - Feature branches: `<!-- e.g. claude/<topic>-<short-hash> for agent work, <user>/<topic> for humans -->`.
 - Commits: imperative subject line, ≤70 chars. Follow the existing style in `git log`.
 - One topic per commit where practical; it keeps CI failures diagnosable.
+
+## Issue & PR labels
+
+Label taxonomy lives in [`LABELS.md`](LABELS.md). Three categories: **lifecycle** (decision-bearing issues — one per issue), **topic** (what the change is about — one or more), and **phase** (which `ROADMAP.md` phase — one when applicable, added on demand).
+
+Adding, renaming, or removing a label is a major decision per [`../CLAUDE.md`](../CLAUDE.md) §4; the taxonomy is load-bearing for issue and PR hygiene.
 
 ## When CI fails
 

@@ -14,6 +14,8 @@
 <!-- Delete rows that don't apply to this PR. -->
 
 - [ ] Pre-push review: <!-- "no findings" OR "flagged X, fixed in <sha>" -->
+- [ ] Local CI: <!-- "green" OR "failed Y, fixed in <sha>" -->
+- [ ] Labels applied per `docs/LABELS.md` (lifecycle / topic / phase as applicable)
 - [ ] If this changes a contract in `docs/SPEC.md`: spec updated first, all implementation sides updated in this PR, change log entry added
 - [ ] If this locks in a non-obvious tactical decision: ADR written and linked above
 - [ ] Tests added or updated; coverage floor not lowered

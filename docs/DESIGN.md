@@ -10,6 +10,8 @@
 ---
 
 > **Positioning.** This document is the *rationale* half of the DESIGN / SPEC pair. It answers "why is the project shaped this way?" — architecture choices, alternatives considered, trade-offs accepted. The *contract* half lives in [`SPEC.md`](SPEC.md): the on-disk formats, RPC shapes, and cross-boundary conventions that different implementations must agree on. If DESIGN drifts into contract details (field tables, wire formats), or SPEC drifts into rationale (prose arguments for why), both rot. When in doubt, link to the other rather than duplicate.
+>
+> **If DESIGN.md grows past ~300 lines, consider the same split shape used for `ROADMAP.md` + `plans/`:** a slim `DESIGN.md` that holds the load-bearing positioning, the diagram, and the key principle, with per-topic depth moved to `docs/design/<topic>.md` files linked from here. Same discipline as the roadmap-plan split: the parent stays scannable, the children carry the depth. Update [`STRUCTURE.md`](STRUCTURE.md) when this split happens.
 
 ## Overview
 
