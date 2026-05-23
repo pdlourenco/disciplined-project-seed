@@ -108,4 +108,4 @@ Renames and removes affect history: every old issue and PR carrying the old labe
 
 - [`../CLAUDE.md`](../CLAUDE.md) §4 — major-decision policy that gates taxonomy changes.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) §"Issue & PR labels" — pointer back to this file from the contributor workflow.
-- [`decisions/README.md`](decisions/README.md) §"Optional: issue-per-decision workflow" — the lifecycle labels are the labels-layer of that workflow.
+- [`decisions/README.md`](decisions/README.md) §"ADR lifecycle" — the lifecycle labels track an issue-first ADR through its decision flow.

@@ -102,10 +102,10 @@ Phase N implementation work does not begin until the items below land.
      PRs in the phase itself; PRs follow as decisions close and are
      scheduled by the later phases that consume them.
 
-     The matching issue lifecycle (discussion → decided → ready, plus
-     deferred) lives in docs/decisions/README.md §"Optional:
-     issue-per-decision workflow" and uses the labels in
-     docs/LABELS.md. -->
+     Both ADR shapes work for the agenda items — see
+     docs/decisions/README.md §"ADR lifecycle" for ADR-first vs
+     issue-first; the lifecycle labels in docs/LABELS.md track
+     issue-first agenda items through discussion → decided → ready. -->
 
 After §2 prerequisites land, Phase N implementation decomposes into N PRs. Each lands in a sideloadable / deployable / CI-green state. Per-PR depth lives in §4–§7; this section is the order-of-operations and the visible outcome that gates each merge.
 
