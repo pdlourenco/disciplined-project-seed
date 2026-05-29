@@ -214,6 +214,8 @@ Once the CI suite defined in §CI strategy lands, **run it locally before every 
 3. Add a note in `docs/SPEC.md`'s change log.
 4. Run the contract-consistency checks and integration job locally before pushing.
 
+If the contract change is motivated by an ADR, the ADR lands in the same PR too — see [`decisions/README.md`](decisions/README.md) §"What an ADR is — and isn't".
+
 This keeps the contract and its implementations in lock-step. The contract-enforcement checks in CI catch partial updates.
 
 ## Commit and branch conventions
