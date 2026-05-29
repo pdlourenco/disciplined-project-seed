@@ -9,7 +9,7 @@ This directory holds the project's Architecture Decision Records. Each ADR docum
 **An ADR is NOT:**
 
 - A place for architecture itself. `docs/DESIGN.md` owns architectural shape. ADRs are the tactical choices underneath the architecture.
-- A place for contracts. `docs/SPEC.md` owns binding cross-boundary contracts. ADRs can motivate a SPEC change, but the authoritative text lives in SPEC.
+- A place for contracts. `docs/SPEC.md` owns binding cross-boundary contracts. ADRs can motivate a SPEC change, but the authoritative text lives in SPEC. When an ADR motivates a SPEC change, both land in the same PR (spec first, per [`../CONTRIBUTING.md`](../CONTRIBUTING.md) §"When you change a contract").
 - A place for obvious or purely mechanical choices. Import ordering, formatter settings, internal naming conventions. These churn too much to earn a permanent record.
 - A narrative of what you did. It's a record of what you decided and why the rejected alternatives were rejected.
 
