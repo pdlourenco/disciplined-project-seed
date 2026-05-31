@@ -93,6 +93,11 @@ jobs:
         # DESIGN, ROADMAP, REVIEW_CONTEXT, STRUCTURE) ship with
         # intentional unfilled placeholders that adopters customize.
         # Exclude them from the audit; everything else is fair game.
+        #
+        # KEEP IN SYNC with the `ignores` array in
+        # .markdownlint-cli2.jsonc — that list is the same template
+        # set, duplicated by hand. ADR-0002 §Consequences names the
+        # promotion trigger for collapsing both into a shared config.
         run: |
           mapfile -t files < <(
             find . -name '*.md' \

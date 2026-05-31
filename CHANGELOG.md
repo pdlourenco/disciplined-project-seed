@@ -24,7 +24,7 @@ Entries are dated by merge into `main`.
   - **MD041** (first-line-heading) — the PR template starts with an HTML comment by design.
   - **MD060** (table-column-style) — too strict for variable-width content; tables render fine regardless.
 
-  The reviewer subagent catches real drift on heading hygiene, emphasis style, etc. Replaces the original `.markdownlint.json` + `.markdownlintignore` pair, which markdownlint-cli2 silently ignored.
+  The reviewer subagent catches real drift on heading hygiene, emphasis style, etc. Uses markdownlint-cli2's single native config format (rules + glob + ignore list in one file), rather than the `.markdownlint.json` + `.markdownlintignore` pair that markdownlint-cli2 does not read.
 - `docs/decisions/ADR-0002-active-trivial-ci-workflow.md` — captures the choice of an active workflow over an `.example` skeleton, the placeholder-audit detection rule, the pinning-policy reuse from ADR-0001.
 - `.github/labels.yml` — machine-readable source of truth for the label catalogue, paired with `docs/LABELS.md`. ([#7](https://github.com/pdlourenco/disciplined-project-seed/issues/7))
 - `.github/workflows/sync-labels.yml` — reconciles the live catalogue against `.github/labels.yml` via `EndBug/label-sync` (SHA-pinned). `workflow_dispatch` only by default; `delete-other-labels: false` by default. ([#7](https://github.com/pdlourenco/disciplined-project-seed/issues/7))
