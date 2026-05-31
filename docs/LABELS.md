@@ -48,15 +48,15 @@ Phase labels (`phase-0`, `phase-1`, …) are added on demand. Don't pre-create t
 
 ## Usage examples
 
-| Issue / PR shape                                  | Lifecycle                              | Topic                            | Phase     |
-| ------------------------------------------------- | -------------------------------------- | -------------------------------- | --------- |
-| "Phase 0 decision about [error-handling policy]"  | `discussion` → `decided` → `ready`     | —                                | `phase-0` |
-| "[Shared artifact] gains optional [field]"        | —                                      | `schema`, `spec`, `implementation` | (varies) |
-| "[Feature] flow needs fewer confirmations"        | —                                      | `UX`, `UI`                       | (varies)  |
-| "[Bug] in [module]"                               | —                                      | `bug`, `implementation`          | (varies)  |
-| "Phase 0 decision deferred until [trigger]"       | `decided`, `deferred`                  | (varies)                         | `phase-0` |
-| "Deferred until [trigger]: [topic]"               | `deferred`                             | (varies)                         | (varies)  |
-| "Update [doc] to reflect [change]"                | —                                      | `documentation`                  | —         |
+| Issue / PR shape | Lifecycle | Topic | Phase |
+| --- | --- | --- | --- |
+| "Phase 0 decision about [error-handling policy]" | `discussion` → `decided` → `ready` | — | `phase-0` |
+| "[Shared artifact] gains optional [field]" | — | `schema`, `spec`, `implementation` | (varies) |
+| "[Feature] flow needs fewer confirmations" | — | `UX`, `UI` | (varies) |
+| "[Bug] in [module]" | — | `bug`, `implementation` | (varies) |
+| "Phase 0 decision deferred until [trigger]" | `decided`, `deferred` | (varies) | `phase-0` |
+| "Deferred until [trigger]: [topic]" | `deferred` | (varies) | (varies) |
+| "Update [doc] to reflect [change]" | — | `documentation` | — |
 
 ## Adding a new label
 

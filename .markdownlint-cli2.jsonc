@@ -18,9 +18,16 @@
     // see this fail; the reviewer subagent catches real heading
     // hygiene issues.
     "MD024": false,
+    // README and other docs use bold-prefix-as-list-grouping as a
+    // lighter-weight section marker than full `###` headings.
+    "MD036": false,
     // The PR template starts with an HTML comment by design (GitHub
     // renders it as the PR body).
-    "MD041": false
+    "MD041": false,
+    // Table column-alignment style is too strict for tables whose
+    // content widths vary. The seed's tables render fine; the rule
+    // adds churn without signal.
+    "MD060": false
   },
   "globs": ["**/*.md"],
   // Files excluded from lint. Same skip list as the placeholder-audit
