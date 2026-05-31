@@ -49,7 +49,7 @@ Phase labels (`phase-0`, `phase-1`, …) are added on demand. Don't pre-create t
 ## Usage examples
 
 | Issue / PR shape | Lifecycle | Topic | Phase |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | "Phase 0 decision about [error-handling policy]" | `discussion` → `decided` → `ready` | — | `phase-0` |
 | "[Shared artifact] gains optional [field]" | — | `schema`, `spec`, `implementation` | (varies) |
 | "[Feature] flow needs fewer confirmations" | — | `UX`, `UI` | (varies) |

@@ -1,0 +1,52 @@
+// Configuration for markdownlint-cli2.
+// Replaces the separate .markdownlint.json + .markdownlintignore pair:
+// markdownlint-cli2 reads its own config format and ignores the
+// upstream .markdownlintignore convention.
+
+{
+  "config": {
+    "default": true,
+    // Long prose lines are intentional in the seed's docs.
+    "MD013": false,
+    // The seed uses HTML comments (`<!-- ... -->`) extensively.
+    "MD033": false,
+    // No-duplicate-heading is too strict for the seed. The CHANGELOG
+    // reuses `### Added` per release (legitimate), and several seed
+    // templates use comment-placeholder headings (`#### <!-- Example:
+    // ... -->`) that all strip to empty text and false-positive as
+    // duplicates. Adopters who keep the placeholder pattern won't
+    // see this fail; the reviewer subagent catches real heading
+    // hygiene issues.
+    "MD024": false,
+    // README and other docs use bold-prefix-as-list-grouping as a
+    // lighter-weight section marker than full `###` headings.
+    "MD036": false,
+    // The PR template starts with an HTML comment by design (GitHub
+    // renders it as the PR body).
+    "MD041": false,
+    // Table column-alignment style is too strict for tables whose
+    // content widths vary. The seed's tables render fine; the rule
+    // adds churn without signal.
+    "MD060": false
+  },
+  "globs": ["**/*.md"],
+  // Files excluded from lint. These ship as fill-in templates for
+  // adopters and contain unfilled placeholders, intentional
+  // duplicate heading patterns, etc. The seed's CI shouldn't fail
+  // on its own templates; adopters remove paths from this list as
+  // their files mature.
+  //
+  // KEEP IN SYNC with the `find` invocations in the `link-check` and
+  // `placeholder-audit` jobs of .github/workflows/ci.yml — same
+  // template set, duplicated by hand across three places. ADR-0002
+  // §Consequences names the promotion trigger.
+  "ignores": [
+    "docs/SPEC.md",
+    "docs/DESIGN.md",
+    "docs/ROADMAP.md",
+    "docs/REVIEW_CONTEXT.md",
+    "docs/STRUCTURE.md",
+    "docs/plans/PHASE-TEMPLATE.md",
+    "docs/decisions/ADR-TEMPLATE.md"
+  ]
+}

@@ -55,3 +55,4 @@ The "Alternatives considered" section is what makes an ADR useful six months lat
      ADR number — short title — status (one word) — one-line summary. -->
 
 - [ADR-0001](ADR-0001-label-sync.md) — Sync GitHub labels from `.github/labels.yml` via an Action, defaults conservative — Accepted — `EndBug/label-sync` SHA-pinned, `workflow_dispatch` only, `delete-other-labels: false`; paired with `docs/LABELS.md`.
+- [ADR-0002](ADR-0002-active-trivial-ci-workflow.md) — Ship an active trivial CI workflow with four-tier framing in comments — Accepted — `.github/workflows/ci.yml` runs four tier-3 jobs on the seed itself (markdown lint, internal link check, dangling-placeholder audit, workflow YAML lint); tiers 1/2/4 are commented stubs adopters extend.
