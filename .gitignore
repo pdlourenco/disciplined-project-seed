@@ -18,7 +18,12 @@ Thumbs.db
 *.log
 logs/
 
-# Extend per project stack (Python: __pycache__/, .venv/, *.egg-info/, .pytest_cache/,
-# .mypy_cache/, .ruff_cache/; Node: node_modules/, dist/, .next/; Rust: target/;
-# Go: vendor/; etc.). Keep this file in sync with what the project actually
-# generates so reviewers don't have to scan noise.
+# Python (the seed itself runs the placeholder-audit script)
+__pycache__/
+*.py[cod]
+
+# Extend per project stack (Python tooling beyond the audit script:
+# .venv/, *.egg-info/, .pytest_cache/, .mypy_cache/, .ruff_cache/;
+# Node: node_modules/, dist/, .next/; Rust: target/; Go: vendor/; etc.).
+# Keep this file in sync with what the project actually generates so
+# reviewers don't have to scan noise.
