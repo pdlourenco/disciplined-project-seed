@@ -7,9 +7,9 @@ body:
     attributes:
       value: |
         Bug reports skip lifecycle labels by convention — see
-        [`docs/LABELS.md` §Lifecycle](https://github.com/pdlourenco/disciplined-project-seed/blob/main/docs/LABELS.md). They
-        carry `bug` plus whichever topic labels match the affected
-        surface (`implementation`, `schema`, `spec`, `documentation`, …).
+        `docs/LABELS.md` §Lifecycle in this repo. They carry `bug` plus
+        whichever topic labels match the affected surface
+        (`implementation`, `schema`, `spec`, `documentation`, …).
 
   - type: textarea
     id: expected

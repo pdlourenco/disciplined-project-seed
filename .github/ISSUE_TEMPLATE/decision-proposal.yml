@@ -7,8 +7,8 @@ body:
     attributes:
       value: |
         Open a decision proposal using the issue-first ADR shape — see
-        [`docs/decisions/README.md` §"ADR lifecycle"](https://github.com/pdlourenco/disciplined-project-seed/blob/main/docs/decisions/README.md)
-        for how the conversation here becomes an ADR.
+        `docs/decisions/README.md` §"ADR lifecycle" in this repo for how
+        the conversation here becomes an ADR.
 
         Lifecycle labels: this issue starts at `discussion`; once the
         thread converges, it moves to `decided`, then `ready` once the
@@ -47,6 +47,6 @@ body:
     attributes:
       label: Recommendation
       description: |
-        Your read on the best alternative, with reasoning. Name the major-decision flag per [`CLAUDE.md`](https://github.com/pdlourenco/disciplined-project-seed/blob/main/CLAUDE.md) §4 if this introduces a new external dependency, a new on-disk artifact, a contract change, or locks in a sticky trade-off.
+        Your read on the best alternative, with reasoning. Name the major-decision flag per `CLAUDE.md` §4 if this triggers any of its conditions (such as a new external dependency, a new process boundary, a new on-disk artifact, a contract change, a sticky trade-off, or materially changing phase scope) — `CLAUDE.md` §4 is the authority.
     validations:
       required: false
