@@ -18,6 +18,15 @@ Entries are dated by merge into `main`.
 - `.gitignore` — generic baseline (OS metadata, editor swap files, env overrides, logs) with guidance to extend per project stack.
 - `LICENSE` — MIT, shipped with the seed author as copyright holder. Adopters replace this with their own license (see README *How to adopt* step 5).
 - `README.md` *How to adopt*: new step 5 calling out the LICENSE replacement.
+- `.github/labels.yml` — machine-readable source of truth for the label catalogue, paired with `docs/LABELS.md`. ([#7](https://github.com/pdlourenco/disciplined-project-seed/issues/7))
+- `.github/workflows/sync-labels.yml` — reconciles the live catalogue against `.github/labels.yml` via `EndBug/label-sync` (SHA-pinned). `workflow_dispatch` only by default; `delete-other-labels: false` by default. ([#7](https://github.com/pdlourenco/disciplined-project-seed/issues/7))
+- `docs/decisions/ADR-0001-label-sync.md` — captures the decision, the conservative defaults, and explicit flip conditions.
+
+### Changed
+- `docs/LABELS.md` *Seeding the catalogue*: replaced the manual `gh label create` snippet with a pointer to the Sync labels workflow and the `.github/labels.yml` machine source.
+- `docs/CONTRIBUTING.md §"Issue & PR labels"`: added a sentence about the labels.yml ↔ LABELS.md pairing and the Sync labels workflow.
+- `docs/STRUCTURE.md`: tree now shows `.github/labels.yml` and `.github/workflows/sync-labels.yml`.
+- `docs/decisions/README.md`: ADR-0001 added to the index.
 
 ### Fixed
 - `CLAUDE.md` §3 rendered two dangling em-dash artifacts where HTML-comment placeholders sat inline — `external contracts — .` and `gates in CI — — are not optional.` Rewrote both to neutral generic prose. ([#4](https://github.com/pdlourenco/disciplined-project-seed/pull/4))

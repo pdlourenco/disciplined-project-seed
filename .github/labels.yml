@@ -1,0 +1,73 @@
+# Source of truth for the GitHub label catalogue.
+# Paired with docs/LABELS.md (the human-readable doc) — edits to one
+# require edits to the other in the same PR per
+# docs/decisions/ADR-0001-label-sync.md.
+#
+# Apply this catalogue to the live repo via the "Sync labels" workflow:
+# Actions → Sync labels → Run workflow. Trigger is workflow_dispatch
+# only by default; see ADR-0001 §Consequences for the flip conditions.
+#
+# Description format: mirrors LABELS.md text verbatim EXCEPT that
+# markdown backticks (e.g. `docs/SPEC.md`) are stripped — GitHub renders
+# label descriptions as plain text, so backticks would show literally.
+#
+# Phase labels (phase-0, phase-1, …) are deliberately NOT listed here.
+# They are added on demand per docs/LABELS.md §"Phase (apply at most
+# one)"; listing them would have the sync action churn them as phases
+# come and go.
+
+# Lifecycle (apply exactly one, on decision-bearing issues)
+
+- name: discussion
+  color: FBCA04
+  description: "Decision is open; alternatives on the table, no resolution yet"
+
+- name: decided
+  color: 0E8A16
+  description: "Decision is locked; awaiting follow-up implementation / ADR"
+
+- name: ready
+  color: 1D76DB
+  description: "All prerequisites met; ready to implement"
+
+- name: deferred
+  color: C5DEF5
+  description: "Postponed with a named trigger condition (deferred-with-conditions, not deferred-forever)"
+
+# Topic (apply one or more)
+
+- name: schema
+  color: 5319E7
+  description: "Data shape / migrations / contract-bearing field changes"
+
+- name: spec
+  color: 0052CC
+  description: "Contract layer: changes to docs/SPEC.md"
+
+- name: design
+  color: 8E44AD
+  description: "Design rationale: docs/DESIGN.md and docs/design/*.md"
+
+- name: documentation
+  color: 0075CA
+  description: "Root-level docs (README, CONTRIBUTING, REVIEW_CONTEXT, STRUCTURE, decisions/, plans/, LABELS.md)"
+
+- name: implementation
+  color: 2EA44F
+  description: "Application code, not docs"
+
+- name: UX
+  color: BFD4F2
+  description: "User experience: flow, interaction, copy"
+
+- name: UI
+  color: F9D0C4
+  description: "Visual surface: layout, components, styling"
+
+- name: bug
+  color: D73A4A
+  description: "Defect; expected vs actual mismatch"
+
+- name: security
+  color: B60205
+  description: "Security-relevant: auth, encryption, isolation, PII"

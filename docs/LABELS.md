@@ -74,28 +74,16 @@ A new label should:
 
 ## Seeding the catalogue
 
-Run once at project setup. The snippet below recreates the catalogue above exactly — same names, colours, descriptions — so a fresh repo's labels match this file from the first PR onward.
+The catalogue is reconciled by the **Sync labels** workflow at [`.github/workflows/sync-labels.yml`](../.github/workflows/sync-labels.yml), which reads [`.github/labels.yml`](../.github/labels.yml) — the machine-readable companion to this file. After cloning the seed, run the workflow once: **Actions → Sync labels → Run workflow**. Subsequent edits to the catalogue land in PRs that touch both this file and `.github/labels.yml` together; re-run the workflow when those PRs merge.
 
-```bash
-# Lifecycle
-gh label create discussion --color FBCA04 --description "Decision is open; alternatives on the table"
-gh label create decided    --color 0E8A16 --description "Decision is locked; awaiting follow-up implementation / ADR"
-gh label create ready      --color 1D76DB --description "All prerequisites met; ready to implement"
-gh label create deferred   --color C5DEF5 --description "Postponed with a named trigger condition"
+`.github/labels.yml` and this file are paired — edits to one require edits to the other in the same PR, same co-landing discipline as ADR + SPEC changes (see [`decisions/README.md`](decisions/README.md) §"What an ADR is — and isn't").
 
-# Topic
-gh label create schema         --color 5319E7 --description "Data shape / migrations / contract-bearing field changes"
-gh label create spec           --color 0052CC --description "Contract layer: changes to docs/SPEC.md"
-gh label create design         --color 8E44AD --description "Design rationale: docs/DESIGN.md and docs/design/*.md"
-gh label create documentation  --color 0075CA --description "Root-level docs"
-gh label create implementation --color 2EA44F --description "Application code, not docs"
-gh label create UX             --color BFD4F2 --description "User experience: flow, interaction, copy"
-gh label create UI             --color F9D0C4 --description "Visual surface: layout, components, styling"
-gh label create bug            --color D73A4A --description "Defect; expected vs actual mismatch"
-gh label create security       --color B60205 --description "Security-relevant: auth, encryption, isolation, PII"
-```
+**Conservative defaults** (see [ADR-0001](decisions/ADR-0001-label-sync.md) for rationale and flip conditions):
 
-Phase labels are added on demand — see above.
+- **`workflow_dispatch` only** — the workflow does not auto-run on push to `main`. Flip to add `push: branches: [main]` once you trust label-YAML edits to be caught at PR review time.
+- **`delete-other-labels: false`** — labels added organically to the live repo (`priority:p0`, `client:acme`, …) are preserved across sync runs. Flip to `true` once the taxonomy is stable and the YAML should own the catalogue authoritatively.
+
+Phase labels (`phase-0`, `phase-1`, …) are added on demand and are deliberately not listed in `.github/labels.yml` — see [Phase (apply at most one)](#phase-apply-at-most-one) below.
 
 ## Renaming and removing
 

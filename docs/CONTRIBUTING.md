@@ -228,6 +228,8 @@ This keeps the contract and its implementations in lock-step. The contract-enfor
 
 Labels follow the taxonomy in [`LABELS.md`](LABELS.md). Apply at least one **lifecycle** label (`discussion` / `decided` / `ready` / `deferred`) on decision-bearing issues, one or more **topic** labels matching the surfaces the issue or PR touches, and an optional **phase** label (`phase-0`, `phase-1`, …) when the work belongs to a specific phase.
 
+The live catalogue is reconciled from [`.github/labels.yml`](../.github/labels.yml) via the **Sync labels** workflow ([ADR-0001](decisions/ADR-0001-label-sync.md)); `.github/labels.yml` and `docs/LABELS.md` are paired and must change together.
+
 Adding a new label or changing the taxonomy is a major decision (see [`../CLAUDE.md`](../CLAUDE.md) §4 and [`LABELS.md`](LABELS.md) §Adding a new label); routine labelling is not.
 
 ## When CI fails

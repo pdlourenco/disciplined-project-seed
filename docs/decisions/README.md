@@ -54,10 +54,4 @@ The "Alternatives considered" section is what makes an ADR useful six months lat
 <!-- Keep this list append-only, in numeric order. Each entry:
      ADR number — short title — status (one word) — one-line summary. -->
 
-<!-- Example entries:
-
-     - [ADR-0001](ADR-0001-use-toml-for-config.md) — Use TOML for config — Accepted — Config files are user-edited; TOML chosen for readability over JSON/YAML.
-     - [ADR-0002](ADR-0002-state-db-is-internal.md) — State DB is internal to the indexer — Accepted — State DB schema is not a cross-module contract; indexer owns it fully.
-     - [ADR-0003](ADR-0003-permissive-licenses-only.md) — Permissive licenses only — Accepted — MIT/Apache-2.0/BSD required; GPL/AGPL excluded. -->
-
-<!-- Your first entries here: -->
+- [ADR-0001](ADR-0001-label-sync.md) — Sync GitHub labels from `.github/labels.yml` via an Action, defaults conservative — Accepted — `EndBug/label-sync` SHA-pinned, `workflow_dispatch` only, `delete-other-labels: false`; paired with `docs/LABELS.md`.
