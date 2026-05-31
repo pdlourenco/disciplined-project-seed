@@ -1,17 +1,34 @@
-# Project Documentation Templates
+# Disciplined project seed
 
-A coordinated set of documents for grounding parallel software development on explicit contracts and a discipline of documented decisions. Drop into a new or existing repo and adapt: `CLAUDE.md` at the root, the rest under `docs/`.
+A documentation skeleton for projects that want explicit contracts and a discipline of documented decisions as their working substrate. Opinionated about the *shape* of each artifact, agnostic about the *contents* — every fill-in slot belongs to the consumer.
 
-## What's here
+The discipline pays off most when contributors — human and agent — edit independent modules in parallel and the cost of an unnoticed contract break is higher than the cost of writing things down. If that doesn't sound like your project, adopt selectively; `CLAUDE.md`, `REVIEW_CONTEXT.md`, and the ADR set are the pieces that carry weight even at single-contributor scale.
+
+## How to adopt
+
+1. **Start from the seed.** Click *Use this template* on the [GitHub repo](https://github.com/pdlourenco/disciplined-project-seed) for a clean history, or clone-and-strip-history manually.
+2. **Replace markers.** Search the tree for `[PROJECT]` and `<!-- FILL IN -->`. Each one is intentional. Also scan for inline `<!-- ... -->` placeholders — they render as nothing, so leaving one in production text leaves the doc visibly unfinished (em-dash artifacts, dangling commas).
+3. **Strip what doesn't apply.** Common prunings:
+   - Cross-language contract sections in `docs/SPEC.md` for single-language projects.
+   - Cross-platform sections in `docs/DESIGN.md` for platform-specific projects.
+   - The "Tier 1 — Contract enforcement" section in `docs/CONTRIBUTING.md` for projects without cross-component contracts.
+   - Optional sections in `docs/DESIGN.md` (process architecture, cross-platform strategy, installation).
+4. **Keep section headings stable** even when their content is empty for now. Consistent structure across your projects pays off.
+5. **Seed the label catalogue.** Run the `gh label create` snippet in [`docs/LABELS.md`](docs/LABELS.md) once against the new repo so the live labels match the taxonomy doc.
+6. **Set up branch protection** per [`docs/CONTRIBUTING.md` §"Required status checks"](docs/CONTRIBUTING.md) once your CI workflow lands.
+
+CI and packaging examples assume GitHub Actions and common tooling; adapt to your platform.
+
+## What's in the seed
 
 **Root-level signal**
 
 - `CLAUDE.md` — short operating rules for coding agents; delegates to the authoritative docs below.
-- `.github/pull_request_template.md` — PR form that references the pre-push review convention.
+- `.github/pull_request_template.md` — PR form referencing the pre-push review convention.
 
 **Docs (`docs/`)**
 
-- `CONTRIBUTING.md` — CI strategy, pre-push review and pre-push CI conventions, ADR policy, contract-change workflow, label conventions. The authoritative source for contributor mechanics.
+- `CONTRIBUTING.md` — CI strategy, pre-push review and pre-push CI conventions, ADR policy, contract-change workflow, label conventions. Authoritative source for contributor mechanics.
 - `DESIGN.md` — architectural rationale. Not a contract; answers "why is it shaped this way".
 - `SPEC.md` — binding external contracts. The surfaces that cross language, process, or module boundaries.
 - `ROADMAP.md` — phased delivery plan. Terse per-phase summaries that link to detailed plans.
@@ -21,10 +38,10 @@ A coordinated set of documents for grounding parallel software development on ex
 
 **Plans and decisions**
 
-- `docs/plans/PHASE-TEMPLATE.md` — the shape of an individual phase plan.
+- `docs/plans/PHASE-TEMPLATE.md` — shape of an individual phase plan.
 - `docs/plans/README.md` — index of phase plans.
-- `docs/decisions/ADR-TEMPLATE.md` — the shape of an Architecture Decision Record.
-- `docs/decisions/README.md` — ADR conventions and index.
+- `docs/decisions/ADR-TEMPLATE.md` — shape of an Architecture Decision Record.
+- `docs/decisions/README.md` — ADR conventions, ADR lifecycle (ADR-first / issue-first), and index.
 
 ## How the documents relate
 
@@ -42,20 +59,14 @@ If either drifts into the other's job, both rot. `DESIGN.md` should link to `SPE
 
 If the plan isn't roughly an order of magnitude longer than its roadmap entry, one of them is the wrong shape.
 
-**ADRs capture decisions that would otherwise drift.** They are the tactical layer beneath `DESIGN.md` and `SPEC.md`: not the architecture itself, but the choices within it that future contributors will wonder about. `CONTRIBUTING.md` describes when to write one; the ADR README describes how.
+**ADRs capture decisions that would otherwise drift.** They are the tactical layer beneath `DESIGN.md` and `SPEC.md`: not the architecture itself, but the choices within it that future contributors will wonder about. `CONTRIBUTING.md` describes when to write one; the ADR README describes how and which lifecycle to use.
 
-**A recurring pattern across every document in this set: *deferred-with-conditions* lists.** They appear as "Tier 4 / Deferred" in CI, "Deferred to post-Phase-N" in `SPEC.md`, "Future Extensions" in `DESIGN.md`, "Future Phases" in `ROADMAP.md`, and "Follow-ups" in each phase plan. The discipline is the same at every layer: what's deferred, why it's deferred, what would bring it back. This prevents "later" from becoming "never" by accident.
+**A recurring pattern across every document in this set: *deferred-with-conditions* lists.** They appear as "Deferred (not yet wired)" in CI, "Deferred to post-Phase-N" in `SPEC.md`, "Future Extensions" in `DESIGN.md`, "Future Phases" in `ROADMAP.md`, and "Follow-ups" in each phase plan. The discipline is the same at every layer: what's deferred, why it's deferred, what would bring it back. This prevents "later" from becoming "never" by accident.
 
-## Customizing for your project
+## How the seed evolves
 
-1. Replace every `<!-- FILL IN -->` and `[PROJECT]` marker. These are the minimum edits.
-2. Delete sections that don't apply. Common prunings:
-   - Cross-language contract sections in `SPEC.md` for single-language projects.
-   - Cross-platform sections in `DESIGN.md` for platform-specific projects.
-   - The "Tier 1 — Contract enforcement" section in `CONTRIBUTING.md` for projects without cross-component contracts.
-3. Keep section headings stable even when content is empty — consistent structure across your projects pays off.
-4. CI and packaging examples assume GitHub Actions and common tooling; adapt to your platform.
+The seed is a living artifact. When a downstream adopter discovers a convention that should belong here, it gets back-ported as a refinement; when scaffolding stops earning its keep, it's removed.
 
-## A note on when this discipline earns its keep
-
-These templates assume a project where contributors — human and agent — will edit independent modules in parallel, and where the cost of an unnoticed contract break is higher than the cost of writing things down. If that's not your project, some of this will feel like overhead. That's a legitimate call; adopt selectively. The documents that carry the most weight even for single-contributor projects are `CLAUDE.md`, `REVIEW_CONTEXT.md`, and the ADR set — they're what lets a future you (or a future agent) pick up context without re-deriving it.
+- **What changed since you forked:** [`CHANGELOG.md`](CHANGELOG.md). Each entry names the PR and describes what an adopter needs to merge back.
+- **Adopting a refinement:** the CHANGELOG entries are written to be self-contained. For minor refinements (new conventions, wording tightenings), copy the merged PR's diff into your fork. For structural changes (renamed docs, restructured sections), the entry calls out the adoption path explicitly.
+- **Proposing a refinement:** if you've adopted the seed and found a convention that should belong here, open an issue describing the gap. The seed's own discipline (ADR lifecycle in `docs/decisions/README.md`, label conventions in `docs/LABELS.md`) applies to changes to the seed itself.
