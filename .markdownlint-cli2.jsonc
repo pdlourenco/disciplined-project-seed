@@ -36,9 +36,10 @@
   // on its own templates; adopters remove paths from this list as
   // their files mature.
   //
-  // KEEP IN SYNC with the `find` invocation in the `placeholder-audit`
-  // job of .github/workflows/ci.yml. ADR-0002 §Consequences names the
-  // promotion trigger for collapsing both into a shared config.
+  // KEEP IN SYNC with the `find` invocations in the `link-check` and
+  // `placeholder-audit` jobs of .github/workflows/ci.yml — same
+  // template set, duplicated by hand across three places. ADR-0002
+  // §Consequences names the promotion trigger.
   "ignores": [
     "docs/SPEC.md",
     "docs/DESIGN.md",

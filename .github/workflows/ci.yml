@@ -53,11 +53,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build file list
-        # Same skip list as the placeholder-audit job. Template files
-        # have placeholder URLs (`<!-- link -->`) and references to
-        # files adopters create (PHASE-2.md, schema.toml, etc.) that
-        # don't exist in the seed; lychee would otherwise flag them
-        # as broken on every run.
+        # Template files have placeholder URLs (`<!-- link -->`) and
+        # references to files adopters create (PHASE-2.md, schema.toml,
+        # etc.) that don't exist in the seed; lychee would otherwise
+        # flag them as broken on every run.
+        #
+        # KEEP IN SYNC with the `find` in the placeholder-audit job
+        # and the `ignores` array in .markdownlint-cli2.jsonc — same
+        # template set, duplicated by hand across three places.
+        # ADR-0002 §Consequences names the promotion trigger.
         id: files
         run: |
           files=$(
@@ -94,10 +98,10 @@ jobs:
         # intentional unfilled placeholders that adopters customize.
         # Exclude them from the audit; everything else is fair game.
         #
-        # KEEP IN SYNC with the `ignores` array in
-        # .markdownlint-cli2.jsonc — that list is the same template
-        # set, duplicated by hand. ADR-0002 §Consequences names the
-        # promotion trigger for collapsing both into a shared config.
+        # KEEP IN SYNC with the `find` in the link-check job above
+        # and the `ignores` array in .markdownlint-cli2.jsonc — same
+        # template set, duplicated by hand across three places.
+        # ADR-0002 §Consequences names the promotion trigger.
         run: |
           mapfile -t files < <(
             find . -name '*.md' \
