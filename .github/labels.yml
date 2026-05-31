@@ -16,7 +16,10 @@
 # one)"; listing them would have the sync action churn them as phases
 # come and go.
 
-# Lifecycle (apply exactly one, on decision-bearing issues)
+# Lifecycle: apply one progression state (discussion / decided / ready)
+# and/or `deferred` (parallel modifier — combines with any progression
+# state, e.g. `decided + deferred` for a locked decision parked until a
+# named trigger fires). On decision-bearing issues.
 
 - name: discussion
   color: FBCA04

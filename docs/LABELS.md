@@ -8,7 +8,7 @@ Changing this taxonomy is a major decision per [`../CLAUDE.md`](../CLAUDE.md) §
 
 ## Catalogue
 
-### Lifecycle (apply exactly one, on decision-bearing issues)
+### Lifecycle (apply one progression state, and/or `deferred`)
 
 | Name | Color | Description |
 |---|---|---|
@@ -17,7 +17,7 @@ Changing this taxonomy is a major decision per [`../CLAUDE.md`](../CLAUDE.md) §
 | `ready` | `1D76DB` | All prerequisites met; ready to implement |
 | `deferred` | `C5DEF5` | Postponed with a named trigger condition (deferred-with-conditions, not deferred-forever) |
 
-State machine: `discussion → decided → ready`; `deferred` is the parallel state.
+State machine: `discussion → decided → ready`. `deferred` is a parallel modifier that may apply **alongside** any of the three progression states — most commonly `decided + deferred` (the decision is locked but implementation is parked until a named trigger fires) or `discussion + deferred` (the decision itself is parked).
 
 The `deferred` label is the labels-layer expression of the *deferred-with-conditions* discipline used elsewhere in the project's docs (`Deferred (not yet wired)` in [`CONTRIBUTING.md`](CONTRIBUTING.md) §CI strategy, `Deferred` in [`SPEC.md`](SPEC.md), `Future extensions` in [`DESIGN.md`](DESIGN.md), `Future Phases` in [`ROADMAP.md`](ROADMAP.md), `Follow-ups` in each phase plan). Nothing is "later" without saying what brings it back; without a named trigger in the issue body, do not apply `deferred` — close with "won't fix" instead.
 
@@ -60,6 +60,7 @@ Don't pre-create all phase labels. Add `phase-N` the first time an issue or PR t
 | "[Shared artifact] gains optional [field]" | — | `schema`, `spec`, `implementation` | (varies) |
 | "[Feature] flow needs fewer confirmations" | — | `UX`, `UI` | (varies) |
 | "[Bug] in [module]" | — | `bug`, `implementation` | (varies) |
+| "Phase 0 decision deferred until [trigger]" | `decided`, `deferred` | (varies) | `phase-0` |
 | "Deferred until [trigger]: [topic]" | `deferred` | (varies) | (varies) |
 | "Update [doc] to reflect [change]" | — | `documentation` | — |
 
