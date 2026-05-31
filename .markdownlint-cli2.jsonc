@@ -10,9 +10,14 @@
     "MD013": false,
     // The seed uses HTML comments (`<!-- ... -->`) extensively.
     "MD033": false,
-    // Keep a Changelog format reuses `### Added` per release; only
-    // flag duplicates at the same nesting level.
-    "MD024": { "siblings_only": true },
+    // No-duplicate-heading is too strict for the seed. The CHANGELOG
+    // reuses `### Added` per release (legitimate), and several seed
+    // templates use comment-placeholder headings (`#### <!-- Example:
+    // ... -->`) that all strip to empty text and false-positive as
+    // duplicates. Adopters who keep the placeholder pattern won't
+    // see this fail; the reviewer subagent catches real heading
+    // hygiene issues.
+    "MD024": false,
     // The PR template starts with an HTML comment by design (GitHub
     // renders it as the PR body).
     "MD041": false
