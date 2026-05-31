@@ -14,8 +14,9 @@ The discipline pays off most when contributors — human and agent — edit inde
    - The "Tier 1 — Contract enforcement" section in `docs/CONTRIBUTING.md` for projects without cross-component contracts.
    - Optional sections in `docs/DESIGN.md` (process architecture, cross-platform strategy, installation).
 4. **Keep section headings stable** even when their content is empty for now. Consistent structure across your projects pays off.
-5. **Seed the label catalogue.** Run the `gh label create` snippet in [`docs/LABELS.md`](docs/LABELS.md) once against the new repo so the live labels match the taxonomy doc.
-6. **Set up branch protection** per [`docs/CONTRIBUTING.md` §"Required status checks"](docs/CONTRIBUTING.md) once your CI workflow lands.
+5. **Replace `LICENSE`.** The seed ships under MIT with the seed author as copyright holder; adopters should replace the file with their project's chosen license (or rewrite the copyright line to point at the adopter).
+6. **Seed the label catalogue.** Run the `gh label create` snippet in [`docs/LABELS.md`](docs/LABELS.md) once against the new repo so the live labels match the taxonomy doc.
+7. **Set up branch protection** per [`docs/CONTRIBUTING.md` §"Required status checks"](docs/CONTRIBUTING.md) once your CI workflow lands.
 
 CI and packaging examples assume GitHub Actions and common tooling; adapt to your platform.
 

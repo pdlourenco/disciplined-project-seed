@@ -15,6 +15,9 @@ Entries are dated by merge into `main`.
 ### Added
 - `CHANGELOG.md` (this file) so adopters can see what changed between any two points in the seed's evolution.
 - `README.md` rewritten to lead with the seed framing: what this is, how to adopt it end-to-end, how the seed itself evolves. Adds a *How the seed evolves* section pointing at this changelog.
+- `.gitignore` — generic baseline (OS metadata, editor swap files, env overrides, logs) with guidance to extend per project stack.
+- `LICENSE` — MIT, shipped with the seed author as copyright holder. Adopters replace this with their own license (see README *How to adopt* step 5).
+- `README.md` *How to adopt*: new step 5 calling out the LICENSE replacement.
 
 ### Fixed
 - `CLAUDE.md` §3 rendered two dangling em-dash artifacts where HTML-comment placeholders sat inline — `external contracts — .` and `gates in CI — — are not optional.` Rewrote both to neutral generic prose. ([#4](https://github.com/pdlourenco/disciplined-project-seed/pull/4))
