@@ -1,0 +1,36 @@
+// Configuration for markdownlint-cli2.
+// Replaces the separate .markdownlint.json + .markdownlintignore pair:
+// markdownlint-cli2 reads its own config format and ignores the
+// upstream .markdownlintignore convention.
+
+{
+  "config": {
+    "default": true,
+    // Long prose lines are intentional in the seed's docs.
+    "MD013": false,
+    // The seed uses HTML comments (`<!-- ... -->`) extensively.
+    "MD033": false,
+    // Keep a Changelog format reuses `### Added` per release; only
+    // flag duplicates at the same nesting level.
+    "MD024": { "siblings_only": true },
+    // The PR template starts with an HTML comment by design (GitHub
+    // renders it as the PR body).
+    "MD041": false
+  },
+  "globs": ["**/*.md"],
+  // Files excluded from lint. Same skip list as the placeholder-audit
+  // and link-check jobs in .github/workflows/ci.yml: these ship as
+  // fill-in templates for adopters and contain unfilled placeholders,
+  // intentional duplicate heading patterns, etc. The seed's CI
+  // shouldn't fail on its own templates; adopters remove paths from
+  // this list as their files mature.
+  "ignores": [
+    "docs/SPEC.md",
+    "docs/DESIGN.md",
+    "docs/ROADMAP.md",
+    "docs/REVIEW_CONTEXT.md",
+    "docs/STRUCTURE.md",
+    "docs/plans/PHASE-TEMPLATE.md",
+    "docs/decisions/ADR-TEMPLATE.md"
+  ]
+}
