@@ -1,23 +1,31 @@
 # [PROJECT] — Issue & PR Labels
 
-The label taxonomy for GitHub issues and pull requests. Labels are how reviewers and contributors filter, prioritise, and track work across the project.
+The **conventions** half of the label taxonomy for GitHub issues and pull requests. Labels are how reviewers and contributors filter, prioritise, and track work across the project.
 
-This file is the **single source of truth** for label names, descriptions, and conventions. The GitHub repo's actual labels (Settings → Labels) should match the catalogue below exactly. When drift is found, this file wins — the repo labels get fixed to match.
+The **catalogue** half — label names, colours, and descriptions — lives in [`.github/labels.yml`](../.github/labels.yml). The two files are paired: this one carries the application rules (when to apply each label, cardinality, disambiguation), the YAML carries the records. Edits to one require edits to the other in the same PR.
 
 Changing this taxonomy is a major decision per [`../CLAUDE.md`](../CLAUDE.md) §4 (changing it affects every future issue and PR). Routine labelling — applying existing labels to existing issues — is not.
 
-## Catalogue
+## Seeding the catalogue
 
-### Lifecycle (apply exactly one, on decision-bearing issues)
+The catalogue is reconciled by the **Sync labels** workflow at [`.github/workflows/sync-labels.yml`](../.github/workflows/sync-labels.yml), which reads [`.github/labels.yml`](../.github/labels.yml). After cloning the seed, run the workflow once: **Actions → Sync labels → Run workflow**. Subsequent edits to the catalogue land in PRs that touch both this file and `.github/labels.yml` together; re-run the workflow when those PRs merge.
 
-| Name | Color | Description |
-|---|---|---|
-| `discussion` | `FBCA04` | Decision is open; alternatives on the table, no resolution yet |
-| `decided` | `0E8A16` | Decision is locked; awaiting follow-up implementation / ADR |
-| `ready` | `1D76DB` | All prerequisites met; ready to implement |
-| `deferred` | `C5DEF5` | Postponed with a named trigger condition (deferred-with-conditions, not deferred-forever) |
+**Conservative defaults** (see [ADR-0001](decisions/ADR-0001-label-sync.md) for rationale and flip conditions):
 
-State machine: `discussion → decided → ready`; `deferred` is the parallel state.
+- **`workflow_dispatch` only** — the workflow does not auto-run on push to `main`. Flip to add `push: branches: [main]` once you trust label-YAML edits to be caught at PR review time.
+- **`delete-other-labels: false`** — labels added organically to the live repo (`priority:p0`, `client:acme`, …) are preserved across sync runs. Flip to `true` once the taxonomy is stable and the YAML should own the catalogue authoritatively.
+
+Phase labels (`phase-0`, `phase-1`, …) are added on demand and are deliberately not listed in `.github/labels.yml` — see [Phase (apply at most one)](#phase-apply-at-most-one) below.
+
+## Categories
+
+Three categories: **lifecycle**, **topic**, and **phase**. The catalogue's grouping in [`.github/labels.yml`](../.github/labels.yml) mirrors these categories with header comments.
+
+### Lifecycle (apply one progression state, and/or `deferred`)
+
+The progression states are `discussion`, `decided`, and `ready`. `deferred` is a parallel modifier that combines with any of the three.
+
+State machine: `discussion → decided → ready`. `deferred` applies **alongside** any of the three progression states — most commonly `decided + deferred` (the decision is locked but implementation is parked until a named trigger fires) or `discussion + deferred` (the decision itself is parked).
 
 The `deferred` label is the labels-layer expression of the *deferred-with-conditions* discipline used elsewhere in the project's docs (`Deferred (not yet wired)` in [`CONTRIBUTING.md`](CONTRIBUTING.md) §CI strategy, `Deferred` in [`SPEC.md`](SPEC.md), `Future extensions` in [`DESIGN.md`](DESIGN.md), `Future Phases` in [`ROADMAP.md`](ROADMAP.md), `Follow-ups` in each phase plan). Nothing is "later" without saying what brings it back; without a named trigger in the issue body, do not apply `deferred` — close with "won't fix" instead.
 
@@ -25,17 +33,7 @@ Lifecycle labels are only meaningful on decision-bearing issues. Pure implementa
 
 ### Topic (apply one or more)
 
-| Name | Color | Description |
-|---|---|---|
-| `schema` | `5319E7` | Data shape / migrations / contract-bearing field changes |
-| `spec` | `0052CC` | Contract layer: changes to `docs/SPEC.md` |
-| `design` | `8E44AD` | Design rationale: `docs/DESIGN.md` and `docs/design/*.md` |
-| `documentation` | `0075CA` | Root-level docs (README, CONTRIBUTING, REVIEW_CONTEXT, STRUCTURE, decisions/, plans/, this file) |
-| `implementation` | `2EA44F` | Application code, not docs |
-| `UX` | `BFD4F2` | User experience: flow, interaction, copy |
-| `UI` | `F9D0C4` | Visual surface: layout, components, styling |
-| `bug` | `D73A4A` | Defect; expected vs actual mismatch |
-| `security` | `B60205` | Security-relevant: auth, encryption, isolation, PII |
+The topic labels — `schema`, `spec`, `design`, `documentation`, `implementation`, `UX`, `UI`, `bug`, `security` — say what an issue or PR is about. Apply as many as fit.
 
 #### Disambiguation
 
@@ -46,11 +44,7 @@ Lifecycle labels are only meaningful on decision-bearing issues. Pure implementa
 
 ### Phase (apply at most one)
 
-| Name | Color | Description |
-|---|---|---|
-| `phase-0`, `phase-1`, … | `D4C5F9` | Per-phase work, created on demand |
-
-Don't pre-create all phase labels. Add `phase-N` the first time an issue or PR targets that phase; pre-creating clutters the label picker with phases that don't yet exist. When an issue spans phases (e.g. a decision made in Phase 0 implemented in Phase 1), apply the label of the *deciding* phase, not the implementing one — the issue's purpose is the decision.
+Phase labels (`phase-0`, `phase-1`, …) are added on demand. Don't pre-create them: add `phase-N` the first time an issue or PR targets that phase; pre-creating clutters the label picker with phases that don't yet exist. When an issue spans phases (e.g. a decision made in Phase 0 implemented in Phase 1), apply the label of the *deciding* phase, not the implementing one — the issue's purpose is the decision.
 
 ## Usage examples
 
@@ -60,52 +54,30 @@ Don't pre-create all phase labels. Add `phase-N` the first time an issue or PR t
 | "[Shared artifact] gains optional [field]" | — | `schema`, `spec`, `implementation` | (varies) |
 | "[Feature] flow needs fewer confirmations" | — | `UX`, `UI` | (varies) |
 | "[Bug] in [module]" | — | `bug`, `implementation` | (varies) |
+| "Phase 0 decision deferred until [trigger]" | `decided`, `deferred` | (varies) | `phase-0` |
 | "Deferred until [trigger]: [topic]" | `deferred` | (varies) | (varies) |
 | "Update [doc] to reflect [change]" | — | `documentation` | — |
 
 ## Adding a new label
 
-The label taxonomy is load-bearing for issue and PR hygiene. Adding, renaming, removing, or repurposing a label is a **major decision** per [`../CLAUDE.md`](../CLAUDE.md) §4: surface the proposal (name, category, colour, description, disambiguation against neighbours) before adding it. If the change sticks, update this file in the same PR that introduces the label, and update the repo's catalogue (Settings → Labels) to match.
+The label taxonomy is load-bearing for issue and PR hygiene. Adding, renaming, removing, or repurposing a label is a **major decision** per [`../CLAUDE.md`](../CLAUDE.md) §4: surface the proposal (name, category, colour, description, disambiguation against neighbours) before adding it. If the change sticks, update `.github/labels.yml` and this file in the same PR, then re-run the Sync labels workflow.
 
 A new label should:
 
 - Have a clear definition that doesn't overlap an existing one — or, if it overlaps deliberately, update the disambiguation entry in the same PR.
 - Sit in one of the three existing categories. Proposing a new category is itself a major decision and warrants surfacing the case for why an existing category won't do.
 
-## Seeding the catalogue
-
-Run once at project setup. The snippet below recreates the catalogue above exactly — same names, colours, descriptions — so a fresh repo's labels match this file from the first PR onward.
-
-```bash
-# Lifecycle
-gh label create discussion --color FBCA04 --description "Decision is open; alternatives on the table"
-gh label create decided    --color 0E8A16 --description "Decision is locked; awaiting follow-up implementation / ADR"
-gh label create ready      --color 1D76DB --description "All prerequisites met; ready to implement"
-gh label create deferred   --color C5DEF5 --description "Postponed with a named trigger condition"
-
-# Topic
-gh label create schema         --color 5319E7 --description "Data shape / migrations / contract-bearing field changes"
-gh label create spec           --color 0052CC --description "Contract layer: changes to docs/SPEC.md"
-gh label create design         --color 8E44AD --description "Design rationale: docs/DESIGN.md and docs/design/*.md"
-gh label create documentation  --color 0075CA --description "Root-level docs"
-gh label create implementation --color 2EA44F --description "Application code, not docs"
-gh label create UX             --color BFD4F2 --description "User experience: flow, interaction, copy"
-gh label create UI             --color F9D0C4 --description "Visual surface: layout, components, styling"
-gh label create bug            --color D73A4A --description "Defect; expected vs actual mismatch"
-gh label create security       --color B60205 --description "Security-relevant: auth, encryption, isolation, PII"
-```
-
-Phase labels are added on demand — see above.
-
 ## Renaming and removing
 
 Renames and removes affect history: every old issue and PR carrying the old label loses its categorisation unless mass-relabelled.
 
-- **Renaming.** Confirm the rename is worth the churn. Clearer category names usually are; stylistic preferences usually aren't. `gh label edit <old> --name <new>` preserves existing assignments. Update this file in the same PR.
-- **Removing.** Prefer marking the label as deprecated in this file with a "use X instead" note for one release cycle before deleting it from the catalogue. Removing a label deletes its assignments — preserve the migration path.
+- **Renaming.** Confirm the rename is worth the churn. Clearer category names usually are; stylistic preferences usually aren't. `gh label edit <old> --name <new>` preserves existing assignments. Update `.github/labels.yml` and this file in the same PR.
+- **Removing.** Prefer marking the label as deprecated in `.github/labels.yml` (and noting it here) with a "use X instead" note for one release cycle before deleting it from the catalogue. Removing a label deletes its assignments — preserve the migration path.
 
 ## See also
 
+- [`.github/labels.yml`](../.github/labels.yml) — the machine-readable catalogue (names, colours, descriptions).
 - [`../CLAUDE.md`](../CLAUDE.md) §4 — major-decision policy that gates taxonomy changes.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) §"Issue & PR labels" — pointer back to this file from the contributor workflow.
 - [`decisions/README.md`](decisions/README.md) §"ADR lifecycle" — the lifecycle labels track an issue-first ADR through its decision flow.
+- [ADR-0001](decisions/ADR-0001-label-sync.md) — the sync mechanism's decision.

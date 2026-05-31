@@ -35,7 +35,9 @@
 ├── <config>.example.<ext>          # example configuration, generated from SPEC
 │
 ├── .github/
+│   ├── labels.yml                  # machine source for label catalogue
 │   ├── workflows/                  # CI definitions
+│   │   └── sync-labels.yml         # reconciles labels.yml → live repo
 │   └── pull_request_template.md
 │
 ├── docs/

@@ -1,0 +1,33 @@
+name: Sync labels
+
+# Reconciles the live GitHub label catalogue against .github/labels.yml
+# (which is paired with docs/LABELS.md).
+#
+# Trigger: workflow_dispatch only by default. Push-to-main auto-sync is
+# deliberately not enabled — see
+# docs/decisions/ADR-0001-label-sync.md §Consequences for the
+# conservative-default reasoning and flip conditions.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync labels from .github/labels.yml
+        # Pinned to v2.3.3 (Feb 2024). action.yml on main uses node24;
+        # bump SHA when an upstream release earns it.
+        uses: EndBug/label-sync@52074158190acb45f3077f9099fea818aa43f97a
+        with:
+          config-file: .github/labels.yml
+          # delete-other-labels: false by default — labels added
+          # organically to the repo (priority:p0, client:acme, …) are
+          # preserved across sync runs. Flip to true once the taxonomy
+          # is stable and the YAML should own the catalogue
+          # authoritatively. See ADR-0001.
+          delete-other-labels: false
