@@ -23,8 +23,10 @@ Entries are dated by merge into `main`.
 - `docs/decisions/ADR-0001-label-sync.md` — captures the decision, the conservative defaults, and explicit flip conditions.
 
 ### Changed
+- `docs/LABELS.md` slimmed: removed the three catalogue tables (now duplicated by `.github/labels.yml`), kept the conventions prose (state machine, disambiguation, usage examples, add/rename/remove). LABELS.md is now "the conventions doc"; `labels.yml` is "the catalogue".
+- `docs/LABELS.md` §Lifecycle: `deferred` is now a parallel modifier that combines with the progression states (`discussion` / `decided` / `ready`) rather than mutually exclusive with them. Most common combination: `decided + deferred`.
 - `docs/LABELS.md` *Seeding the catalogue*: replaced the manual `gh label create` snippet with a pointer to the Sync labels workflow and the `.github/labels.yml` machine source.
-- `docs/CONTRIBUTING.md §"Issue & PR labels"`: added a sentence about the labels.yml ↔ LABELS.md pairing and the Sync labels workflow.
+- `docs/CONTRIBUTING.md §"Issue & PR labels"`: rewritten to match the new lifecycle rule and the labels.yml ↔ LABELS.md pairing.
 - `docs/STRUCTURE.md`: tree now shows `.github/labels.yml` and `.github/workflows/sync-labels.yml`.
 - `docs/decisions/README.md`: ADR-0001 added to the index.
 
