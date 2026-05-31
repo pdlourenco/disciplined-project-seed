@@ -36,7 +36,10 @@
 │
 ├── .github/
 │   ├── labels.yml                  # machine source for label catalogue
+│   ├── scripts/
+│   │   └── audit-placeholders.py   # tier-3 audit (see CONTRIBUTING.md)
 │   ├── workflows/                  # CI definitions
+│   │   ├── ci.yml                  # active baseline + four-tier framing
 │   │   └── sync-labels.yml         # reconciles labels.yml → live repo
 │   └── pull_request_template.md
 │

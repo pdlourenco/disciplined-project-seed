@@ -13,22 +13,27 @@ Entries are dated by merge into `main`.
 ## [Unreleased]
 
 ### Added
+- `.github/workflows/ci.yml` — active baseline CI doing four tier-3 jobs on the seed itself: markdown lint, internal link check (lychee in offline mode), dangling-placeholder audit, workflow YAML lint (actionlint). Tier 1 / 2 / 4 ship as commented stubs adopters extend. ([#8](https://github.com/pdlourenco/disciplined-project-seed/issues/8))
+- `.github/scripts/audit-placeholders.py` — narrow render-and-scan audit for inline `<!-- ... -->` placeholders that would render as visible artifacts (the [#4](https://github.com/pdlourenco/disciplined-project-seed/pull/4) bug class). Detection patterns are data, not logic; extend `GLITCHES` when a new bug class appears.
+- `.markdownlint.json` — root config disabling MD013 (line length) and MD033 (inline HTML, which the seed uses for comments); other rules at defaults.
+- `docs/decisions/ADR-0002-active-trivial-ci-workflow.md` — captures the choice of an active workflow over an `.example` skeleton, the placeholder-audit detection rule, the pinning-policy reuse from ADR-0001.
+- `.github/labels.yml` — machine-readable source of truth for the label catalogue, paired with `docs/LABELS.md`. ([#7](https://github.com/pdlourenco/disciplined-project-seed/issues/7))
+- `.github/workflows/sync-labels.yml` — reconciles the live catalogue against `.github/labels.yml` via `EndBug/label-sync` (SHA-pinned). `workflow_dispatch` only by default; `delete-other-labels: false` by default. ([#7](https://github.com/pdlourenco/disciplined-project-seed/issues/7))
+- `docs/decisions/ADR-0001-label-sync.md` — captures the decision, the conservative defaults, and explicit flip conditions.
 - `CHANGELOG.md` (this file) so adopters can see what changed between any two points in the seed's evolution.
 - `README.md` rewritten to lead with the seed framing: what this is, how to adopt it end-to-end, how the seed itself evolves. Adds a *How the seed evolves* section pointing at this changelog.
 - `.gitignore` — generic baseline (OS metadata, editor swap files, env overrides, logs) with guidance to extend per project stack.
 - `LICENSE` — MIT, shipped with the seed author as copyright holder. Adopters replace this with their own license (see README *How to adopt* step 5).
 - `README.md` *How to adopt*: new step 5 calling out the LICENSE replacement.
-- `.github/labels.yml` — machine-readable source of truth for the label catalogue, paired with `docs/LABELS.md`. ([#7](https://github.com/pdlourenco/disciplined-project-seed/issues/7))
-- `.github/workflows/sync-labels.yml` — reconciles the live catalogue against `.github/labels.yml` via `EndBug/label-sync` (SHA-pinned). `workflow_dispatch` only by default; `delete-other-labels: false` by default. ([#7](https://github.com/pdlourenco/disciplined-project-seed/issues/7))
-- `docs/decisions/ADR-0001-label-sync.md` — captures the decision, the conservative defaults, and explicit flip conditions.
 
 ### Changed
+- `docs/CONTRIBUTING.md §"CI strategy"`: added a pointer to the shipped workflow and ADR-0002.
 - `docs/LABELS.md` slimmed: removed the three catalogue tables (now duplicated by `.github/labels.yml`), kept the conventions prose (state machine, disambiguation, usage examples, add/rename/remove). LABELS.md is now "the conventions doc"; `labels.yml` is "the catalogue".
 - `docs/LABELS.md` §Lifecycle: `deferred` is now a parallel modifier that combines with the progression states (`discussion` / `decided` / `ready`) rather than mutually exclusive with them. Most common combination: `decided + deferred`.
 - `docs/LABELS.md` *Seeding the catalogue*: replaced the manual `gh label create` snippet with a pointer to the Sync labels workflow and the `.github/labels.yml` machine source.
 - `docs/CONTRIBUTING.md §"Issue & PR labels"`: rewritten to match the new lifecycle rule and the labels.yml ↔ LABELS.md pairing.
-- `docs/STRUCTURE.md`: tree now shows `.github/labels.yml` and `.github/workflows/sync-labels.yml`.
-- `docs/decisions/README.md`: ADR-0001 added to the index.
+- `docs/STRUCTURE.md`: tree now shows `.github/labels.yml`, `.github/workflows/sync-labels.yml`, `.github/workflows/ci.yml`, and `.github/scripts/audit-placeholders.py`.
+- `docs/decisions/README.md`: ADR-0001 and ADR-0002 added to the index.
 
 ### Fixed
 - `CLAUDE.md` §3 rendered two dangling em-dash artifacts where HTML-comment placeholders sat inline — `external contracts — .` and `gates in CI — — are not optional.` Rewrote both to neutral generic prose. ([#4](https://github.com/pdlourenco/disciplined-project-seed/pull/4))

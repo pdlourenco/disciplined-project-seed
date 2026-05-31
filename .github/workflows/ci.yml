@@ -1,0 +1,135 @@
+name: CI
+
+# The seed's CI workflow. This file ships as a working baseline doing
+# trivial-but-real quality checks on the seed itself; adopters extend
+# it with their stack's real tier-1 / tier-2 / tier-3 jobs.
+#
+# Four-tier CI strategy (see docs/CONTRIBUTING.md §"CI strategy"):
+#
+#   Tier 1 — Contract enforcement: highest blast radius. Spec-vs-code
+#       consistency, version pinning, integration job. Add per
+#       adopter when cross-component contracts exist. See the
+#       commented stub below.
+#
+#   Tier 2 — Cross-platform matrix: per-OS build and test. Add per
+#       adopter when cross-platform behaviour matters. See the
+#       commented stub below.
+#
+#   Tier 3 — Code quality: lint, type-check, test, formatter. The
+#       active jobs below are tier 3, applied to the seed itself:
+#       markdown lint, link check, dangling-placeholder audit, and
+#       workflow-YAML lint. Adopters add language-specific jobs
+#       alongside (Python lint+test, Rust clippy+test, etc.).
+#
+#   Tier 4 — Deferred: see CONTRIBUTING.md §"CI strategy" §4 for the
+#       deferred-with-conditions pattern. Stubs go here only when
+#       their trigger conditions are named.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  # ─── Tier 3 — Code quality ──────────────────────────────────────
+
+  markdown-lint:
+    name: Tier 3 — Markdown lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint Markdown
+        # Pinned SHA = v23.2.0 (2026-05-06). See ADR-0001 §Consequences
+        # for the pinning policy.
+        uses: DavidAnson/markdownlint-cli2-action@ded1f9488f68a970bc66ea5619e13e9b52e601cd
+        with:
+          globs: '**/*.md'
+
+  link-check:
+    name: Tier 3 — Link check (internal)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check internal links
+        # Pinned SHA = v2.8.0 (2026-02-25). Offline mode: only validates
+        # relative paths (internal cross-refs). External URLs are not
+        # checked here — they're flaky in CI; a separate scheduled job
+        # can cover them when adopters opt in.
+        uses: lycheeverse/lychee-action@8646ba30535128ac92d33dfc9133794bfdd9b411
+        with:
+          args: --offline --no-progress './**/*.md'
+          fail: true
+
+  placeholder-audit:
+    name: Tier 3 — Dangling-placeholder audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit dangling inline placeholders
+        # The seed's templates (PHASE-TEMPLATE, ADR-TEMPLATE, SPEC,
+        # DESIGN, ROADMAP, REVIEW_CONTEXT, STRUCTURE) ship with
+        # intentional unfilled placeholders that adopters customize.
+        # Exclude them from the audit; everything else is fair game.
+        run: |
+          mapfile -t files < <(
+            find . -name '*.md' \
+              -not -path './.git/*' \
+              -not -path './docs/SPEC.md' \
+              -not -path './docs/DESIGN.md' \
+              -not -path './docs/ROADMAP.md' \
+              -not -path './docs/REVIEW_CONTEXT.md' \
+              -not -path './docs/STRUCTURE.md' \
+              -not -name 'PHASE-TEMPLATE.md' \
+              -not -name 'ADR-TEMPLATE.md'
+          )
+          python3 .github/scripts/audit-placeholders.py "${files[@]}"
+
+  workflow-lint:
+    name: Tier 3 — Workflow YAML lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint workflow YAML with actionlint
+        # actionlint binary via Docker image, tag-pinned. The upstream
+        # repo isn't itself a GitHub Action; the Docker image is the
+        # supported invocation path.
+        run: |
+          docker run --rm -v "${PWD}:/repo" -w /repo \
+            rhysd/actionlint:1.7.12 -color
+
+  # ─── Tier 1 — Contract enforcement (placeholder) ────────────────
+  #
+  # When the adopter introduces cross-component contracts in
+  # docs/SPEC.md, add a job here that asserts the spec matches the
+  # implementation. Common shapes (see CONTRIBUTING.md §"CI strategy"
+  # §1):
+  #
+  #   contract-consistency-test:
+  #     name: Tier 1 — Spec / impl consistency
+  #     runs-on: ubuntu-latest
+  #     steps:
+  #       - uses: actions/checkout@v4
+  #       - run: <command that asserts the contract matches code>
+
+  # ─── Tier 2 — Cross-platform matrix (placeholder) ───────────────
+  #
+  # When the adopter needs cross-OS coverage, add a matrix job here.
+  # See CONTRIBUTING.md §"CI strategy" §2:
+  #
+  #   build-test-matrix:
+  #     name: Tier 2 — Build & test (${{ matrix.os }})
+  #     strategy:
+  #       matrix:
+  #         os: [ubuntu-latest, macos-latest, windows-latest]
+  #     runs-on: ${{ matrix.os }}
+  #     steps: [...]
+
+  # ─── Tier 4 — Deferred (placeholder) ────────────────────────────
+  #
+  # See CONTRIBUTING.md §"CI strategy" §4 for the deferred-with-
+  # conditions pattern (what / why-deferred / trigger / sketch).
+  # Promote a deferred entry to an active job above only when its
+  # trigger condition fires.

@@ -46,6 +46,8 @@ Feature-branch pushes may run a reduced slice of the matrix for fast feedback; f
 
 The pipeline has four concerns, in order of blast radius. Ordering matters — higher-leverage checks should fail faster than lower-leverage ones.
 
+The seed ships an active baseline workflow at [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) with four tier-3 jobs (markdown lint, internal link check, dangling-placeholder audit, workflow YAML lint) and commented stubs for tier 1, tier 2, and tier 4. Adopters extend the same file with their stack's real implementations; see [ADR-0002](decisions/ADR-0002-active-trivial-ci-workflow.md) for the choice of "active trivial workflow" over a `.example` skeleton.
+
 ### 1. Contract enforcement
 
 <!-- The highest-leverage tests in the repo: they catch silent drift between
