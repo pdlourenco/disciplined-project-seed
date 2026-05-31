@@ -178,6 +178,8 @@ Launch a `general-purpose` or `Explore` subagent with the diff plus this prompt.
 > 2. **Scope drift** from the PR's stated purpose — touching files outside the declared scope, unrelated refactors piggybacking on the PR.
 > 3. **Design choices deserving an ADR** (see `docs/decisions/`) — new magic numbers, non-obvious fallback chains, thresholds, backwards-compat seams.
 > 4. **Missing or stale ADR links** in the PR description; missing docstring `See ADR-NNNN` markers beside tactical values.
+> 5. **Label consistency with the diff** — does the `Labels applied` checklist row in the PR description match the topic labels appropriate for the surfaces this PR touches? Touches `SPEC.md` → `spec`; touches `DESIGN.md` or `docs/design/*.md` → `design`; touches code with unchanged contract → `implementation`; UI / UX changes → `UI` / `UX`; security-relevant changes → `security`. Disambiguation rules and category definitions are in [`docs/LABELS.md`](LABELS.md).
+> 6. **Lifecycle currency on linked issues** — for any issue this PR references (`closes #NN`, `addresses #NN`, etc.), is the issue's current lifecycle label still accurate given the conversation? A `discussion` issue that's clearly resolved should be `decided`; a `decided` issue whose implementation is landing in this PR should move to `ready` (or close). A `deferred + decided` issue with a fired trigger should drop `deferred`.
 >
 > Report findings in under 200 words. Say "no findings" if the diff is clean.
 

@@ -35,6 +35,9 @@
 ├── <config>.example.<ext>          # example configuration, generated from SPEC
 │
 ├── .github/
+│   ├── ISSUE_TEMPLATE/             # issue forms with pre-applied labels
+│   │   ├── bug.yml
+│   │   └── decision-proposal.yml
 │   ├── labels.yml                  # machine source for label catalogue
 │   ├── scripts/
 │   │   └── audit-placeholders.py   # tier-3 audit (see CONTRIBUTING.md)
