@@ -1,0 +1,147 @@
+name: Check branch protection
+
+# Compares live branch protection on `main` against
+# .github/branch-protection.yml weekly. Read-only — the default
+# GITHUB_TOKEN can READ branch protection without admin scope (writing
+# requires admin scope, which is why apply is a human-triggered script,
+# not a workflow). Opens an issue if drift is detected. See
+# docs/decisions/ADR-0005-branch-protection-as-code-classic.md.
+
+on:
+  schedule:
+    # Sundays at 10:00 UTC. Drift accumulates slowly; weekly is enough.
+    - cron: "0 10 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    name: Compare live config to YAML
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq \
+            https://github.com/mikefarah/yq/releases/download/v4.44.3/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Fetch live branch protection
+        id: fetch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh api \
+             -H "Accept: application/vnd.github+json" \
+             "/repos/${{ github.repository }}/branches/main/protection" \
+             > live-protection.json 2>fetch-error.log; then
+            echo "fetched=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "fetched=false" >> "$GITHUB_OUTPUT"
+            cat fetch-error.log
+          fi
+
+      - name: Compute desired protection (YAML → JSON)
+        run: yq -o=json .github/branch-protection.yml > desired-protection.json
+
+      - name: Normalize and diff
+        id: diff
+        if: steps.fetch.outputs.fetched == 'true'
+        run: |
+          # Live API wraps some booleans as {enabled: bool}; normalize to
+          # the same shape as the YAML's flat booleans for an apples-to-
+          # apples diff. Extract only the fields this YAML manages.
+          normalize() {
+            jq '{
+              required_status_checks: (
+                .required_status_checks // null
+                | if . then {strict: .strict, contexts: .contexts} else null end
+              ),
+              enforce_admins: (.enforce_admins.enabled // .enforce_admins // false),
+              required_pull_request_reviews: (.required_pull_request_reviews // null),
+              restrictions: (.restrictions // null),
+              required_linear_history: (.required_linear_history.enabled // .required_linear_history // false),
+              allow_force_pushes: (.allow_force_pushes.enabled // .allow_force_pushes // false),
+              allow_deletions: (.allow_deletions.enabled // .allow_deletions // false),
+              required_conversation_resolution: (.required_conversation_resolution.enabled // .required_conversation_resolution // false),
+              block_creations: (.block_creations.enabled // .block_creations // false),
+              required_signatures: (.required_signatures.enabled // .required_signatures // false),
+              lock_branch: (.lock_branch.enabled // .lock_branch // false)
+            }'
+          }
+
+          normalize < live-protection.json    | jq -S . > live-normalized.json
+          normalize < desired-protection.json | jq -S . > desired-normalized.json
+
+          if diff -u desired-normalized.json live-normalized.json > drift.diff; then
+            echo "drift=false" >> "$GITHUB_OUTPUT"
+            echo "No drift."
+          else
+            echo "drift=true" >> "$GITHUB_OUTPUT"
+            echo "Drift detected:"
+            cat drift.diff
+          fi
+
+      - name: Open drift issue
+        if: |
+          steps.fetch.outputs.fetched == 'true' &&
+          steps.diff.outputs.drift == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          DATE=$(date -u +'%Y-%m-%d')
+          BODY=$(cat <<EOF
+          The weekly drift check found differences between
+          \`.github/branch-protection.yml\` and the live protection on
+          \`main\`.
+
+          ## Drift report
+
+          \`\`\`diff
+          $(cat drift.diff)
+          \`\`\`
+
+          ## What to do
+
+          1. **If the live config is the correct one** (you intended the
+             change): edit \`.github/branch-protection.yml\` to match,
+             then merge.
+          2. **If the YAML is the correct one** (something drifted on
+             GitHub): run \`scripts/setup-branch-protection.sh\` from an
+             authenticated environment to reapply the YAML.
+
+          See [ADR-0005](https://github.com/${{ github.repository }}/blob/main/docs/decisions/ADR-0005-branch-protection-as-code-classic.md)
+          for the policy.
+          EOF
+          )
+          gh issue create \
+            --title "Branch protection drift detected ($DATE)" \
+            --label "bug,security" \
+            --body "$BODY"
+
+      - name: Report missing live protection
+        if: steps.fetch.outputs.fetched == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          DATE=$(date -u +'%Y-%m-%d')
+          gh issue create \
+            --title "Branch protection not configured on main ($DATE)" \
+            --label "bug,security" \
+            --body "$(cat <<EOF
+          The weekly drift check could not fetch branch protection on
+          \`main\`. The most likely cause: branch protection isn't
+          configured at all (either the repo hasn't been set up yet or
+          it was removed).
+
+          Run \`scripts/setup-branch-protection.sh\` from an
+          authenticated environment to apply the policy from
+          \`.github/branch-protection.yml\`.
+
+          See [ADR-0005](https://github.com/${{ github.repository }}/blob/main/docs/decisions/ADR-0005-branch-protection-as-code-classic.md).
+          EOF
+          )"

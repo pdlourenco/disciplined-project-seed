@@ -1,0 +1,67 @@
+# Branch protection settings for `main`, desired state.
+#
+# Paired with:
+#   - scripts/setup-branch-protection.sh (apply this YAML to GitHub)
+#   - .github/workflows/check-branch-protection.yml (weekly drift check)
+#
+# See docs/decisions/ADR-0005-branch-protection-as-code-classic.md for
+# the choice of B (human-triggered apply + scheduled drift check) over
+# A (auto-sync via Action), and classic schema over rulesets.
+#
+# Schema: GitHub's CLASSIC branch protection
+# https://docs.github.com/en/rest/branches/branch-protection?apiVersion=2022-11-28#update-branch-protection
+#
+# After editing this file, run scripts/setup-branch-protection.sh to apply.
+
+# Status checks that must pass before merge.
+required_status_checks:
+  # `strict: true` requires branches to be up to date with main before
+  # merging. Prevents two PRs landing contradictory changes (CONTRIBUTING.md
+  # §"Required status checks" calls this out explicitly).
+  strict: true
+  # Context names match the `name:` field of each job in
+  # .github/workflows/ci.yml exactly, including the "Tier 3 — " prefix.
+  contexts:
+    - "Tier 3 — Markdown lint"
+    - "Tier 3 — Link check (internal)"
+    - "Tier 3 — Dangling-placeholder audit"
+    - "Tier 3 — Workflow YAML lint"
+
+# Whether to enforce these settings for repo admins too. False for
+# solo-maintained projects (lets the admin override in emergencies);
+# adopters with multi-maintainer teams should flip to true.
+enforce_admins: false
+
+# PR review requirements. null = no required reviews. Adopters with
+# multi-contributor teams should configure this:
+#   required_pull_request_reviews:
+#     required_approving_review_count: 1
+#     dismiss_stale_reviews: true
+#     require_code_owner_reviews: false
+required_pull_request_reviews: null
+
+# Restrict who can push to the branch. null = no user/team restrictions.
+restrictions: null
+
+# Require a linear history on `main` (no merge commits). Easier to bisect.
+required_linear_history: true
+
+# Disallow force pushes and deletions on `main`.
+allow_force_pushes: false
+allow_deletions: false
+
+# Disallow creating new branches that match this rule from a non-permitted
+# actor (typically irrelevant on `main`; left off).
+block_creations: false
+
+# Require all conversations on the PR to be resolved before merging.
+required_conversation_resolution: true
+
+# Require signed commits. Off by default — turning on adds adopter setup
+# friction (every contributor configures GPG / SSH signing). Adopters
+# can flip this once the team's tooling is ready.
+required_signatures: false
+
+# Lock the branch (make it read-only). For active development branches
+# this is always false; useful for archive branches.
+lock_branch: false
