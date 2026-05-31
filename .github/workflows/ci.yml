@@ -53,6 +53,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Build file list
+        # Same skip list as the placeholder-audit job. Template files
+        # have placeholder URLs (`<!-- link -->`) and references to
+        # files adopters create (PHASE-2.md, schema.toml, etc.) that
+        # don't exist in the seed; lychee would otherwise flag them
+        # as broken on every run.
+        id: files
+        run: |
+          files=$(
+            find . -name '*.md' \
+              -not -path './.git/*' \
+              -not -path './docs/SPEC.md' \
+              -not -path './docs/DESIGN.md' \
+              -not -path './docs/ROADMAP.md' \
+              -not -path './docs/REVIEW_CONTEXT.md' \
+              -not -path './docs/STRUCTURE.md' \
+              -not -name 'PHASE-TEMPLATE.md' \
+              -not -name 'ADR-TEMPLATE.md' \
+              | tr '\n' ' '
+          )
+          echo "files=$files" >> "$GITHUB_OUTPUT"
       - name: Check internal links
         # Pinned SHA = v2.8.0 (2026-02-25). Offline mode: only validates
         # relative paths (internal cross-refs). External URLs are not
@@ -60,7 +81,7 @@ jobs:
         # can cover them when adopters opt in.
         uses: lycheeverse/lychee-action@8646ba30535128ac92d33dfc9133794bfdd9b411
         with:
-          args: --offline --no-progress './**/*.md'
+          args: --offline --no-progress ${{ steps.files.outputs.files }}
           fail: true
 
   placeholder-audit:

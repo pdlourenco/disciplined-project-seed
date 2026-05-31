@@ -13,9 +13,11 @@ Entries are dated by merge into `main`.
 ## [Unreleased]
 
 ### Added
+
 - `.github/workflows/ci.yml` — active baseline CI doing four tier-3 jobs on the seed itself: markdown lint, internal link check (lychee in offline mode), dangling-placeholder audit, workflow YAML lint (actionlint). Tier 1 / 2 / 4 ship as commented stubs adopters extend. ([#8](https://github.com/pdlourenco/disciplined-project-seed/issues/8))
 - `.github/scripts/audit-placeholders.py` — narrow render-and-scan audit for inline `<!-- ... -->` placeholders that would render as visible artifacts (the [#4](https://github.com/pdlourenco/disciplined-project-seed/pull/4) bug class). Detection patterns are data, not logic; extend `GLITCHES` when a new bug class appears.
-- `.markdownlint.json` — root config disabling MD013 (line length) and MD033 (inline HTML, which the seed uses for comments); other rules at defaults.
+- `.markdownlint.json` — root config disabling MD013 (line length), MD033 (inline HTML, which the seed uses for comments), MD041 (PR template starts with HTML comment by design); MD024 uses `siblings_only: true` so duplicate `### Added` headings across CHANGELOG releases don't trip the rule.
+- `.markdownlintignore` — skip list matching the placeholder-audit and link-check jobs so template files won't trip the markdown linter on the seed itself.
 - `docs/decisions/ADR-0002-active-trivial-ci-workflow.md` — captures the choice of an active workflow over an `.example` skeleton, the placeholder-audit detection rule, the pinning-policy reuse from ADR-0001.
 - `.github/labels.yml` — machine-readable source of truth for the label catalogue, paired with `docs/LABELS.md`. ([#7](https://github.com/pdlourenco/disciplined-project-seed/issues/7))
 - `.github/workflows/sync-labels.yml` — reconciles the live catalogue against `.github/labels.yml` via `EndBug/label-sync` (SHA-pinned). `workflow_dispatch` only by default; `delete-other-labels: false` by default. ([#7](https://github.com/pdlourenco/disciplined-project-seed/issues/7))
@@ -27,6 +29,7 @@ Entries are dated by merge into `main`.
 - `README.md` *How to adopt*: new step 5 calling out the LICENSE replacement.
 
 ### Changed
+
 - `docs/CONTRIBUTING.md §"CI strategy"`: added a pointer to the shipped workflow and ADR-0002.
 - `docs/LABELS.md` slimmed: removed the three catalogue tables (now duplicated by `.github/labels.yml`), kept the conventions prose (state machine, disambiguation, usage examples, add/rename/remove). LABELS.md is now "the conventions doc"; `labels.yml` is "the catalogue".
 - `docs/LABELS.md` §Lifecycle: `deferred` is now a parallel modifier that combines with the progression states (`discussion` / `decided` / `ready`) rather than mutually exclusive with them. Most common combination: `decided + deferred`.
@@ -34,18 +37,23 @@ Entries are dated by merge into `main`.
 - `docs/CONTRIBUTING.md §"Issue & PR labels"`: rewritten to match the new lifecycle rule and the labels.yml ↔ LABELS.md pairing.
 - `docs/STRUCTURE.md`: tree now shows `.github/labels.yml`, `.github/workflows/sync-labels.yml`, `.github/workflows/ci.yml`, and `.github/scripts/audit-placeholders.py`.
 - `docs/decisions/README.md`: ADR-0001 and ADR-0002 added to the index.
+- `.gitignore`: promoted `__pycache__/` and `*.py[cod]` from a comment-only mention to actual ignore patterns now that the seed runs Python (the placeholder-audit script).
+- `CHANGELOG.md`: added blank lines after each `### Subsection` heading so MD022 / MD032 pass cleanly. Older release sections fixed at the same time.
 
 ### Fixed
+
 - `CLAUDE.md` §3 rendered two dangling em-dash artifacts where HTML-comment placeholders sat inline — `external contracts — .` and `gates in CI — — are not optional.` Rewrote both to neutral generic prose. ([#4](https://github.com/pdlourenco/disciplined-project-seed/pull/4))
 
 ## [0.3.0] — 2026-05-29
 
 ### Added
+
 - Explicit rule: when an ADR motivates a SPEC change, both land in the same PR. Stated in `docs/decisions/README.md` "What an ADR is — and isn't" and mirrored in `docs/CONTRIBUTING.md §"When you change a contract"`. ([#3](https://github.com/pdlourenco/disciplined-project-seed/pull/3))
 
 ## [0.2.1] — 2026-05-24
 
 ### Removed
+
 - Stale ADR-link scaffolding in `docs/CONTRIBUTING.md §"Pre-push self-review"` and `CLAUDE.md §2`: an HTML comment instructing consumers to write an ADR for the convention, plus a paired italic `*See <!-- ADR link --> ...*` line and a `CLAUDE.md` placeholder of the same shape. The convention is now established in prose without a back-reference; the `CLAUDE.md` sentence points directly at the CONTRIBUTING section that documents both exceptions and rationale. ([#2](https://github.com/pdlourenco/disciplined-project-seed/pull/2))
 
 ## [0.2.0] — 2026-05-23
@@ -53,6 +61,7 @@ Entries are dated by merge into `main`.
 Eight refinements back-ported from a downstream adopter (`ppqq-active`):
 
 ### Added
+
 - `docs/LABELS.md` — single source of truth for the issue + PR label taxonomy (lifecycle / topic / phase) with default colours, disambiguation rules, usage-examples table, `gh label create` seeding snippet, add/rename/remove process.
 - `docs/CONTRIBUTING.md §"Issue & PR labels"` — short section pointing at `LABELS.md`.
 - `docs/CONTRIBUTING.md §"Pre-push CI run (once CI exists)"` — companion to the existing pre-push self-review for mechanical / contract / quality checks.
@@ -62,6 +71,7 @@ Eight refinements back-ported from a downstream adopter (`ppqq-active`):
 - `.github/pull_request_template.md` — `Local CI:` and `Labels applied` checklist rows.
 
 ### Changed
+
 - `CLAUDE.md §4` — `docs/LABELS.md` folded into the major-decision contract enumeration with an inline parenthetical.
 - `docs/CONTRIBUTING.md §"Pre-push self-review"` reviewer prompt — lead-in instructs consumers to inline their `REVIEW_CONTEXT.md` principles as numbered assertions the reviewer can cite by number.
 - `docs/STRUCTURE.md` tree — adds `LABELS.md` and the optional `docs/design/` subdirectory.
