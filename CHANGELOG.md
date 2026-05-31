@@ -14,6 +14,9 @@ Entries are dated by merge into `main`.
 
 ### Added
 
+- `.github/ISSUE_TEMPLATE/decision-proposal.yml` — YAML form template for issue-first ADR proposals. Structured fields for Context / Alternatives / Where it lands / Recommendation. Pre-applies `discussion` + `design`. ([#9](https://github.com/pdlourenco/disciplined-project-seed/issues/9))
+- `.github/ISSUE_TEMPLATE/bug.yml` — YAML form template for bug reports. Structured fields for expected / actual / reproduction / affected surfaces. Pre-applies `bug` only (no lifecycle per `LABELS.md` §Lifecycle). ([#9](https://github.com/pdlourenco/disciplined-project-seed/issues/9))
+- `docs/decisions/ADR-0003-labels-applied-via-reviewer.md` — captures the C + lightweight B + A deferred decision: reviewer-prompt extension for label-vs-diff and lifecycle currency, issue templates with pre-applied labels, no CI gate (external contributors can't apply labels; enforcement is the wrong frame).
 - `.github/workflows/ci.yml` — active baseline CI doing four tier-3 jobs on the seed itself: markdown lint, internal link check (lychee in offline mode), dangling-placeholder audit, workflow YAML lint (actionlint). Tier 1 / 2 / 4 ship as commented stubs adopters extend. ([#8](https://github.com/pdlourenco/disciplined-project-seed/issues/8))
 - `.github/scripts/audit-placeholders.py` — narrow render-and-scan audit for inline `<!-- ... -->` placeholders that would render as visible artifacts (the [#4](https://github.com/pdlourenco/disciplined-project-seed/pull/4) bug class). Detection patterns are data, not logic; extend `GLITCHES` when a new bug class appears.
 - `.markdownlint-cli2.jsonc` — single config file (markdownlint-cli2's native format) containing the rule config, the glob (`**/*.md`), and the ignore list matching the placeholder-audit and link-check jobs. Rules disabled with rationale:
@@ -37,13 +40,14 @@ Entries are dated by merge into `main`.
 
 ### Changed
 
+- `docs/CONTRIBUTING.md §"Reviewer prompt"`: added bullets 5 (label consistency with the diff) and 6 (lifecycle currency on linked issues). The reviewer subagent now covers label hygiene in addition to principles / scope / ADR. ([#9](https://github.com/pdlourenco/disciplined-project-seed/issues/9))
 - `docs/CONTRIBUTING.md §"CI strategy"`: added a pointer to the shipped workflow and ADR-0002.
 - `docs/LABELS.md` slimmed: removed the three catalogue tables (now duplicated by `.github/labels.yml`), kept the conventions prose (state machine, disambiguation, usage examples, add/rename/remove). LABELS.md is now "the conventions doc"; `labels.yml` is "the catalogue".
 - `docs/LABELS.md` §Lifecycle: `deferred` is now a parallel modifier that combines with the progression states (`discussion` / `decided` / `ready`) rather than mutually exclusive with them. Most common combination: `decided + deferred`.
 - `docs/LABELS.md` *Seeding the catalogue*: replaced the manual `gh label create` snippet with a pointer to the Sync labels workflow and the `.github/labels.yml` machine source.
 - `docs/CONTRIBUTING.md §"Issue & PR labels"`: rewritten to match the new lifecycle rule and the labels.yml ↔ LABELS.md pairing.
-- `docs/STRUCTURE.md`: tree now shows `.github/labels.yml`, `.github/workflows/sync-labels.yml`, `.github/workflows/ci.yml`, and `.github/scripts/audit-placeholders.py`.
-- `docs/decisions/README.md`: ADR-0001 and ADR-0002 added to the index.
+- `docs/STRUCTURE.md`: tree now shows `.github/ISSUE_TEMPLATE/`, `.github/labels.yml`, `.github/workflows/sync-labels.yml`, `.github/workflows/ci.yml`, and `.github/scripts/audit-placeholders.py`.
+- `docs/decisions/README.md`: ADR-0001, ADR-0002, and ADR-0003 added to the index.
 - `.gitignore`: promoted `__pycache__/` and `*.py[cod]` from a comment-only mention to actual ignore patterns now that the seed runs Python (the placeholder-audit script).
 - `CHANGELOG.md`: added blank lines after each `### Subsection` heading so MD022 / MD032 pass cleanly. Older release sections fixed at the same time.
 

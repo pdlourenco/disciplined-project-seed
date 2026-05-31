@@ -1,0 +1,52 @@
+name: Decision proposal
+description: Propose an open question for discussion using the ADR-lifecycle shape (Context + Alternatives + Where it lands).
+title: "[Decision] "
+labels: ["discussion", "design"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Open a decision proposal using the issue-first ADR shape — see
+        `docs/decisions/README.md` §"ADR lifecycle" in this repo for how
+        the conversation here becomes an ADR.
+
+        Lifecycle labels: this issue starts at `discussion`; once the
+        thread converges, it moves to `decided`, then `ready` once the
+        ADR and any implementation follow-up are scheduled. If the
+        decision is parked, add `deferred` (combines with the
+        progression state).
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What forced this decision? Prefer concrete evidence (bugs that happened, data that was collected) over abstract argument.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: |
+        Lettered A, B, C, D — name, describe in one or two sentences each, justify the trade-off. Include "Do nothing" explicitly when relevant.
+    validations:
+      required: true
+
+  - type: textarea
+    id: where-it-lands
+    attributes:
+      label: Where it lands
+      description: |
+        Which files / ADRs / PRs the decision will produce — at minimum: which ADR captures it, which docs change, which workflows / scripts get added.
+    validations:
+      required: true
+
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recommendation
+      description: |
+        Your read on the best alternative, with reasoning. Name the major-decision flag per `CLAUDE.md` §4 if this triggers any of its conditions (such as a new external dependency, a new process boundary, a new on-disk artifact, a contract change, a sticky trade-off, or materially changing phase scope) — `CLAUDE.md` §4 is the authority.
+    validations:
+      required: false

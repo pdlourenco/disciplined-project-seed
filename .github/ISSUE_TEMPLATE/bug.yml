@@ -1,0 +1,46 @@
+name: Bug report
+description: Something is broken against a stated invariant or contract.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Bug reports skip lifecycle labels by convention — see
+        `docs/LABELS.md` §Lifecycle in this repo. They carry `bug` plus
+        whichever topic labels match the affected surface
+        (`implementation`, `schema`, `spec`, `documentation`, …).
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What should happen, and which invariant or contract that's grounded in (link to SPEC / DESIGN / ADR if relevant).
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: What happens instead. Quote error messages, log excerpts, or rendered output verbatim.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: |
+        Minimum steps to reproduce. Include the command, the input, and the environment if non-obvious.
+    validations:
+      required: true
+
+  - type: textarea
+    id: surfaces
+    attributes:
+      label: Affected surfaces
+      description: |
+        Which files / modules / components are involved. Helps with applying the right additional topic labels (`implementation`, `schema`, `spec`, …).
+    validations:
+      required: false
