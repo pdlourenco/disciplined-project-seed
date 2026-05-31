@@ -26,10 +26,10 @@ The narrow exceptions — one-line typo, formatting-only, pure revert — and th
 
 ## 3. Implementation is bound to `docs/SPEC.md` as a contract
 
-`docs/SPEC.md` defines the external contracts — <!-- describe the boundaries: cross-language, cross-process, cross-module, whichever applies -->. Implementations must match the spec; the spec must match the implementations. Concretely:
+`docs/SPEC.md` defines the external contracts that cross module, process, or language boundaries. Implementations must match the spec; the spec must match the implementations. Concretely:
 
 - If you need to change a contract, update `docs/SPEC.md` **first**, then update every implementation side in the same PR. Follow the checklist in `docs/CONTRIBUTING.md` §"When you change a contract in `docs/SPEC.md`".
-- The contract-consistency gates in CI — <!-- name them, e.g. test_spec_consistency.py, test_version_pinning.py, the Integration job --> — are not optional. Do not bypass them; do not weaken them to make a PR green.
+- The contract-consistency gates in CI are not optional. Do not bypass them; do not weaken them to make a PR green.
 - If the spec and the implementation drift and you cannot tell which is correct, stop and ask — do not pick a side unilaterally.
 
 <!-- If your project has only one implementation and no cross-boundary
