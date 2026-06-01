@@ -18,13 +18,13 @@ A separate but related insight: pre-push CI has to be **fast by design**. A comm
 
 ## Decision
 
-The `**Commands.**` slot in `CONTRIBUTING.md` §"Pre-push CI run" gets concrete guidance, not a wrapper recommendation:
+The `**Commands.**` slot in `CONTRIBUTING.md` §"Pre-push CI run" gets concrete guidance, not a wrapper recommendation (full prose lives in `CONTRIBUTING.md`; verbatim quotes below):
 
-> The same commands your CI workflow runs should be runnable locally. If your stack has a task runner (`tox`, `nox`, `just`, `cargo`, `npm scripts`, `go` subcommands, etc.), define your CI commands there once and call them from both the workflow and the pre-push invocation. A small `Makefile` or shell script is a reasonable fallback when no ecosystem-native task runner fits. `act` is available for testing workflow YAML *changes* themselves but is overkill as the default pre-push mechanism.
+> The same commands your CI workflow runs should be runnable locally. If your stack has a task runner (`tox`, `nox`, `just`, `cargo`, `npm scripts`, `go` subcommands, etc.), define your CI commands there once and call them from both the workflow and the pre-push invocation. A small `Makefile` or shell script is a reasonable fallback when no ecosystem-native task runner fits. `act` is available for testing workflow YAML *changes* themselves but is overkill as the default pre-push mechanism — for most CI logic, invoking the underlying commands directly is faster and equally drift-resistant. The seed's own `ci.yml` currently inlines these commands directly (the fallback path) because the seed has no stack with a task runner yet; see this ADR for the reasoning and the revisit conditions for dogfooding the task-runner pattern.
 
 And a **Scope** clause:
 
-> Pre-push runs **tier 1 + tier 3 only**. Tier 2's runner matrix doesn't run locally; tier 4 doesn't run anywhere until promoted.
+> Pre-push runs **tier 1 + tier 3 only**. Tier 2's runner matrix doesn't run locally (single-machine can't emulate cross-OS coverage meaningfully); tier 4 doesn't run anywhere until promoted out of "deferred". A pre-push command that takes longer than ~30 seconds will get bypassed — that's the design budget.
 
 No new on-disk artifact ships with this ADR — the change is prose in `CONTRIBUTING.md`. The seed doesn't ship a `Makefile`, doesn't depend on `act`, doesn't ship a wrapper script. The convention is: use what your ecosystem already provides.
 
