@@ -14,10 +14,6 @@ Entries are dated by merge into `main`.
 
 ## [Unreleased]
 
-### Changed
-
-- **Structural: extracted seed-meta into `meta/`.** The seed's own ADRs (ADR-0001–ADR-0005) moved from `docs/decisions/` to `meta/decisions/`; the seed's own CHANGELOG history moved from the repo root to `meta/CHANGELOG.md`; the root `CHANGELOG.md` reset to a clean Keep-a-Changelog template for the adopter's own project history. `docs/decisions/` is now the adopter's namespace, starting fresh at their ADR-0001. Captured in [ADR-0006](decisions/ADR-0006-meta-folder-for-seed-history.md). Adopters strip-or-keep `meta/` per the root README's *How to adopt* step.
-
 ### Added
 
 - `.github/branch-protection.yml` — desired state for `main`'s branch protection, classic GitHub schema. Includes the four `Tier 3 — …` required status-check contexts from `ci.yml`, `required_linear_history: true`, `allow_force_pushes: false`, `allow_deletions: false`, `required_conversation_resolution: true`, and conservative defaults. Per-field rationale inline. ([#11](https://github.com/pdlourenco/disciplined-project-seed/issues/11))
@@ -47,11 +43,12 @@ Entries are dated by merge into `main`.
 - `CHANGELOG.md` (this file) so adopters can see what changed between any two points in the seed's evolution.
 - `README.md` rewritten to lead with the seed framing: what this is, how to adopt it end-to-end, how the seed itself evolves. Adds a *How the seed evolves* section pointing at this changelog.
 - `.gitignore` — generic baseline (OS metadata, editor swap files, env overrides, logs) with guidance to extend per project stack.
-- `LICENSE` — MIT, shipped with the seed author as copyright holder. Adopters replace this with their own license (see README *How to adopt* step 5).
-- `README.md` *How to adopt*: new step 5 calling out the LICENSE replacement.
+- `LICENSE` — MIT, shipped with the seed author as copyright holder. Adopters replace this with their own license (see README *How to adopt* step 6).
+- `README.md` *How to adopt*: new step 6 calling out the LICENSE replacement.
 
 ### Changed
 
+- **Structural: extracted seed-meta into `meta/`.** The seed's own ADRs (ADR-0001–ADR-0005) moved from `docs/decisions/` to `meta/decisions/`; the seed's own CHANGELOG history moved from the repo root to `meta/CHANGELOG.md`; the root `CHANGELOG.md` reset to a clean Keep-a-Changelog template for the adopter's own project history. `docs/decisions/` is now the adopter's namespace, starting fresh at their ADR-0001. Captured in [ADR-0006](decisions/ADR-0006-meta-folder-for-seed-history.md). Adopters strip-or-keep `meta/` per the root README's *How to adopt* step.
 - `docs/CONTRIBUTING.md §"Required status checks"`: rewritten to point at `.github/branch-protection.yml` as the machine source, `scripts/setup-branch-protection.sh` as the apply mechanism, and the drift-detection workflow as the safety net. Replaces the static list of required checks (which would drift) with a pointer to the YAML. ([#11](https://github.com/pdlourenco/disciplined-project-seed/issues/11))
 - `docs/CONTRIBUTING.md §"Pre-push CI run"`: replaced the `**Commands.**` placeholder with concrete guidance (ecosystem task runner as source of truth) and added a `**Scope.**` clause stating tier 1 + tier 3 only pre-push. ([#10](https://github.com/pdlourenco/disciplined-project-seed/issues/10))
 - `docs/CONTRIBUTING.md §"Reviewer prompt"`: added bullets 5 (label consistency with the diff) and 6 (lifecycle currency on linked issues). The reviewer subagent now covers label hygiene in addition to principles / scope / ADR. ([#9](https://github.com/pdlourenco/disciplined-project-seed/issues/9))
@@ -60,8 +57,8 @@ Entries are dated by merge into `main`.
 - `docs/LABELS.md` §Lifecycle: `deferred` is now a parallel modifier that combines with the progression states (`discussion` / `decided` / `ready`) rather than mutually exclusive with them. Most common combination: `decided + deferred`.
 - `docs/LABELS.md` *Seeding the catalogue*: replaced the manual `gh label create` snippet with a pointer to the Sync labels workflow and the `.github/labels.yml` machine source.
 - `docs/CONTRIBUTING.md §"Issue & PR labels"`: rewritten to match the new lifecycle rule and the labels.yml ↔ LABELS.md pairing.
-- `docs/STRUCTURE.md`: tree now shows `.github/ISSUE_TEMPLATE/`, `.github/labels.yml`, `.github/branch-protection.yml`, `.github/workflows/sync-labels.yml`, `.github/workflows/ci.yml`, `.github/workflows/check-branch-protection.yml`, `.github/scripts/audit-placeholders.py`, and the new top-level `scripts/` directory with both `setup-branch-protection.sh` and `normalize-branch-protection.jq`.
-- `docs/decisions/README.md`: ADR-0001, ADR-0002, ADR-0003, ADR-0004, and ADR-0005 added to the index.
+- `docs/STRUCTURE.md`: tree now shows `.github/ISSUE_TEMPLATE/`, `.github/labels.yml`, `.github/branch-protection.yml`, `.github/workflows/sync-labels.yml`, `.github/workflows/ci.yml`, `.github/workflows/check-branch-protection.yml`, `.github/scripts/audit-placeholders.py`, and the new top-level `scripts/` directory with both `setup-branch-protection.sh` and `normalize-branch-protection.jq`. After the meta/ extraction, also shows `meta/` and the dual-CHANGELOG split.
+- `docs/decisions/README.md`: ADR index emptied (seed ADRs moved to `meta/decisions/`; adopter starts fresh).
 - `.gitignore`: promoted `__pycache__/` and `*.py[cod]` from a comment-only mention to actual ignore patterns now that the seed runs Python (the placeholder-audit script).
 - `CHANGELOG.md`: added blank lines after each `### Subsection` heading so MD022 / MD032 pass cleanly. Older release sections fixed at the same time.
 
