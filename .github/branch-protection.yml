@@ -57,11 +57,15 @@ block_creations: false
 # Require all conversations on the PR to be resolved before merging.
 required_conversation_resolution: true
 
-# Require signed commits. Off by default — turning on adds adopter setup
-# friction (every contributor configures GPG / SSH signing). Adopters
-# can flip this once the team's tooling is ready.
-required_signatures: false
-
 # Lock the branch (make it read-only). For active development branches
 # this is always false; useful for archive branches.
 lock_branch: false
+
+# NOTE: `required_signatures` (signed-commit enforcement) is intentionally
+# NOT in this YAML. It's a separate sub-resource of the branch-protection
+# API (POST/DELETE on .../protection/required_signatures), not a PUT-body
+# parameter of the Update branch protection endpoint. Including it would
+# either be silently ignored or 422 the whole apply call. Adopters who
+# want signed-commit enforcement configure it via the dedicated endpoint
+# or the GitHub UI; the drift workflow does not track it. See ADR-0005
+# §Consequences.

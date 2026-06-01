@@ -24,11 +24,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install yq
+      # YAML → JSON via the runner's pre-installed Python + PyYAML
+      # (ubuntu-latest ships both). Avoids fetching a yq binary from
+      # the network into a workflow that holds `issues: write`, which
+      # would be inconsistent with ADR-0001's third-party SHA-pinning
+      # policy.
+      - name: Compute desired protection (YAML → JSON)
         run: |
-          sudo wget -qO /usr/local/bin/yq \
-            https://github.com/mikefarah/yq/releases/download/v4.44.3/yq_linux_amd64
-          sudo chmod +x /usr/local/bin/yq
+          python3 -c '
+          import sys, yaml, json
+          data = yaml.safe_load(open(".github/branch-protection.yml"))
+          json.dump(data, sys.stdout)
+          ' > desired-protection.json
 
       - name: Fetch live branch protection
         id: fetch
@@ -45,37 +52,14 @@ jobs:
             cat fetch-error.log
           fi
 
-      - name: Compute desired protection (YAML → JSON)
-        run: yq -o=json .github/branch-protection.yml > desired-protection.json
-
       - name: Normalize and diff
         id: diff
         if: steps.fetch.outputs.fetched == 'true'
         run: |
-          # Live API wraps some booleans as {enabled: bool}; normalize to
-          # the same shape as the YAML's flat booleans for an apples-to-
-          # apples diff. Extract only the fields this YAML manages.
-          normalize() {
-            jq '{
-              required_status_checks: (
-                .required_status_checks // null
-                | if . then {strict: .strict, contexts: .contexts} else null end
-              ),
-              enforce_admins: (.enforce_admins.enabled // .enforce_admins // false),
-              required_pull_request_reviews: (.required_pull_request_reviews // null),
-              restrictions: (.restrictions // null),
-              required_linear_history: (.required_linear_history.enabled // .required_linear_history // false),
-              allow_force_pushes: (.allow_force_pushes.enabled // .allow_force_pushes // false),
-              allow_deletions: (.allow_deletions.enabled // .allow_deletions // false),
-              required_conversation_resolution: (.required_conversation_resolution.enabled // .required_conversation_resolution // false),
-              block_creations: (.block_creations.enabled // .block_creations // false),
-              required_signatures: (.required_signatures.enabled // .required_signatures // false),
-              lock_branch: (.lock_branch.enabled // .lock_branch // false)
-            }'
-          }
-
-          normalize < live-protection.json    | jq -S . > live-normalized.json
-          normalize < desired-protection.json | jq -S . > desired-normalized.json
+          jq -S -f scripts/normalize-branch-protection.jq \
+            live-protection.json    > live-normalized.json
+          jq -S -f scripts/normalize-branch-protection.jq \
+            desired-protection.json > desired-normalized.json
 
           if diff -u desired-normalized.json live-normalized.json > drift.diff; then
             echo "drift=false" >> "$GITHUB_OUTPUT"
@@ -118,9 +102,16 @@ jobs:
           for the policy.
           EOF
           )
+          # Try with labels first (assumes ADR-0001's sync-labels workflow
+          # has been seeded); fall back to no labels so the drift report
+          # still lands on a fresh fork where the catalogue isn't applied
+          # yet. See ADR-0005 §Consequences.
           gh issue create \
             --title "Branch protection drift detected ($DATE)" \
             --label "bug,security" \
+            --body "$BODY" \
+          || gh issue create \
+            --title "Branch protection drift detected ($DATE)" \
             --body "$BODY"
 
       - name: Report missing live protection
@@ -129,10 +120,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           DATE=$(date -u +'%Y-%m-%d')
-          gh issue create \
-            --title "Branch protection not configured on main ($DATE)" \
-            --label "bug,security" \
-            --body "$(cat <<EOF
+          BODY=$(cat <<EOF
           The weekly drift check could not fetch branch protection on
           \`main\`. The most likely cause: branch protection isn't
           configured at all (either the repo hasn't been set up yet or
@@ -144,4 +132,11 @@ jobs:
 
           See [ADR-0005](https://github.com/${{ github.repository }}/blob/main/docs/decisions/ADR-0005-branch-protection-as-code-classic.md).
           EOF
-          )"
+          )
+          gh issue create \
+            --title "Branch protection not configured on main ($DATE)" \
+            --label "bug,security" \
+            --body "$BODY" \
+          || gh issue create \
+            --title "Branch protection not configured on main ($DATE)" \
+            --body "$BODY"

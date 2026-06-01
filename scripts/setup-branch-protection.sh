@@ -55,11 +55,21 @@ trap 'rm -f "$LIVE_JSON" "$DESIRED_JSON"' EXIT
 
 yq -o=json "$YAML_FILE" > "$DESIRED_JSON"
 
+# Shared normalize filter (same one the drift workflow uses) so the
+# pre-apply diff shows only meaningful changes — without it the operator
+# sees dozens of structural differences ({enabled: bool} wrappers,
+# server-only URLs, etc.) that bury the one line that might matter,
+# undercutting the human-in-the-loop safety property.
+NORMALIZE_JQ="$(dirname "$0")/normalize-branch-protection.jq"
+
 if gh api -H "Accept: application/vnd.github+json" \
    "/repos/$REPO/branches/$BRANCH/protection" \
    > "$LIVE_JSON" 2>/dev/null; then
-  echo "Current live protection found. Diff against desired:"
-  diff -u <(jq -S . "$LIVE_JSON") <(jq -S . "$DESIRED_JSON") || true
+  echo "Current live protection found. Normalized diff against desired:"
+  diff -u \
+    <(jq -S -f "$NORMALIZE_JQ" "$DESIRED_JSON") \
+    <(jq -S -f "$NORMALIZE_JQ" "$LIVE_JSON") \
+    || true
   echo
 else
   echo "No live protection currently configured on $BRANCH; will create."

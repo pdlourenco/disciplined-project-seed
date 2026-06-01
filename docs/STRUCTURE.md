@@ -49,6 +49,7 @@
 │   └── pull_request_template.md
 │
 ├── scripts/                        # human-triggered repo-level scripts
+│   ├── normalize-branch-protection.jq  # shared filter (script + workflow)
 │   └── setup-branch-protection.sh  # apply branch-protection.yml → live
 │
 ├── docs/
