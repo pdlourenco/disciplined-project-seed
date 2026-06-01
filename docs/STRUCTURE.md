@@ -32,6 +32,7 @@
 [project]/
 ├── CLAUDE.md                      # agent operating rules
 ├── README.md                      # user-facing entry point
+├── CHANGELOG.md                    # adopter project changelog (Keep a Changelog format)
 ├── <config>.example.<ext>          # example configuration, generated from SPEC
 │
 ├── .github/
@@ -52,7 +53,7 @@
 │   ├── normalize-branch-protection.jq  # shared filter (script + workflow)
 │   └── setup-branch-protection.sh  # apply branch-protection.yml → live
 │
-├── docs/
+├── docs/                           # adopter-facing documentation
 │   ├── DESIGN.md
 │   ├── SPEC.md
 │   ├── ROADMAP.md
@@ -60,14 +61,21 @@
 │   ├── LABELS.md                   # issue + PR label taxonomy
 │   ├── REVIEW_CONTEXT.md
 │   ├── STRUCTURE.md                # this file
-│   ├── decisions/
-│   │   ├── README.md               # ADR convention + index
+│   ├── decisions/                  # adopter ADRs (your project's decisions)
+│   │   ├── README.md               # ADR conventions + index
 │   │   └── ADR-NNNN-*.md
 │   ├── plans/
 │   │   ├── README.md               # phase-plan index
 │   │   └── PHASE-N.md
 │   └── design/                     # optional: per-topic depth when
 │       └── <topic>.md              # DESIGN.md outgrows ~300 lines
+│
+├── meta/                           # seed-meta — the seed's own history; strip on
+│   ├── README.md                   # adoption OR keep as design reference
+│   ├── CHANGELOG.md                # seed evolution log (Keep a Changelog format)
+│   └── decisions/                  # seed-meta ADRs (separate numbering from docs/)
+│       ├── README.md               # seed-meta ADR index
+│       └── ADR-NNNN-*.md
 │
 ├── <component>/                    # e.g. indexer/, backend/, service/
 │   ├── <manifest>                  # e.g. pyproject.toml, Cargo.toml

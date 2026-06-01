@@ -6,7 +6,7 @@ Accepted — 2026-05-31.
 
 ## Context
 
-[`docs/CONTRIBUTING.md` §"Pre-push CI run"](../CONTRIBUTING.md) carries a `**Commands.**` slot for the local invocation the agent runs before every push. Until this ADR, the slot was a bare placeholder (`<!-- Project-specific; fill in once the tech stack lands. -->`) — adopters were left to design the mechanism from scratch.
+[`docs/CONTRIBUTING.md` §"Pre-push CI run"](../../docs/CONTRIBUTING.md) carries a `**Commands.**` slot for the local invocation the agent runs before every push. Until this ADR, the slot was a bare placeholder (`<!-- Project-specific; fill in once the tech stack lands. -->`) — adopters were left to design the mechanism from scratch.
 
 The seed could ship a convention. The question is *what* convention. Surfaced and decided in [#10](https://github.com/pdlourenco/disciplined-project-seed/issues/10).
 

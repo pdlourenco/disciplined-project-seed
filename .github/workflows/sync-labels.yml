@@ -5,7 +5,7 @@ name: Sync labels
 #
 # Trigger: workflow_dispatch only by default. Push-to-main auto-sync is
 # deliberately not enabled — see
-# docs/decisions/ADR-0001-label-sync.md §Consequences for the
+# meta/decisions/ADR-0001-label-sync.md §Consequences for the
 # conservative-default reasoning and flip conditions.
 
 on:

@@ -3,7 +3,7 @@
 # Paired with docs/LABELS.md (the conventions doc — when to apply each
 # label, cardinality rules, disambiguation). Edits to one require edits
 # to the other in the same PR per
-# docs/decisions/ADR-0001-label-sync.md.
+# meta/decisions/ADR-0001-label-sync.md.
 #
 # Apply this catalogue to the live repo via the "Sync labels" workflow:
 # Actions → Sync labels → Run workflow. Trigger is workflow_dispatch

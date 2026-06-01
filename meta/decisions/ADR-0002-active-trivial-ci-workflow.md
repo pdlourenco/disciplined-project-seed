@@ -6,7 +6,7 @@ Accepted — 2026-05-31.
 
 ## Context
 
-[`docs/CONTRIBUTING.md §"CI strategy"`](../CONTRIBUTING.md) describes a four-tier pipeline in detail: tier 1 (contract enforcement), tier 2 (cross-platform matrix), tier 3 (code quality), tier 4 (deferred). Until this ADR, the seed shipped **no** `.github/workflows/ci.yml` skeleton — every adopter rebuilt the YAML from the prose.
+[`docs/CONTRIBUTING.md §"CI strategy"`](../../docs/CONTRIBUTING.md) describes a four-tier pipeline in detail: tier 1 (contract enforcement), tier 2 (cross-platform matrix), tier 3 (code quality), tier 4 (deferred). Until this ADR, the seed shipped **no** `.github/workflows/ci.yml` skeleton — every adopter rebuilt the YAML from the prose.
 
 Surfaced and decided in [#8](https://github.com/pdlourenco/disciplined-project-seed/issues/8). The proximate trigger was [#4](https://github.com/pdlourenco/disciplined-project-seed/pull/4): a CLAUDE.md fix for two `<!-- ... -->` placeholders that rendered as visible em-dash artifacts. The seed had no automated gate for that bug class. A CI workflow running on the seed itself would have caught it at the source.
 
