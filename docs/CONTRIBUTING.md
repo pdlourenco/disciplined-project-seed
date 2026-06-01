@@ -205,7 +205,9 @@ Once the CI suite defined in §CI strategy lands, **run it locally before every 
 - **Exceptions**: same narrow list as the reviewer — one-line typo fixes, formatting-only changes, pure reverts. The ceremony costs more than the signal for these.
 - Note the outcome briefly in the PR description: `local CI: green` or `local CI: <job> failed, fixed in <sha>`.
 
-**Commands.** <!-- Project-specific; fill in once the tech stack lands. -->
+**Commands.** The same commands your CI workflow runs should be runnable locally. If your stack has a task runner (`tox`, `nox`, `just`, `cargo`, `npm scripts`, `go` subcommands, etc.), define your CI commands there once and call them from both the workflow and the pre-push invocation. A small `Makefile` or shell script is a reasonable fallback when no ecosystem-native task runner fits. `act` is available for testing workflow YAML *changes* themselves but is overkill as the default pre-push mechanism — for most CI logic, invoking the underlying commands directly is faster and equally drift-resistant. The seed's own [`ci.yml`](../.github/workflows/ci.yml) currently inlines these commands directly (the fallback path) because the seed has no stack with a task runner yet; see [ADR-0004](decisions/ADR-0004-pre-push-ci-via-ecosystem-task-runner.md) for the reasoning and the revisit conditions for dogfooding the task-runner pattern.
+
+**Scope.** Pre-push runs **tier 1 + tier 3 only**. Tier 2's runner matrix doesn't run locally (single-machine can't emulate cross-OS coverage meaningfully); tier 4 doesn't run anywhere until promoted out of "deferred". A pre-push command that takes longer than ~30 seconds will get bypassed — that's the design budget.
 
 ## When you change a contract in `docs/SPEC.md`
 
