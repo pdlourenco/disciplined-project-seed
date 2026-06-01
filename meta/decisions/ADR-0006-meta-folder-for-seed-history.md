@@ -24,7 +24,7 @@ Surfaced and decided in conversation; no preceding issue.
 
 Add a top-level `meta/` directory for seed-meta content:
 
-- `meta/decisions/ADR-0001-…md` through `ADR-0006-…md` (this ADR included) — moved from `docs/decisions/`.
+- `meta/decisions/ADR-0001-…md` through `ADR-0005-…md` — moved from `docs/decisions/`. `ADR-0006-…md` (this ADR) is born in `meta/decisions/`; it documents the move and is the first seed-meta artifact to *land* in `meta/` rather than to be relocated there.
 - `meta/CHANGELOG.md` — the seed's evolution history, moved from the root `CHANGELOG.md`.
 - `meta/README.md` — explains the directory's purpose and the two adoption paths (strip or keep-as-reference).
 
