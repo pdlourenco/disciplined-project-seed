@@ -29,7 +29,19 @@ Key documents:
 - `SPEC.md` — binding contracts
 - `ROADMAP.md` — phased delivery plan
 - `docs/decisions/` — ADRs
+- `docs/RISKS.md` — optional; ship if the project carries regulated, life-safety, or hard-reliability obligations
 - <!-- any other canonical reference, e.g. a schema file -->
+
+## Verification vs validation
+
+This document supports two distinct review modes. The reviewer agent can be invoked in either, or in both:
+
+- **Verification — *did we build it right?*** Does the diff match the binding contracts in `SPEC.md`, the catalogue in `.github/labels.yml`, the four-tier CI structure, the file-shape conventions? Checks against **named artifacts**. Findings are mechanical: a rule said X, the diff did Y, here's the gap. The `verified by:` annotations in `SPEC.md` are the right-side mechanisms verification-mode reviews use.
+- **Validation — *did we build the right thing?*** Does the diff match the principles below, the project goals, the scope of the PR's stated purpose? Checks against **intent**. Findings are judgment calls: a principle implies X, the diff appears to violate it, here's the reasoning.
+
+A bundled review covers both by default. When the reviewer agent is asked to focus on one — for instance, *"review in verification mode against PR diff at <file>"* — it stays inside the named-artifact checks; *"review in validation mode"* stays inside the principles and scope. Tighter findings, lower token cost when the reviewing context warrants narrowing.
+
+The distinction is borrowed from V-cycle / ECSS-style engineering, which names the left-right structure explicitly (left side commits to *what*; right side names the mechanisms that verify *built right* at each level). This project deliberately stays lighter than ECSS-grade ceremony — no formal V&V plans, no qualification documents, no requirements traceability matrices — but borrows the framing so the right-side mechanisms are named, not implied. See [ADR-0007](../meta/decisions/ADR-0007-v-cycle-additions.md) for the rationale and the deferred elements (stable SPEC IDs, multi-doc baseline versioning).
 
 ## Core principles (review against these)
 

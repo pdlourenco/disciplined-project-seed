@@ -15,6 +15,26 @@ Readers: [`DESIGN.md`](DESIGN.md) for rationale, [`ROADMAP.md`](ROADMAP.md) for 
 
 ---
 
+## Verification (right-side mechanisms)
+
+Every binding rule in this document names the mechanism that gates it. The convention:
+
+- A **specific test file** (e.g. `tests/test_spec_consistency.py::test_path_storage_is_raw`) when an automated check exists.
+- An **integration job** (e.g. the `contract-consistency` job in `.github/workflows/ci.yml`) when a CI tier covers it.
+- **Manual inspection** (e.g. "manual review of the migration script on release PRs") when only human checking applies.
+- **ADR-driven review** (e.g. `ADR-NNNN`) when only judgment can enforce — the rule survives because contributors read the ADR; reviewers flag deviations.
+
+A rule with `*Verified by:* <!-- nothing -->` is visible debt; reviewers running in *verification mode* (see [`REVIEW_CONTEXT.md`](REVIEW_CONTEXT.md) §"Verification vs validation") should flag it as an uncovered rule. The shape applies to every binding-rule section below; the §3 Critical rules template demonstrates it.
+
+<!-- OPTIONAL: stable IDs for binding rules. When this document grows past
+     ~10-15 rules, or when ADRs / phase plans / code comments start
+     referring back to specific rules often, adopt a SPEC-N.N.N numbering
+     convention so references survive renames and reorderings. See
+     ADR-0007 §Alternatives for the deferral reasoning. Skip for tight
+     single-author SPECs. -->
+
+---
+
 ## 1. Filesystem layout <!-- or equivalent shared-artifact section -->
 
 <!-- OPTIONAL — delete if the project has no shared on-disk artifacts.
@@ -137,9 +157,12 @@ Readers: [`DESIGN.md`](DESIGN.md) for rationale, [`ROADMAP.md`](ROADMAP.md) for 
 
      Replace with your project's actual landmines. -->
 
-- <!-- Rule 1 -->
-- <!-- Rule 2 -->
-- <!-- Rule 3 -->
+- **<!-- Rule 1 -->**
+  - *Verified by:* <!-- specific test, integration job, manual inspection, or ADR-driven review. See §Verification at the top. -->
+- **<!-- Rule 2 -->**
+  - *Verified by:* <!-- mechanism -->
+- **<!-- Rule 3 -->**
+  - *Verified by:* <!-- mechanism -->
 
 ---
 

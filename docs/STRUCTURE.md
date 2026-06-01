@@ -60,6 +60,7 @@
 │   ├── CONTRIBUTING.md
 │   ├── LABELS.md                   # issue + PR label taxonomy
 │   ├── REVIEW_CONTEXT.md
+│   ├── RISKS.md                    # OPTIONAL — regulated / life-safety / hard-reliability only
 │   ├── STRUCTURE.md                # this file
 │   ├── decisions/                  # adopter ADRs (your project's decisions)
 │   │   ├── README.md               # ADR conventions + index

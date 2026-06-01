@@ -72,6 +72,7 @@ jobs:
               -not -path './docs/ROADMAP.md' \
               -not -path './docs/REVIEW_CONTEXT.md' \
               -not -path './docs/STRUCTURE.md' \
+              -not -path './docs/RISKS.md' \
               -not -name 'PHASE-TEMPLATE.md' \
               -not -name 'ADR-TEMPLATE.md' \
               | tr '\n' ' '
@@ -94,7 +95,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Audit dangling inline placeholders
         # The seed's templates (PHASE-TEMPLATE, ADR-TEMPLATE, SPEC,
-        # DESIGN, ROADMAP, REVIEW_CONTEXT, STRUCTURE) ship with
+        # DESIGN, ROADMAP, REVIEW_CONTEXT, STRUCTURE, RISKS) ship with
         # intentional unfilled placeholders that adopters customize.
         # Exclude them from the audit; everything else is fair game.
         #
@@ -111,6 +112,7 @@ jobs:
               -not -path './docs/ROADMAP.md' \
               -not -path './docs/REVIEW_CONTEXT.md' \
               -not -path './docs/STRUCTURE.md' \
+              -not -path './docs/RISKS.md' \
               -not -name 'PHASE-TEMPLATE.md' \
               -not -name 'ADR-TEMPLATE.md'
           )
