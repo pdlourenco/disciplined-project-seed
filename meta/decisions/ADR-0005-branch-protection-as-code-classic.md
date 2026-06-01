@@ -6,7 +6,7 @@ Accepted — 2026-05-31.
 
 ## Context
 
-[`docs/CONTRIBUTING.md` §"Required status checks"](../CONTRIBUTING.md) lists which checks branch protection on `main` should require, but the actual GitHub branch protection settings live in **repo Settings → Branches** — not in the repo. The prose claim and the live config are independent; nothing enforces that they match.
+[`docs/CONTRIBUTING.md` §"Required status checks"](../../docs/CONTRIBUTING.md) lists which checks branch protection on `main` should require, but the actual GitHub branch protection settings live in **repo Settings → Branches** — not in the repo. The prose claim and the live config are independent; nothing enforces that they match.
 
 Same drift surface as the labels problem ([ADR-0001](ADR-0001-label-sync.md)) — but with a critical **permissions asymmetry**:
 

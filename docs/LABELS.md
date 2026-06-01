@@ -10,7 +10,7 @@ Changing this taxonomy is a major decision per [`../CLAUDE.md`](../CLAUDE.md) §
 
 The catalogue is reconciled by the **Sync labels** workflow at [`.github/workflows/sync-labels.yml`](../.github/workflows/sync-labels.yml), which reads [`.github/labels.yml`](../.github/labels.yml). After cloning the seed, run the workflow once: **Actions → Sync labels → Run workflow**. Subsequent edits to the catalogue land in PRs that touch both this file and `.github/labels.yml` together; re-run the workflow when those PRs merge.
 
-**Conservative defaults** (see [ADR-0001](decisions/ADR-0001-label-sync.md) for rationale and flip conditions):
+**Conservative defaults** (see [ADR-0001](../meta/decisions/ADR-0001-label-sync.md) for rationale and flip conditions):
 
 - **`workflow_dispatch` only** — the workflow does not auto-run on push to `main`. Flip to add `push: branches: [main]` once you trust label-YAML edits to be caught at PR review time.
 - **`delete-other-labels: false`** — labels added organically to the live repo (`priority:p0`, `client:acme`, …) are preserved across sync runs. Flip to `true` once the taxonomy is stable and the YAML should own the catalogue authoritatively.
@@ -80,4 +80,4 @@ Renames and removes affect history: every old issue and PR carrying the old labe
 - [`../CLAUDE.md`](../CLAUDE.md) §4 — major-decision policy that gates taxonomy changes.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) §"Issue & PR labels" — pointer back to this file from the contributor workflow.
 - [`decisions/README.md`](decisions/README.md) §"ADR lifecycle" — the lifecycle labels track an issue-first ADR through its decision flow.
-- [ADR-0001](decisions/ADR-0001-label-sync.md) — the sync mechanism's decision.
+- [ADR-0001](../meta/decisions/ADR-0001-label-sync.md) — the sync mechanism's decision.

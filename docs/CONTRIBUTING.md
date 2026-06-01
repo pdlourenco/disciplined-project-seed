@@ -18,7 +18,7 @@
 
 ## Required status checks
 
-Branch protection on `main` is **version-controlled** via [`.github/branch-protection.yml`](../.github/branch-protection.yml) — the desired state in classic GitHub branch-protection schema. See [ADR-0005](decisions/ADR-0005-branch-protection-as-code-classic.md) for the choice of human-triggered apply (over auto-sync via Action) and classic schema (over rulesets).
+Branch protection on `main` is **version-controlled** via [`.github/branch-protection.yml`](../.github/branch-protection.yml) — the desired state in classic GitHub branch-protection schema. See [ADR-0005](../meta/decisions/ADR-0005-branch-protection-as-code-classic.md) for the choice of human-triggered apply (over auto-sync via Action) and classic schema (over rulesets).
 
 **Apply.** Run `scripts/setup-branch-protection.sh` once after cloning the seed, then again whenever `branch-protection.yml` changes. The script uses the operator's `gh auth` credentials (admin scope required); no secret is stored in the repo. Shows the diff against live config before applying.
 
@@ -32,7 +32,7 @@ Feature-branch pushes may run a reduced slice of the matrix for fast feedback; f
 
 The pipeline has four concerns, in order of blast radius. Ordering matters — higher-leverage checks should fail faster than lower-leverage ones.
 
-The seed ships an active baseline workflow at [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) with four tier-3 jobs (markdown lint, internal link check, dangling-placeholder audit, workflow YAML lint) and commented stubs for tier 1, tier 2, and tier 4. Adopters extend the same file with their stack's real implementations; see [ADR-0002](decisions/ADR-0002-active-trivial-ci-workflow.md) for the choice of "active trivial workflow" over a `.example` skeleton.
+The seed ships an active baseline workflow at [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) with four tier-3 jobs (markdown lint, internal link check, dangling-placeholder audit, workflow YAML lint) and commented stubs for tier 1, tier 2, and tier 4. Adopters extend the same file with their stack's real implementations; see [ADR-0002](../meta/decisions/ADR-0002-active-trivial-ci-workflow.md) for the choice of "active trivial workflow" over a `.example` skeleton.
 
 ### 1. Contract enforcement
 
@@ -191,7 +191,7 @@ Once the CI suite defined in §CI strategy lands, **run it locally before every 
 - **Exceptions**: same narrow list as the reviewer — one-line typo fixes, formatting-only changes, pure reverts. The ceremony costs more than the signal for these.
 - Note the outcome briefly in the PR description: `local CI: green` or `local CI: <job> failed, fixed in <sha>`.
 
-**Commands.** The same commands your CI workflow runs should be runnable locally. If your stack has a task runner (`tox`, `nox`, `just`, `cargo`, `npm scripts`, `go` subcommands, etc.), define your CI commands there once and call them from both the workflow and the pre-push invocation. A small `Makefile` or shell script is a reasonable fallback when no ecosystem-native task runner fits. `act` is available for testing workflow YAML *changes* themselves but is overkill as the default pre-push mechanism — for most CI logic, invoking the underlying commands directly is faster and equally drift-resistant. The seed's own [`ci.yml`](../.github/workflows/ci.yml) currently inlines these commands directly (the fallback path) because the seed has no stack with a task runner yet; see [ADR-0004](decisions/ADR-0004-pre-push-ci-via-ecosystem-task-runner.md) for the reasoning and the revisit conditions for dogfooding the task-runner pattern.
+**Commands.** The same commands your CI workflow runs should be runnable locally. If your stack has a task runner (`tox`, `nox`, `just`, `cargo`, `npm scripts`, `go` subcommands, etc.), define your CI commands there once and call them from both the workflow and the pre-push invocation. A small `Makefile` or shell script is a reasonable fallback when no ecosystem-native task runner fits. `act` is available for testing workflow YAML *changes* themselves but is overkill as the default pre-push mechanism — for most CI logic, invoking the underlying commands directly is faster and equally drift-resistant. The seed's own [`ci.yml`](../.github/workflows/ci.yml) currently inlines these commands directly (the fallback path) because the seed has no stack with a task runner yet; see [ADR-0004](../meta/decisions/ADR-0004-pre-push-ci-via-ecosystem-task-runner.md) for the reasoning and the revisit conditions for dogfooding the task-runner pattern.
 
 **Scope.** Pre-push runs **tier 1 + tier 3 only**. Tier 2's runner matrix doesn't run locally (single-machine can't emulate cross-OS coverage meaningfully); tier 4 doesn't run anywhere until promoted out of "deferred". A pre-push command that takes longer than ~30 seconds will get bypassed — that's the design budget.
 
@@ -220,7 +220,7 @@ This keeps the contract and its implementations in lock-step. The contract-enfor
 
 Labels follow the taxonomy in [`LABELS.md`](LABELS.md). On decision-bearing issues, apply one progression-state **lifecycle** label (`discussion` / `decided` / `ready`) and, when the work is parked with a named trigger, also `deferred` (which combines with the progression state — see `LABELS.md` §Lifecycle). Apply one or more **topic** labels matching the surfaces the issue or PR touches, and an optional **phase** label (`phase-0`, `phase-1`, …) when the work belongs to a specific phase.
 
-The live catalogue is reconciled from [`.github/labels.yml`](../.github/labels.yml) via the **Sync labels** workflow ([ADR-0001](decisions/ADR-0001-label-sync.md)); `.github/labels.yml` and `docs/LABELS.md` are paired and must change together.
+The live catalogue is reconciled from [`.github/labels.yml`](../.github/labels.yml) via the **Sync labels** workflow ([ADR-0001](../meta/decisions/ADR-0001-label-sync.md)); `.github/labels.yml` and `docs/LABELS.md` are paired and must change together.
 
 Adding a new label or changing the taxonomy is a major decision (see [`../CLAUDE.md`](../CLAUDE.md) §4 and [`LABELS.md`](LABELS.md) §Adding a new label); routine labelling is not.
 

@@ -6,7 +6,7 @@ Accepted — 2026-05-31.
 
 ## Context
 
-The seed's label taxonomy ([`docs/LABELS.md`](../LABELS.md)) is load-bearing for issue and PR hygiene per `CLAUDE.md §4`. Until this ADR, the catalogue was seeded via a manual `gh label create` snippet — a one-shot.
+The seed's label taxonomy ([`docs/LABELS.md`](../../docs/LABELS.md)) is load-bearing for issue and PR hygiene per `CLAUDE.md §4`. Until this ADR, the catalogue was seeded via a manual `gh label create` snippet — a one-shot.
 
 Two failure modes followed:
 
@@ -21,7 +21,7 @@ Surfaced and decided in [#7](https://github.com/pdlourenco/disciplined-project-s
 
 Ship `.github/labels.yml` as the machine-readable source of truth, paired with `docs/LABELS.md` as the human doc. Reconcile via [`EndBug/label-sync`](https://github.com/EndBug/label-sync), pinned to SHA `52074158190acb45f3077f9099fea818aa43f97a` (v2.3.3, latest stable as of 2026-05-31, action.yml uses `node24`).
 
-`.github/workflows/sync-labels.yml` runs on `workflow_dispatch` only — no push-to-main auto-trigger — with `delete-other-labels: false` by default. Both defaults are conservative; flip conditions are documented in [`docs/LABELS.md` §"Seeding the catalogue"](../LABELS.md) and in §Consequences below.
+`.github/workflows/sync-labels.yml` runs on `workflow_dispatch` only — no push-to-main auto-trigger — with `delete-other-labels: false` by default. Both defaults are conservative; flip conditions are documented in [`docs/LABELS.md` §"Seeding the catalogue"](../../docs/LABELS.md) and in §Consequences below.
 
 ## Consequences
 

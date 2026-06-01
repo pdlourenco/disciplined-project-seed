@@ -6,7 +6,7 @@ Accepted — 2026-05-31.
 
 ## Context
 
-[`docs/LABELS.md`](../LABELS.md) defines a three-category taxonomy (lifecycle / topic / phase) that's load-bearing for issue and PR hygiene. The [`pull_request_template.md`](../../.github/pull_request_template.md) carries a `Labels applied per docs/LABELS.md` checklist row, but nothing in the framework *enforces* that labels actually get applied — the checkbox relies on contributor self-attestation.
+[`docs/LABELS.md`](../../docs/LABELS.md) defines a three-category taxonomy (lifecycle / topic / phase) that's load-bearing for issue and PR hygiene. The [`pull_request_template.md`](../../.github/pull_request_template.md) carries a `Labels applied per docs/LABELS.md` checklist row, but nothing in the framework *enforces* that labels actually get applied — the checkbox relies on contributor self-attestation.
 
 Concrete failure modes ([#9](https://github.com/pdlourenco/disciplined-project-seed/issues/9)):
 
@@ -23,7 +23,7 @@ Surfaced and decided in [#9](https://github.com/pdlourenco/disciplined-project-s
 
 Three coordinated changes, no CI gate:
 
-- **C — Reviewer-prompt extension.** The pre-push self-review subagent prompt in [`docs/CONTRIBUTING.md` §"Reviewer prompt"](../CONTRIBUTING.md) gains two new bullets: (5) does the `Labels applied` checklist row match the diff's surface? (touches `SPEC.md` → `spec`; touches `DESIGN.md` → `design`; etc.) (6) for linked issues, is the current lifecycle label still accurate given the conversation? The reviewer subagent already runs on every push; the marginal cost is a few lines of prompt.
+- **C — Reviewer-prompt extension.** The pre-push self-review subagent prompt in [`docs/CONTRIBUTING.md` §"Reviewer prompt"](../../docs/CONTRIBUTING.md) gains two new bullets: (5) does the `Labels applied` checklist row match the diff's surface? (touches `SPEC.md` → `spec`; touches `DESIGN.md` → `design`; etc.) (6) for linked issues, is the current lifecycle label still accurate given the conversation? The reviewer subagent already runs on every push; the marginal cost is a few lines of prompt.
 
 - **Lightweight B — issue templates with pre-applied labels.** Two YAML form templates under `.github/ISSUE_TEMPLATE/`:
   - [`decision-proposal.yml`](../../.github/ISSUE_TEMPLATE/decision-proposal.yml) — structured fields matching the ADR-lifecycle shape (Context / Alternatives / Where it lands / Recommendation); pre-applies `discussion` + `design`.
@@ -33,7 +33,7 @@ Three coordinated changes, no CI gate:
 
 ## Consequences
 
-- **The reviewer is responsible for label drift now.** The pre-push self-review's scope grows from "principle / scope drift / ADR" to also include label-vs-diff consistency and lifecycle currency. The convention in [`docs/CONTRIBUTING.md` §"Pre-push self-review"](../CONTRIBUTING.md) is the load-bearing change here, not the prompt text — and the convention now governs labels as well as principles.
+- **The reviewer is responsible for label drift now.** The pre-push self-review's scope grows from "principle / scope drift / ADR" to also include label-vs-diff consistency and lifecycle currency. The convention in [`docs/CONTRIBUTING.md` §"Pre-push self-review"](../../docs/CONTRIBUTING.md) is the load-bearing change here, not the prompt text — and the convention now governs labels as well as principles.
 - **Lifecycle labels are treated as state, not classification.** The reviewer prompt explicitly checks "is the lifecycle label still accurate given the conversation?" on linked issues. A `discussion` label that should now be `decided` is a finding. This closes a real failure mode that pure classification labels don't have.
 - **No CI gate on labels.** External contributors can't apply labels (GitHub permissions); a hard gate would block their PRs. The reviewer subagent runs against the contributor's branch, not against repo-side permissions — sidesteps the papercut entirely.
 - **Issue templates carry pre-applied labels by default.** Decision proposals open at `discussion + design`; bug reports open at `bug` (no lifecycle). Contributors can edit the labels after creation; the templates set sensible defaults.
