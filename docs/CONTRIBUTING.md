@@ -18,27 +18,13 @@
 
 ## Required status checks
 
-Branch protection on `main` should require the following checks (configure in your host's branch protection settings):
+Branch protection on `main` is **version-controlled** via [`.github/branch-protection.yml`](../.github/branch-protection.yml) — the desired state in classic GitHub branch-protection schema. See [ADR-0005](decisions/ADR-0005-branch-protection-as-code-classic.md) for the choice of human-triggered apply (over auto-sync via Action) and classic schema (over rulesets).
 
-<!-- List CI job names exactly as they appear in your workflow.
-     Typical entries below; delete what doesn't apply. -->
+**Apply.** Run `scripts/setup-branch-protection.sh` once after cloning the seed, then again whenever `branch-protection.yml` changes. The script uses the operator's `gh auth` credentials (admin scope required); no secret is stored in the repo. Shows the diff against live config before applying.
 
-- `<!-- Build and test (ubuntu-latest) -->`
-- `<!-- Build and test (windows-latest) -->`
-- `<!-- Build and test (macos-latest) -->`
-- `<!-- Contract consistency -->`
-- `<!-- Integration -->`
-- `<!-- Pre-commit -->`
+**Drift detection.** [`.github/workflows/check-branch-protection.yml`](../.github/workflows/check-branch-protection.yml) runs weekly (Sundays 10:00 UTC), compares the live config to the YAML using the default `GITHUB_TOKEN`'s read-only scope, and opens an issue if anything drifts. If you edited the YAML and forgot to re-apply, the workflow will tell you within a week; manual edits to `Settings → Branches` get caught too.
 
-Also enable:
-
-- **Require branches to be up to date before merging** — prevents two PRs landing contradictory changes.
-- **Require linear history** (optional but recommended) — easier to bisect.
-- **Do not allow force pushes to `main`**.
-
-<!-- Branch-protection settings are not version-controlled in the repo itself.
-     Keep them documented here and periodically verify that the actual
-     settings match this description. -->
+**Adopters:** the YAML ships with the seed's own four `Tier 3 — …` required contexts (from [`ci.yml`](../.github/workflows/ci.yml)) and conservative defaults (`required_linear_history: true`, `allow_force_pushes: false`, `allow_deletions: false`, `required_conversation_resolution: true`, `enforce_admins: false`, no required reviews). Per-field rationale is inline in the YAML; flip `enforce_admins`, configure `required_pull_request_reviews`, or add status-check contexts as your team and CI grow.
 
 Feature-branch pushes may run a reduced slice of the matrix for fast feedback; full cross-platform and integration checks run on every pull request and every push to `main`.
 

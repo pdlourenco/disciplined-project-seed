@@ -38,13 +38,19 @@
 │   ├── ISSUE_TEMPLATE/             # issue forms with pre-applied labels
 │   │   ├── bug.yml
 │   │   └── decision-proposal.yml
+│   ├── branch-protection.yml       # main's branch protection, classic schema
 │   ├── labels.yml                  # machine source for label catalogue
 │   ├── scripts/
 │   │   └── audit-placeholders.py   # tier-3 audit (see CONTRIBUTING.md)
 │   ├── workflows/                  # CI definitions
+│   │   ├── check-branch-protection.yml  # weekly drift check (read-only)
 │   │   ├── ci.yml                  # active baseline + four-tier framing
 │   │   └── sync-labels.yml         # reconciles labels.yml → live repo
 │   └── pull_request_template.md
+│
+├── scripts/                        # human-triggered repo-level scripts
+│   ├── normalize-branch-protection.jq  # shared filter (script + workflow)
+│   └── setup-branch-protection.sh  # apply branch-protection.yml → live
 │
 ├── docs/
 │   ├── DESIGN.md
@@ -68,10 +74,8 @@
 │   ├── src/
 │   └── tests/
 │
-├── <component>/                    # e.g. cli/, frontend/
-│   └── ...
-│
-└── scripts/                        # build / release / local tooling
+└── <component>/                    # e.g. cli/, frontend/
+    └── ...
 ```
 
 ## Conventions
