@@ -182,6 +182,62 @@ The prompt below covers both review modes from [`REVIEW_CONTEXT.md` §"Verificat
 
 Catching issues before CI runs saves minutes, dollars, and reviewer attention. A reviewer in CI would re-analyze every push on every PR (≈ 5–10× more runs for similar signal) and clutter PR threads with comments mostly ignored. Pre-push keeps the cost low and the signal high; if too many cross-cutting issues slip through, promote it to CI with a dedicated workflow.
 
+## Reviewing an open PR
+
+When asking a reviewer agent to review a pull request that already exists on GitHub (yours or someone else's), use the parameterised prompt below rather than re-typing the long invocation each time. The call-site invocation collapses to *"review PR NN per `CONTRIBUTING.md` §Reviewing an open PR"* — the agent reads this section and the linked docs, then runs the review.
+
+This convention is distinct from §"Pre-push self-review" above:
+
+- **Pre-push self-review** runs against the **local diff** before the contributor pushes; the agent has the diff in hand and reports back in-conversation.
+- **Reviewing an open PR** runs against the **remote PR**; the agent fetches the diff via the GitHub MCP tools, deals with CI state (running, failed, or unavailable), and — by default — posts findings as inline PR review comments.
+
+### Parameters
+
+Sensible defaults cover the common case. Five parameters can be overridden inline:
+
+1. **PR number** (required) — e.g. `review PR 18`.
+2. **Mode** — `bundled` (default; runs both verification *and* validation per [`REVIEW_CONTEXT.md` §"Verification vs validation"](REVIEW_CONTEXT.md)), `verification-only`, or `validation-only`. Single-mode runs produce tighter findings at lower token cost when only one is needed.
+3. **Output channel** — `comments` (default; posts findings as PR review comments via the GitHub MCP tools so contributors see them inline) or `report` (returns findings in-conversation for the requester to triage before anything is posted publicly).
+4. **Context-doc set** — defaults to [`REVIEW_CONTEXT.md`](REVIEW_CONTEXT.md), [`DESIGN.md`](DESIGN.md), [`SPEC.md`](SPEC.md), [`ROADMAP.md`](ROADMAP.md). Override when the PR touches a narrower or wider surface (e.g. *"plus `docs/decisions/ADR-NNNN`"* for a PR adjacent to a recent ADR whose rationale matters).
+5. **CI handling** — `check-or-run` (default; see step 1 of the prompt below) or `skip` for diff-only reviews when CI isn't useful (e.g. a pure-prose docs PR with no gates that apply).
+
+### Reviewer prompt
+
+> Review PR **NN** in the current repository.
+>
+> Fetch the diff, the PR description, and any linked issues. Seed yourself with [`REVIEW_CONTEXT.md`](REVIEW_CONTEXT.md) for principles and review modes (§"Verification vs validation"), [`SPEC.md`](SPEC.md) for binding contracts and the `Verified by:` mechanisms each contract names, [`DESIGN.md`](DESIGN.md) for architectural rationale, and [`ROADMAP.md`](ROADMAP.md) for phasing context.
+>
+> Review in **<mode>** mode (default: `bundled` — both verification *and* validation). The six prompt bullets from §"Pre-push self-review" apply in full; in addition:
+>
+> 1. **CI awareness.** Check the PR's CI status first:
+>     - If CI ran and is green, summarise the green status in one line.
+>     - If CI ran and one or more jobs failed, fetch the failing job logs and include a one-paragraph summary of each failure — the specific assertion, step, or check that failed, not just "tests failed".
+>     - If CI did *not* run (workflows disabled on the fork, Actions minutes exhausted, or the PR simply hasn't triggered them yet), invoke the local equivalent per [§"Pre-push CI run"](#pre-push-ci-run-once-ci-exists) — tier 1 + tier 3 — and report the result the same way.
+>     - If CI handling is set to `skip`, omit this step entirely and say so in the verdict so the reader knows no right-side mechanical checks were performed.
+> 2. **Verification findings** (skip if mode = `validation-only`) — cite the binding contract or named artifact that's affected. Reference rules by their `Verified by:` mechanism in `SPEC.md` where possible, so contributors can see whether the mechanism caught the drift or whether it's an uncovered gap.
+> 3. **Validation findings** (skip if mode = `verification-only`) — cite the numbered principle in `REVIEW_CONTEXT.md` or the PR's stated scope/purpose.
+>
+> Format findings per [`REVIEW_CONTEXT.md` §"Review output format"](REVIEW_CONTEXT.md) (summary / what works well / issues / follow-ups / verdict). Post them to the PR as **<output>** (default: `comments` — inline PR review comments via the GitHub MCP tools). When the output is `report`, return findings in-conversation instead and do not post anything publicly until the requester confirms.
+>
+> If you find nothing actionable after the full review, say so explicitly — *"no findings; CI green; verdict approve"* — rather than going silent.
+
+### Invocation examples
+
+- `review PR 18 per CONTRIBUTING.md §Reviewing an open PR`
+  Default: bundled mode, comments output, default context-doc set, CI-aware.
+
+- `review PR 18 per CONTRIBUTING.md §Reviewing an open PR — verification-only, report`
+  Single-mode, in-conversation output (good for a fast triage pass before deciding whether to post publicly).
+
+- `review PR 18 per CONTRIBUTING.md §Reviewing an open PR — plus docs/decisions/ADR-0007`
+  Bundled, comments, expanded context (useful for PRs adjacent to a recent ADR whose rationale the reviewer needs).
+
+### Rules of engagement
+
+- The reviewer is a complement to human review, not a replacement. Treat its findings the way you'd treat any reviewer's: weigh them, push back where the call is yours, fix what's right.
+- Use `report` mode for the first pass on a novel PR shape so low-confidence findings don't land as public noise; switch to `comments` once you've calibrated.
+- If CI is unreachable *and* a local run isn't possible (no checkout, no toolchain), say so in the review — never silently skip the right-side mechanical checks. A review that didn't verify is a validation-only review and should be labelled as such in the verdict.
+
 ## Pre-push CI run (once CI exists)
 
 Once the CI suite defined in §CI strategy lands, **run it locally before every push**, in addition to (not in place of) the pre-push self-review above. The reviewer subagent and the CI suite are complementary: the reviewer catches cross-cutting / principle / scope / terminology issues; the CI catches mechanical failures (contract-enforcement, lint, test, coverage). Both are pre-push disciplines for the same reason — catch issues before CI minutes burn, before the PR thread fills with red checks, and before reviewer attention is wasted on noise the contributor could have fixed locally.
