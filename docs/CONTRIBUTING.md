@@ -193,13 +193,14 @@ This convention is distinct from §"Pre-push self-review" above:
 
 ### Parameters
 
-Sensible defaults cover the common case. Five parameters can be overridden inline:
+Sensible defaults cover the common case. Six parameters can be overridden inline:
 
 1. **PR number** (required) — e.g. `review PR 18`.
 2. **Mode** — `bundled` (default; runs both verification *and* validation per [`REVIEW_CONTEXT.md` §"Verification vs validation"](REVIEW_CONTEXT.md)), `verification-only`, or `validation-only`. Single-mode runs produce tighter findings at lower token cost when only one is needed.
 3. **Output channel** — `comments` (default; posts findings as PR review comments via the GitHub MCP tools so contributors see them inline) or `report` (returns findings in-conversation for the requester to triage before anything is posted publicly).
 4. **Context-doc set** — defaults to [`REVIEW_CONTEXT.md`](REVIEW_CONTEXT.md), [`DESIGN.md`](DESIGN.md), [`SPEC.md`](SPEC.md), [`ROADMAP.md`](ROADMAP.md). Override when the PR touches a narrower or wider surface (e.g. *"plus `docs/decisions/ADR-NNNN`"* for a PR adjacent to a recent ADR whose rationale matters).
 5. **CI handling** — `check-or-run` (default; see step 1 of the prompt below) or `skip` for diff-only reviews when CI isn't useful (e.g. a pure-prose docs PR with no gates that apply).
+6. **Subscription** — `subscribe` (default; after posting findings the reviewer subscribes to PR activity events and follows through on subsequent pushes, review comments, and CI status changes — investigating each, pushing fixes where tractable, replying for clarifications, or escalating ambiguity) or `once` (post findings, exit; no subscription).
 
 ### Prompt template
 
@@ -219,6 +220,8 @@ Sensible defaults cover the common case. Five parameters can be overridden inlin
 >
 > Format findings per [`REVIEW_CONTEXT.md` §"Review output format"](REVIEW_CONTEXT.md) (summary / what works well / issues / follow-ups / verdict). Post them to the PR as **<output>** (default: `comments` — inline PR review comments via the GitHub MCP tools). When the output is `report`, return findings in-conversation instead and do not post anything publicly until the requester confirms.
 >
+> After posting (or surfacing) the findings, **subscribe to PR activity events** (default; skip if subscription = `once`). On each subsequent event — push, review comment, CI status change — re-investigate per this prompt. Push a fix where the call is clear and the change is small; reply where a clarification suffices; escalate ambiguity to the requester before acting. Refresh the review's status checklist on every event so the thread shows live state. Unsubscribe when the requester explicitly says to stop.
+>
 > If you find nothing actionable after the full review, say so explicitly — *"no findings; CI green; verdict approve"* — rather than going silent.
 
 ### Invocation examples
@@ -237,6 +240,7 @@ Sensible defaults cover the common case. Five parameters can be overridden inlin
 - The reviewer is a complement to human review, not a replacement. Treat its findings the way you'd treat any reviewer's: weigh them, push back where the call is yours, fix what's right.
 - Use `report` mode for the first pass on a novel PR shape so low-confidence findings don't land as public noise; switch to `comments` once you've calibrated.
 - If CI is unreachable *and* a local run isn't possible (no checkout, no toolchain), say so in the review — never silently skip the right-side mechanical checks. A review that didn't verify is a validation-only review and should be labelled as such in the verdict.
+- `subscribe` is the default because the natural shape of PR review is to follow through: a one-shot review that ignores follow-up pushes and CI changes misses most of the value. Use `once` for fast triage passes where the reviewer should not stay alive — typically paired with `report` output.
 
 ## Pre-push CI run (once CI exists)
 

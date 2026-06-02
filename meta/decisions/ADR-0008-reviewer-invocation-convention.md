@@ -1,4 +1,4 @@
-# ADR-0008 — Parameterised reviewer-invocation convention for open PRs, with CI-aware fallback
+# ADR-0008 — Parameterised reviewer-invocation convention for open PRs, with CI-aware fallback and follow-through-by-default subscription
 
 ## Status
 
@@ -18,13 +18,14 @@ Three properties of this invocation deserve to be locked in (and so deserve an A
 
 ## Decision
 
-Add a §"Reviewing an open PR" subsection to `CONTRIBUTING.md`, peer to the existing §"Pre-push self-review" and §"Pre-push CI run". The section parameterises the invocation across **five levers** with conservative defaults:
+Add a §"Reviewing an open PR" subsection to `CONTRIBUTING.md`, peer to the existing §"Pre-push self-review" and §"Pre-push CI run". The section parameterises the invocation across **six levers** with conservative defaults:
 
 1. **PR number** (required).
 2. **Mode** — `bundled` (default; both verification *and* validation per [`REVIEW_CONTEXT.md` §"Verification vs validation"](../../docs/REVIEW_CONTEXT.md)) / `verification-only` / `validation-only`.
 3. **Output channel** — `comments` (default; inline PR review comments via GitHub MCP tools) / `report` (in-conversation, posted publicly only after requester confirms).
 4. **Context-doc set** — defaults to `REVIEW_CONTEXT.md` + `DESIGN.md` + `SPEC.md` + `ROADMAP.md`. Override when the PR is adjacent to a specific ADR or other doc.
 5. **CI handling** — `check-or-run` (default) / `skip`.
+6. **Subscription** — `subscribe` (default; after the initial review the reviewer subscribes to PR activity events and follows through on subsequent pushes, review comments, and CI changes — investigating each, pushing fixes where tractable, replying for clarifications, or escalating ambiguity) / `once` (one-shot review, no subscription).
 
 **CI-handling fallback chain** (the load-bearing trade-off; default `check-or-run`):
 
@@ -39,7 +40,8 @@ Add a §"Reviewing an open PR" subsection to `CONTRIBUTING.md`, peer to the exis
 
 ## Consequences
 
-- **Reviewer invocations standardise.** Contributors stop re-typing the long prompt; the call site collapses to a one-line reference. The five parameters expose the variability that actually exists (mode / output / context / CI) without forcing it on the caller.
+- **Reviewer invocations standardise.** Contributors stop re-typing the long prompt; the call site collapses to a one-line reference. The six parameters expose the variability that actually exists (mode / output / context / CI / subscription) without forcing it on the caller.
+- **Reviews follow through on the PR lifecycle by default.** A reviewer that posts findings and exits misses most of the value when the contributor pushes a fix, CI completes red, or a reviewer comment needs a response. `subscribe` as default keeps the reviewer responsive through the lifecycle until explicitly told to stop; `once` covers the triage / fast-first-pass case where staying alive would be wasted.
 - **CI-unreachable failure mode handled by policy, not improvisation.** When Actions minutes are out or a fork can't trigger workflows, the reviewer falls back to a local tier-1+3 run rather than silently skipping the right-side mechanical checks. A review that *did* skip must say so in the verdict — visible debt, not invisible.
 - **Verification-mode findings can cite the `Verified by:` mechanism.** ADR-0007's per-rule `Verified by:` annotation in `SPEC.md` becomes citeable from PR review comments, so contributors can see whether the mechanism caught the drift or whether it's an uncovered gap.
 - **`REVIEW_CONTEXT.md` stays focused on content** (principles + red flags + output format). The new section in `CONTRIBUTING.md` references it for V&V modes and output format but doesn't duplicate them.
@@ -50,10 +52,11 @@ Add a §"Reviewing an open PR" subsection to `CONTRIBUTING.md`, peer to the exis
 - **A — leave the invocation ad-hoc.** Rejected. The long prompt was already being re-typed inconsistently across PR reviews; defaults, modes, and CI-handling drifted between invocations.
 - **B — put the convention in `REVIEW_CONTEXT.md`.** Rejected. `REVIEW_CONTEXT.md` is the *what's reviewed against* doc, deliberately framed as both a reviewer prompt *and* a project-values statement (per its own header). Loading "how to ask for a review" mechanics into it dilutes that purpose. `CONTRIBUTING.md` already owns workflow-mechanics neighbours (§"Pre-push self-review", §"Pre-push CI run") and is the better surface.
 - **C — a dedicated `REVIEWING.md` doc.** Rejected. The content is one subsection; a whole file is over-scaffolded. If the surface grows past ~3 subsections of mechanics, revisit.
-- **D — chosen path: §"Reviewing an open PR" in `CONTRIBUTING.md`, five parameters, conservative defaults, explicit CI fallback chain.**
+- **D — chosen path: §"Reviewing an open PR" in `CONTRIBUTING.md`, six parameters, conservative defaults, explicit CI fallback chain, follow-through-by-default subscription.**
 - **`report` (in-conversation) as the default output channel** — considered. Rejected: most reviews are routine and the contributor wants the findings on the PR, not gated behind a second human triage step. `report` stays available for novel-shape PRs where low-confidence findings shouldn't land as public noise; `comments` as default matches the seed's "make scaffolding explicit" stance — defaults should reflect the common case, not the cautious one.
 - **`validation-only` as the default mode** — rejected. CI itself already covers most of the verification surface (`Verified by:` mechanisms); a default of `validation-only` would skip the mechanical re-check on the (common) case where CI is reachable. `bundled` keeps verification as a safety net without much added cost.
 - **Make CI-handling mandatory `check-or-run`, no `skip` option** — rejected. A pure-prose docs PR with no gates that apply genuinely doesn't need CI-handling; `skip` exists to cover that, with the labelling-as-validation-only discipline making the omission visible in the verdict.
+- **`once` (no subscription) as the default** — rejected. Most reviews are not triage; the natural shape is for the reviewer to react to subsequent pushes and CI changes through the PR's lifecycle. Forcing the requester to opt into subscription each time inverts the common-case incentive and bakes "review once, walk away" into the default — exactly the brittleness the convention exists to prevent. `once` stays available for fast first-pass triage where staying alive would be wasted.
 
 ## Related
 
