@@ -41,7 +41,7 @@ This document supports two distinct review modes. The reviewer agent can be invo
 
 A bundled review covers both by default. When the reviewer agent is asked to focus on one — for instance, *"review in verification mode against PR diff at <file>"* — it stays inside the named-artifact checks; *"review in validation mode"* stays inside the principles and scope. Tighter findings, lower token cost when the reviewing context warrants narrowing.
 
-The distinction is borrowed from V-cycle / ECSS-style engineering, which names the left-right structure explicitly (left side commits to *what*; right side names the mechanisms that verify *built right* at each level). This project deliberately stays lighter than ECSS-grade ceremony — no formal V&V plans, no qualification documents, no requirements traceability matrices — but borrows the framing so the right-side mechanisms are named, not implied. See [ADR-0007](../meta/decisions/ADR-0007-v-cycle-additions.md) for the rationale and the deferred elements (stable SPEC IDs, multi-doc baseline versioning).
+The distinction is borrowed from [V-cycle](https://en.wikipedia.org/wiki/V-model) / ECSS-style engineering, which names the left-right structure explicitly (left side commits to *what*; right side names the mechanisms that verify *built right* at each level). This project deliberately stays lighter than ECSS-grade ceremony — no formal V&V plans, no qualification documents, no requirements traceability matrices — but borrows the framing so the right-side mechanisms are named, not implied. See [ADR-0007](../meta/decisions/ADR-0007-v-cycle-additions.md) for the rationale and the deferred elements (stable SPEC IDs, multi-doc baseline versioning).
 
 ## Core principles (review against these)
 
