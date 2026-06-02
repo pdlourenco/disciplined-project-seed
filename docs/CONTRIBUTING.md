@@ -184,7 +184,7 @@ Catching issues before CI runs saves minutes, dollars, and reviewer attention. A
 
 ## Reviewing an open PR
 
-When asking a reviewer agent to review a pull request that already exists on GitHub (yours or someone else's), use the parameterised prompt below rather than re-typing the long invocation each time. The call-site invocation collapses to *"review PR NN per `CONTRIBUTING.md` §Reviewing an open PR"* — the agent reads this section and the linked docs, then runs the review.
+When asking a reviewer agent to review a pull request that already exists on GitHub (yours or someone else's), use the parameterised prompt below rather than re-typing the long invocation each time. The call-site invocation collapses to *"review PR NN per `CONTRIBUTING.md` §Reviewing an open PR"* — the agent reads this section and the linked docs, then runs the review. See [ADR-0008](../meta/decisions/ADR-0008-reviewer-invocation-convention.md) for the rationale (defaults, fallback chain, surface choice).
 
 This convention is distinct from §"Pre-push self-review" above:
 
@@ -201,7 +201,7 @@ Sensible defaults cover the common case. Five parameters can be overridden inlin
 4. **Context-doc set** — defaults to [`REVIEW_CONTEXT.md`](REVIEW_CONTEXT.md), [`DESIGN.md`](DESIGN.md), [`SPEC.md`](SPEC.md), [`ROADMAP.md`](ROADMAP.md). Override when the PR touches a narrower or wider surface (e.g. *"plus `docs/decisions/ADR-NNNN`"* for a PR adjacent to a recent ADR whose rationale matters).
 5. **CI handling** — `check-or-run` (default; see step 1 of the prompt below) or `skip` for diff-only reviews when CI isn't useful (e.g. a pure-prose docs PR with no gates that apply).
 
-### Reviewer prompt
+### Prompt template
 
 > Review PR **NN** in the current repository.
 >
@@ -232,7 +232,7 @@ Sensible defaults cover the common case. Five parameters can be overridden inlin
 - `review PR 18 per CONTRIBUTING.md §Reviewing an open PR — plus docs/decisions/ADR-0007`
   Bundled, comments, expanded context (useful for PRs adjacent to a recent ADR whose rationale the reviewer needs).
 
-### Rules of engagement
+### Invocation rules
 
 - The reviewer is a complement to human review, not a replacement. Treat its findings the way you'd treat any reviewer's: weigh them, push back where the call is yours, fix what's right.
 - Use `report` mode for the first pass on a novel PR shape so low-confidence findings don't land as public noise; switch to `comments` once you've calibrated.
