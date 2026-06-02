@@ -142,6 +142,8 @@ Before every `git push` on a PR branch, Claude agents working on this repo shoul
 
 Launch a `general-purpose` or `Explore` subagent with the diff plus this prompt.
 
+The prompt below covers both review modes from [`REVIEW_CONTEXT.md` §"Verification vs validation"](REVIEW_CONTEXT.md) — *verification* (matches contracts / catalogue / named artifacts?) and *validation* (matches principles / scope / intent?). To run a single-mode review for tighter findings at lower token cost, prefix the invocation with *"review in verification mode only"* or *"review in validation mode only"* and skip the bullets that don't apply.
+
 **Replace the example pitfalls below with your project's actual principles from [`REVIEW_CONTEXT.md`](REVIEW_CONTEXT.md), phrased as numbered assertions the reviewer can cite by number.** What's listed below is shaped as a guide, not as boilerplate to ship verbatim.
 
 > Review the diff below for:
