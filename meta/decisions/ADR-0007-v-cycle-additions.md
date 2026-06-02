@@ -8,7 +8,7 @@ Accepted — 2026-06-01.
 
 The seed's discipline already has a left-right asymmetry: SPEC / DESIGN / ROADMAP / phase plans on the left capture *what*; contract-consistency tests, PR gates, the reviewer subagent, and the four-tier CI on the right verify *built right*. The left side is well-developed; the right side is informally distributed and weaker.
 
-V-cycle / ECSS-style engineering names this asymmetry: every left-side commitment has a corresponding right-side mechanism that checks it. The seed already has the *shape* (contract → contract-consistency test; principle → reviewer-subagent finding; success criteria → per-PR gates), just without the framing or naming.
+V-cycle / ECSS-style engineering ([V-model](https://en.wikipedia.org/wiki/V-model) on Wikipedia for the canonical engineering-lifecycle reference) names this asymmetry: every left-side commitment has a corresponding right-side mechanism that checks it. The seed already has the *shape* (contract → contract-consistency test; principle → reviewer-subagent finding; success criteria → per-PR gates), just without the framing or naming.
 
 Three weak points on the current right side, surfaced in conversation:
 
