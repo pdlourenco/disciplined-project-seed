@@ -73,6 +73,7 @@ Entries are dated by merge into `main`.
 
 ### Fixed
 
+- `.github/workflows/sync-labels.yml` — added `contents: read` alongside `issues: write` so `actions/checkout` works on private adopter repos. A `permissions:` block sets every unlisted scope to `none`; the implicit `contents: none` was silently fine on the seed's own public repo (unauthenticated reads work) but 404'd on private forks, so the sync never ran. Same shape `check-branch-protection.yml` already used; surfaced by a downstream private adopter (PPQQ). General rule now stated once in `docs/CONTRIBUTING.md §"Workflow permissions"` and noted in [ADR-0001 §Consequences](decisions/ADR-0001-label-sync.md). Adopter-facing: private forks should merge this fix.
 - `CLAUDE.md` §3 rendered two dangling em-dash artifacts where HTML-comment placeholders sat inline — `external contracts — .` and `gates in CI — — are not optional.` Rewrote both to neutral generic prose. ([#4](https://github.com/pdlourenco/disciplined-project-seed/pull/4))
 
 ## [0.3.0] — 2026-05-29
