@@ -13,6 +13,12 @@
 # markdown backticks (e.g. `docs/SPEC.md`) are stripped — GitHub renders
 # label descriptions as plain text, so backticks would show literally.
 #
+# Colour format: ALL colours are quoted strings. A hex colour matching
+# /\d+[eE]\d+/ (e.g. 5319E7) is YAML-1.1-legal scientific notation
+# (5319 × 10^7) — an unquoted value would be parsed as a number and
+# silently corrupt the colour. Quote prophylactically across the whole
+# catalogue so future additions don't have to re-derive the rule.
+#
 # Phase labels (phase-0, phase-1, …) are deliberately NOT listed here.
 # They are added on demand per docs/LABELS.md §"Phase (apply at most
 # one)"; listing them would have the sync action churn them as phases
@@ -24,55 +30,55 @@
 # named trigger fires). On decision-bearing issues.
 
 - name: discussion
-  color: FBCA04
+  color: "FBCA04"
   description: "Decision is open; alternatives on the table, no resolution yet"
 
 - name: decided
-  color: 0E8A16
+  color: "0E8A16"
   description: "Decision is locked; awaiting follow-up implementation / ADR"
 
 - name: ready
-  color: 1D76DB
+  color: "1D76DB"
   description: "All prerequisites met; ready to implement"
 
 - name: deferred
-  color: C5DEF5
+  color: "C5DEF5"
   description: "Postponed with a named trigger condition (deferred-with-conditions, not deferred-forever)"
 
 # Topic (apply one or more)
 
 - name: schema
-  color: 5319E7
+  color: "5319E7"
   description: "Data shape / migrations / contract-bearing field changes"
 
 - name: spec
-  color: 0052CC
+  color: "0052CC"
   description: "Contract layer: changes to docs/SPEC.md"
 
 - name: design
-  color: 8E44AD
+  color: "8E44AD"
   description: "Design rationale: docs/DESIGN.md and docs/design/*.md"
 
 - name: documentation
-  color: 0075CA
+  color: "0075CA"
   description: "Root-level docs (README, CONTRIBUTING, REVIEW_CONTEXT, STRUCTURE, decisions/, plans/, LABELS.md)"
 
 - name: implementation
-  color: 2EA44F
+  color: "2EA44F"
   description: "Application code, not docs"
 
 - name: UX
-  color: BFD4F2
+  color: "BFD4F2"
   description: "User experience: flow, interaction, copy"
 
 - name: UI
-  color: F9D0C4
+  color: "F9D0C4"
   description: "Visual surface: layout, components, styling"
 
 - name: bug
-  color: D73A4A
+  color: "D73A4A"
   description: "Defect; expected vs actual mismatch"
 
 - name: security
-  color: B60205
+  color: "B60205"
   description: "Security-relevant: auth, encryption, isolation, PII"

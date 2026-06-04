@@ -97,6 +97,10 @@ These checks are valuable but don't earn their keep today, either because the su
 - **Trigger to wire in:**
 - **Sketch:**
 
+## Workflow permissions
+
+Any shipped workflow that uses `actions/checkout` (or otherwise reads repo contents) must list `contents: read` explicitly in its `permissions:` block. A `permissions:` block sets every unlisted scope to `none`, so the implicit `contents: none` breaks `actions/checkout` on private repos with a 404 — silently fine on public repos because unauthenticated reads work, which is how this class of bug can hide until a private adopter hits it. `contents: read` is harmless on public repos and required on private — a strict improvement with no downside. The seed's own `sync-labels.yml`, `check-branch-protection.yml`, and `ci.yml` all ship with explicit `contents: read`; extend the same discipline to any new workflow.
+
 ## Local development
 
 <!-- One subsection per language or component. Keep commands minimal and

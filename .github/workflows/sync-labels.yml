@@ -15,6 +15,13 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     permissions:
+      # contents: read is required by actions/checkout on private repos.
+      # A permissions: block sets every unlisted scope to none, so the
+      # implicit contents: none would break checkout — silently on
+      # public repos (unauthenticated read works) but with a 404 on
+      # private adopters. See ADR-0001 §Consequences and the
+      # "Workflow permissions" rule in docs/CONTRIBUTING.md.
+      contents: read
       issues: write
     steps:
       - uses: actions/checkout@v4
