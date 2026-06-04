@@ -66,6 +66,7 @@ A new label should:
 
 - Have a clear definition that doesn't overlap an existing one — or, if it overlaps deliberately, update the disambiguation entry in the same PR.
 - Sit in one of the three existing categories. Proposing a new category is itself a major decision and warrants surfacing the case for why an existing category won't do.
+- Keep its `description` at most **100 characters** — GitHub's label API rejects longer values. The `.github/labels.yml` header restates this so the limit is visible at write time.
 
 ## Renaming and removing
 
