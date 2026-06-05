@@ -130,6 +130,12 @@ jobs:
         if: steps.diff.outputs.drift == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          # GH_REPO targets `gh` at the repo explicitly so the issue
+          # commands work whether actions/checkout ran or not (gh
+          # otherwise infers the repo from the cwd's git remote, which
+          # silently fails on workflows that don't check out). See
+          # docs/CONTRIBUTING.md §"`gh` CLI in workflows".
+          GH_REPO: ${{ github.repository }}
         run: |
           DATE=$(date -u +'%Y-%m-%d')
           BODY=$(cat <<EOF
@@ -174,6 +180,8 @@ jobs:
           steps.detail.outputs.status == 'missing'
         env:
           GH_TOKEN: ${{ github.token }}
+          # See the GH_REPO note on the Open drift issue step above.
+          GH_REPO: ${{ github.repository }}
         run: |
           DATE=$(date -u +'%Y-%m-%d')
           BODY=$(cat <<EOF

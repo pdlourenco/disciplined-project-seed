@@ -106,6 +106,10 @@ These checks are valuable but don't earn their keep today, either because the su
 
 Any shipped workflow that uses `actions/checkout` (or otherwise reads repo contents) must list `contents: read` explicitly in its `permissions:` block. A `permissions:` block sets every unlisted scope to `none`, so the implicit `contents: none` breaks `actions/checkout` on private repos with a 404 — silently fine on public repos because unauthenticated reads work, which is how this class of bug can hide until a private adopter hits it. `contents: read` is harmless on public repos and required on private — a strict improvement with no downside. The seed's own `sync-labels.yml`, `check-branch-protection.yml`, and `ci.yml` all ship with explicit `contents: read`; extend the same discipline to any new workflow.
 
+## `gh` CLI in workflows
+
+Any shipped workflow that invokes the `gh` CLI against a specific repo (`gh issue create`, `gh pr create`, `gh api /repos/...`, …) must target the repo explicitly — either via `--repo ${{ github.repository }}` per call site, or by setting `GH_REPO: ${{ github.repository }}` in the step's `env:`. Without it, `gh` falls back to inferring the target from the current working directory's git remote, which only works if `actions/checkout` ran. Workflows that legitimately don't check out (or any future workflow that drops the checkout step "because the API call doesn't need it") silently break the first time the `gh` command actually fires — typically with `fatal: not a git repository`. The seed's `check-branch-protection.yml` sets `GH_REPO` on every step that calls `gh issue create`; extend the same discipline to any new workflow that invokes `gh` outside a checked-out tree.
+
 ## Local development
 
 <!-- One subsection per language or component. Keep commands minimal and
