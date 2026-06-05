@@ -134,7 +134,7 @@ jobs:
           # commands work whether actions/checkout ran or not (gh
           # otherwise infers the repo from the cwd's git remote, which
           # silently fails on workflows that don't check out). See
-          # docs/CONTRIBUTING.md §"`gh` CLI in workflows".
+          # docs/CONTRIBUTING.md §"gh CLI in workflows".
           GH_REPO: ${{ github.repository }}
         run: |
           DATE=$(date -u +'%Y-%m-%d')

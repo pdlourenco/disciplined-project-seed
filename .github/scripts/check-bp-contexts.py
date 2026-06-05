@@ -41,7 +41,15 @@ def required_contexts(bp: dict) -> set[str]:
 def live_job_names(ci: dict) -> set[str]:
     """Return the set of names GitHub will report as status-check
     contexts. If a job has `name:`, that's the context; otherwise the
-    job_id is used."""
+    job_id is used.
+
+    Caveat: `strategy.matrix` jobs are not expanded. GitHub reports
+    those as `<name> (<matrix-value>)` contexts, one per matrix cell.
+    The seed has no matrix jobs in its required-contexts list today;
+    an adopter who adds one will see a false "missing context"
+    failure here and needs to extend this function to enumerate the
+    matrix expansion.
+    """
     jobs = ci.get("jobs") or {}
     names: set[str] = set()
     for job_id, job in jobs.items():
