@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted — 2026-05-31.
+Accepted — 2026-05-31. Revised — 2026-06-05: corrected a wrong premise in §Decision and §Consequences (the default `GITHUB_TOKEN` cannot read `/branches/:branch/protection` — it returns 403, not 404). The workflow now uses a two-layer presence/detail model with the admin-token requirement deferred behind an opt-in repo secret.
 
 ## Context
 
@@ -27,14 +27,18 @@ Ship three coordinated pieces, no secrets in the repo:
 
 - **`scripts/setup-branch-protection.sh`** — human-triggered apply. Reads the YAML, converts to JSON via `yq`, posts to the branch-protection API via the adopter's `gh auth` credentials. No admin PAT stored in the repo. Shows the diff against live config before applying. Requires `gh`, `yq`, and `jq` on the operator's PATH.
 
-- **`.github/workflows/check-branch-protection.yml`** — scheduled (weekly) read-only drift check. Uses the default `GITHUB_TOKEN`, which *can* read branch protection without admin scope. Normalizes the live API response (which wraps some booleans as `{enabled: bool}` objects) to match the YAML's flat structure, then diffs. Opens an issue if drift is detected, or if live protection isn't configured at all.
+- **`.github/workflows/check-branch-protection.yml`** — scheduled (weekly) read-only drift check, **two-layer**:
+  - **Layer 1 (presence; default token)** — `GET /repos/.../branches/main` returns a `protected` boolean readable with `contents: read`. Catches "protection removed entirely".
+  - **Layer 2 (field-level; opt-in admin token)** — `GET /repos/.../branches/main/protection` returns the full configuration but requires `administration: read` scope, which the default `GITHUB_TOKEN` does NOT have (returns 403). Adopters who want field-level drift provide `BRANCH_PROTECTION_READ_TOKEN` as a repo secret (PAT or App token); without it, the workflow logs "field-level drift skipped" and exits cleanly. The error handler distinguishes 403 (denied) from 404 (missing) so denied-as-absent is never mis-reported.
+  - Normalizes the layer-2 live response (which wraps some booleans as `{enabled: bool}` objects) to match the YAML's flat structure, then diffs.
 
 For the classic-vs-rulesets sub-decision: **classic**. Universal tooling support; simpler reasoning; every action and script knows how to handle it. Rulesets are documented as the alternative when adopters need ruleset-only features.
 
 ## Consequences
 
 - **No secret stored in the repo.** Sidesteps the admin-PAT provisioning, rotation, and compromise surface entirely. The trade-off is that apply is manual — adopters re-run `setup-branch-protection.sh` when they edit the YAML.
-- **Drift-detection safety net.** The weekly read-only workflow runs against `GITHUB_TOKEN`'s read scope and opens an issue on divergence. Adopters who edit the YAML and forget to apply get notified within a week; manual `Settings → Branches` edits also get caught.
+- **Drift-detection safety net (two layers).** Layer 1 — presence check via `/branches/main`'s `protected` flag — always runs against the default `GITHUB_TOKEN`'s `contents: read` scope and catches "protection removed entirely". Layer 2 — field-level drift via `/protection` — requires `administration: read` and runs only when `BRANCH_PROTECTION_READ_TOKEN` is provided. The error handler distinguishes HTTP 403 (denied — token lacks scope) from 404 (missing — no protection set), so denied-as-absent is never mis-reported. Adopters who edit the YAML and forget to apply get notified within a week (layer 2 if the admin token is provided; layer 1 always); manual `Settings → Branches` edits also get caught.
+- **Field-level drift is opt-in (the corrected premise).** The original draft of this ADR claimed the default `GITHUB_TOKEN` could read `/protection` without admin scope — that was wrong. The endpoint requires `administration: read`, which is not in the default token's scope set; it cannot be granted via the `permissions:` block (admin scopes require a PAT or App token). Adopters who want field-level drift detection provision `BRANCH_PROTECTION_READ_TOKEN` and store it as a repo secret; the workflow uses it via `${{ secrets.BRANCH_PROTECTION_READ_TOKEN || github.token }}`. Without it, layer 1 still catches presence drift — a meaningful subset that requires no token plumbing from the adopter.
 - **Permissions-asymmetry explicit.** This ADR diverges from [ADR-0001](ADR-0001-label-sync.md)'s "sync via Action" shape *because of the admin-scope requirement*, not because the two problems differ in spirit. Documenting it here closes the "why didn't we just do it like labels?" question a future contributor would ask.
 - **Lockout blast radius is bounded.** A bad label-sync run loses a label; recoverable in seconds. A bad branch-protection-apply run with admin credentials can require manual GitHub-UI intervention. Human-in-the-loop apply (running the script consciously) is the safety property: the operator sees the diff before pressing enter.
 - **Classic schema, rulesets as upgrade path.** If adopters need ruleset-only features (deployment-success requirements, ruleset bypass actors, layered policies), they migrate the YAML schema and the script's API endpoint. Documented as the upgrade-path direction; not done in this PR.
