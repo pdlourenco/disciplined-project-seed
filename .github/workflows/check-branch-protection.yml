@@ -1,11 +1,28 @@
 name: Check branch protection
 
 # Compares live branch protection on `main` against
-# .github/branch-protection.yml weekly. Read-only — the default
-# GITHUB_TOKEN can READ branch protection without admin scope (writing
-# requires admin scope, which is why apply is a human-triggered script,
-# not a workflow). Opens an issue if drift is detected. See
-# meta/decisions/ADR-0005-branch-protection-as-code-classic.md.
+# .github/branch-protection.yml weekly.
+#
+# Permissions model — two layers (see ADR-0005, revised):
+#
+# 1. PRESENCE CHECK (always runs; default GITHUB_TOKEN's contents:read
+#    scope is sufficient). GET /repos/.../branches/main exposes a
+#    `protected` boolean. Catches the "protection removed entirely"
+#    failure mode.
+#
+# 2. FIELD-LEVEL DRIFT (opt-in; requires administration:read scope).
+#    GET /repos/.../branches/main/protection returns the full
+#    configuration. The default GITHUB_TOKEN does NOT have
+#    administration:read — that scope is grantable only via a PAT or
+#    GitHub App installation token. Adopters who want field-level drift
+#    set BRANCH_PROTECTION_READ_TOKEN as a repo secret; absent it,
+#    this layer logs "field-level drift skipped" and exits cleanly.
+#
+# The error handler distinguishes HTTP 403 (denied — token lacks
+# scope) from HTTP 404 (missing — no protection set) so denied-as-
+# absent is never mis-reported. The original ADR-0005 claimed the
+# default GITHUB_TOKEN could read /protection — that was wrong; the
+# revision corrects the premise and this workflow's behaviour matches.
 
 on:
   schedule:
@@ -37,24 +54,63 @@ jobs:
           json.dump(data, sys.stdout)
           ' > desired-protection.json
 
-      - name: Fetch live branch protection
-        id: fetch
+      # Layer 1: presence check via /branches/{branch}. Token-free
+      # (default GITHUB_TOKEN's contents:read scope is sufficient).
+      - name: Check branch is protected
+        id: presence
         env:
           GH_TOKEN: ${{ github.token }}
+        run: |
+          if PROTECTED=$(gh api \
+             -H "Accept: application/vnd.github+json" \
+             "/repos/${{ github.repository }}/branches/main" \
+             --jq '.protected' 2>presence-error.log); then
+            echo "protected=$PROTECTED" >> "$GITHUB_OUTPUT"
+            echo "Presence check: protected=$PROTECTED"
+          else
+            echo "protected=error" >> "$GITHUB_OUTPUT"
+            cat presence-error.log
+            exit 1
+          fi
+
+      # Layer 2: field-level drift via /protection. Opt-in via
+      # BRANCH_PROTECTION_READ_TOKEN (PAT or App token with
+      # administration:read scope). Falls back to the default token,
+      # which will 403 — handled explicitly below so denied-as-absent
+      # is never mis-reported.
+      - name: Fetch full protection (field-level drift)
+        id: detail
+        if: steps.presence.outputs.protected == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BRANCH_PROTECTION_READ_TOKEN || github.token }}
         run: |
           if gh api \
              -H "Accept: application/vnd.github+json" \
              "/repos/${{ github.repository }}/branches/main/protection" \
-             > live-protection.json 2>fetch-error.log; then
-            echo "fetched=true" >> "$GITHUB_OUTPUT"
+             > live-protection.json 2>detail-error.log; then
+            echo "status=ok" >> "$GITHUB_OUTPUT"
+          elif grep -q "HTTP 403" detail-error.log; then
+            echo "status=denied" >> "$GITHUB_OUTPUT"
+            echo "Field-level drift check skipped: the token lacks"
+            echo "administration:read scope. Provide"
+            echo "BRANCH_PROTECTION_READ_TOKEN (PAT or App token) as a"
+            echo "repo secret to enable detailed drift detection."
+            echo "Presence check passed: protection IS configured."
+          elif grep -q "HTTP 404" detail-error.log; then
+            echo "status=missing" >> "$GITHUB_OUTPUT"
+            echo "Inconsistent state: /branches/main reported"
+            echo "protected=true but /protection returned 404. Possible"
+            echo "race or stale state; this run treats it as missing."
+            cat detail-error.log
           else
-            echo "fetched=false" >> "$GITHUB_OUTPUT"
-            cat fetch-error.log
+            echo "status=error" >> "$GITHUB_OUTPUT"
+            cat detail-error.log
+            exit 1
           fi
 
       - name: Normalize and diff
         id: diff
-        if: steps.fetch.outputs.fetched == 'true'
+        if: steps.detail.outputs.status == 'ok'
         run: |
           jq -S -f scripts/normalize-branch-protection.jq \
             live-protection.json    > live-normalized.json
@@ -71,11 +127,15 @@ jobs:
           fi
 
       - name: Open drift issue
-        if: |
-          steps.fetch.outputs.fetched == 'true' &&
-          steps.diff.outputs.drift == 'true'
+        if: steps.diff.outputs.drift == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          # GH_REPO targets `gh` at the repo explicitly so the issue
+          # commands work whether actions/checkout ran or not (gh
+          # otherwise infers the repo from the cwd's git remote, which
+          # silently fails on workflows that don't check out). See
+          # docs/CONTRIBUTING.md §"gh CLI in workflows".
+          GH_REPO: ${{ github.repository }}
         run: |
           DATE=$(date -u +'%Y-%m-%d')
           BODY=$(cat <<EOF
@@ -115,16 +175,20 @@ jobs:
             --body "$BODY"
 
       - name: Report missing live protection
-        if: steps.fetch.outputs.fetched == 'false'
+        if: |
+          steps.presence.outputs.protected == 'false' ||
+          steps.detail.outputs.status == 'missing'
         env:
           GH_TOKEN: ${{ github.token }}
+          # See the GH_REPO note on the Open drift issue step above.
+          GH_REPO: ${{ github.repository }}
         run: |
           DATE=$(date -u +'%Y-%m-%d')
           BODY=$(cat <<EOF
-          The weekly drift check could not fetch branch protection on
-          \`main\`. The most likely cause: branch protection isn't
-          configured at all (either the repo hasn't been set up yet or
-          it was removed).
+          The weekly drift check found that branch protection on
+          \`main\` is not configured. The presence check (which works
+          with the default \`GITHUB_TOKEN\`) reported the branch as
+          unprotected.
 
           Run \`scripts/setup-branch-protection.sh\` from an
           authenticated environment to apply the policy from

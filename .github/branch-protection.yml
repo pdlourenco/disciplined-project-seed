@@ -21,11 +21,16 @@ required_status_checks:
   strict: true
   # Context names match the `name:` field of each job in
   # .github/workflows/ci.yml exactly, including the "Tier 3 — " prefix.
+  # The check-bp-contexts CI job (and its .github/scripts/check-bp-
+  # contexts.py helper) statically asserts every context here has a
+  # matching job name in ci.yml, so this list stays in sync at merge
+  # time. See ADR-0005 §Consequences.
   contexts:
     - "Tier 3 — Markdown lint"
     - "Tier 3 — Link check (internal)"
     - "Tier 3 — Dangling-placeholder audit"
     - "Tier 3 — Workflow YAML lint"
+    - "Tier 3 — Branch-protection contexts consistency"
 
 # Whether to enforce these settings for repo admins too. False for
 # solo-maintained projects (lets the admin override in emergencies);

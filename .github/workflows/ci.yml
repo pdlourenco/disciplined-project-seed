@@ -131,6 +131,22 @@ jobs:
           docker run --rm -v "${PWD}:/repo" -w /repo \
             rhysd/actionlint:1.7.12 -color
 
+  check-bp-contexts:
+    name: Tier 3 — Branch-protection contexts consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check branch-protection.yml contexts ⊆ ci.yml job names
+        # Static, token-free, no-network consistency check. Runs the
+        # script every PR / push; cheap (two YAML loads + a set diff).
+        # Complement to the runtime drift workflow's presence and
+        # field-level-drift layers — together they cover the three
+        # drift modes (CI job renamed at edit time; protection removed
+        # post-deploy; per-field config drift post-deploy). See
+        # ADR-0005 §Consequences and .github/scripts/check-bp-contexts.py.
+        run: |
+          python3 .github/scripts/check-bp-contexts.py
+
   # ─── Tier 1 — Contract enforcement (placeholder) ────────────────
   #
   # When the adopter introduces cross-component contracts in
