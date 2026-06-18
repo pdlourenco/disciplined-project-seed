@@ -47,13 +47,14 @@ esac
 #             pin matches that tag exactly.
 ACTIONLINT_VERSION="1.7.12"
 # markdownlint-cli2 + lychee: ci.yml pins the *actions*
-# (DavidAnson/markdownlint-cli2-action, lycheeverse/lychee-action), whose
-# bundled tool versions live in those action releases. Confirm the exact
-# versions those pinned action releases bundle, then pin them here so the
-# local run matches CI. Steps below are best-effort: a stale pin degrades
-# to a logged warning, not a broken session.
-MARKDOWNLINT_CLI2_VERSION="0.18.1"   # track DavidAnson/markdownlint-cli2-action (ci.yml: v23.2.0)
-LYCHEE_VERSION="0.20.1"              # track lycheeverse/lychee-action (ci.yml: v2.8.0)
+# (DavidAnson/markdownlint-cli2-action, lycheeverse/lychee-action); the
+# versions below are the tool versions those pinned action releases bundle,
+# so a local run matches CI. When you bump a pinned action in ci.yml,
+# re-check the version it ships and update the matching pin here. Steps
+# below are best-effort: a stale pin degrades to a logged warning, not a
+# broken session.
+MARKDOWNLINT_CLI2_VERSION="0.22.1"   # bundled by markdownlint-cli2-action v23.2.0 (ci.yml)
+LYCHEE_VERSION="0.23.0"              # default of lychee-action v2.8.0 (ci.yml)
 
 # 3. markdown lint — markdownlint-cli2 via npm.
 if command -v markdownlint-cli2 >/dev/null 2>&1; then
