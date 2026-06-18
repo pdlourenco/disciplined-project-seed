@@ -3,6 +3,7 @@
 ## Status
 
 Accepted — 2026-05-31.
+Revised — 2026-06-18: the seed now dogfoods a `scripts/local-ci.sh` wrapper over its own doc-CI suite (the fallback this ADR explicitly leaves open for "no ecosystem-native runner fits"). The recommendation *for adopters* is unchanged — the ecosystem's task runner is still the source of truth once a real stack lands. Surfaced in [#27](https://github.com/pdlourenco/disciplined-project-seed/issues/27); see the revision note under §Decision and the dogfooding entry under §Consequences.
 
 ## Context
 
@@ -28,13 +29,20 @@ And a **Scope** clause:
 
 No new on-disk artifact ships with this ADR — the change is prose in `CONTRIBUTING.md`. The seed doesn't ship a `Makefile`, doesn't depend on `act`, doesn't ship a wrapper script. The convention is: use what your ecosystem already provides.
 
+### Revision (2026-06-18) — the seed dogfoods a wrapper for its own doc-CI
+
+The original decision named a revisit condition: *"If the seed itself adds a non-trivial … stack … the 'use the ecosystem's task runner' guidance applies to the seed too."* That condition is effectively met, but not in the shape anticipated. The seed's own CI is five tier-3 jobs across **heterogeneous tools no single ecosystem runner drives** — markdownlint-cli2 (Node), lychee (Rust binary), actionlint (Go binary / Docker image), and two Python scripts. That is precisely the *"a small `Makefile` or shell script is a reasonable fallback when no ecosystem-native task runner fits"* case this ADR already blesses — so the seed now ships `scripts/local-ci.sh` to occupy that fallback for its **own** doc suite.
+
+This is narrower than a reversal: the wrapper is the seed's glue across heterogeneous doc tools, **not** a replacement for `pnpm run` / `cargo` / `tox` in a real stack. The adopter guidance in §Decision and §Consequences stands unchanged. `scripts/local-ci.sh` runs the active tier-3 jobs in `ci.yml` order, fail-fast, with the template skip-list mirrored in one place and a `KEEP IN SYNC` comment tying it to the other copies (`ci.yml`, `.markdownlint-cli2.jsonc`). It pairs with `.claude/hooks/session-start.sh` (ADR-0009 / [#26](https://github.com/pdlourenco/disciplined-project-seed/issues/26)): the hook provisions the toolchain, the script drives it.
+
 ## Consequences
 
 - **The pre-push command is whatever the adopter's task runner is.** `tox -e lint,test` for Python with tox; `cargo fmt --check && cargo clippy && cargo test` for Rust; `pnpm lint && pnpm typecheck && pnpm test` for Node; `go vet ./... && go test ./...` for Go. The seed itself runs `python3 .github/scripts/audit-placeholders.py` plus the markdown / link / workflow gates — there's no single one-liner that captures them, but the workflow's own `run:` lines are the source of truth.
 - **No `Makefile` or shell wrapper ships with the seed.** Adding one would create the shadow-scaffolding problem the ADR's reframe was designed to dissolve. Adopters whose ecosystem genuinely lacks a task runner can write a `Makefile` themselves; the seed doesn't enforce that.
 - **`act` is reframed as a niche tool, not the default.** Documented in §Decision; not banned, just not recommended as the pre-push mechanism for most adopters. Adopters who specifically need workflow-YAML-fidelity testing can layer `act` on top.
 - **Tier-scope discipline is load-bearing and stated explicitly.** Tier 1 + 3 pre-push; tier 2 ships only on CI (the runner matrix is what makes it meaningful); tier 4 doesn't run anywhere until promoted. Without this carve-out, adopters who try to run the full workflow locally hit the 30-second budget and abandon the convention.
-- **No new external dependency.** Per `CLAUDE.md` §4, this PR is still a major decision (it locks in a sticky trade-off about which wrapper layer the seed *doesn't* recommend), but no `Makefile`, `act`, or script gets shipped.
+- **No new external dependency.** Per `CLAUDE.md` §4, this PR is still a major decision (it locks in a sticky trade-off about which wrapper layer the seed *doesn't* recommend), but no `Makefile`, `act`, or script gets shipped. *(Superseded by the 2026-06-18 revision for the seed's own repo: `scripts/local-ci.sh` now ships. Still no new external dependency, and the adopter recommendation is unchanged.)*
+- **The dogfood adds one drift surface (2026-06-18 revision).** `scripts/local-ci.sh` carries a fourth copy of the template skip-list (alongside `ci.yml`'s two `find` blocks and `.markdownlint-cli2.jsonc`'s `ignores`). The cost is accepted because the alternative — no executable pre-push run for the seed itself in an ephemeral web container — is worse; the mitigation is the single in-script definition plus the `KEEP IN SYNC` comment ADR-0002 already established. The promotion trigger that would collapse all copies into one generated source is named in ADR-0002 §Consequences.
 - **Revisit conditions.** If workflow YAML changes become frequent enough that CI-roundtripping them is genuinely painful, the cost calculus for `act` shifts and the seed should add an `act`-as-upgrade-path note. If the seed itself adds a non-trivial Python or other stack (beyond the placeholder-audit script), the "use the ecosystem's task runner" guidance applies to the seed too — at which point a `pyproject.toml` (or equivalent) with a `[tool.tox]` (or equivalent) section dogfoods the convention.
 
 ## Alternatives considered

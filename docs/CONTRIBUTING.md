@@ -56,6 +56,12 @@ The seed ships an active baseline workflow at [`.github/workflows/ci.yml`](../.g
      - An integration job that exercises one side's writes against another
        side's reads with a real on-disk artifact.
 
+     - A structural lint rule (AST-level) that makes violating an
+       architectural invariant a build error, paired with a drift-guard
+       test that derives the same target set from metadata so the rule's
+       hardcoded list can't silently diverge from the schema. Pattern
+       only — the rule's contents are domain-specific and stay downstream.
+
      If your project has no cross-component contracts, delete this tier and
      the four-tier structure collapses to three. -->
 
@@ -251,10 +257,47 @@ Sensible defaults cover the common case. Six parameters can be overridden inline
 ### Invocation rules
 
 - The reviewer is a complement to human review, not a replacement. Treat its findings the way you'd treat any reviewer's: weigh them, push back where the call is yours, fix what's right.
+- **In the two-session workflow (§"Two-session authoring / review workflow"), the reviewing session is comment-only** — it posts findings and never edits or pushes code. The *push-a-fix* follow-up in the prompt template above applies only to the single-session autofix / babysit model, where one session both reviews and fixes; in the two-session split the **authoring** session applies fixes (on the maintainer's *"reviews posted"*).
 - Use `report` mode for the first pass on a novel PR shape so low-confidence findings don't land as public noise; switch to `comments` once you've calibrated.
 - If CI is unreachable *and* a local run isn't possible (no checkout, no toolchain), say so in the review — never silently skip the right-side mechanical checks. A review that didn't verify is a validation-only review and should be labelled as such in the verdict.
 - `subscribe` is the default because the natural shape of PR review is to follow through: a one-shot review that ignores follow-up pushes and CI changes misses most of the value. Use `once` for fast triage passes where the reviewer should not stay alive — typically paired with `report` output — or when another watcher (an org PR Steward, a separate session) should keep event ownership.
 - **Announce subscription at take-up time.** When `subscribe` is in effect, the reviewer must surface that it has subscribed — and, in environments where the subscription is exclusive, that this displaced any prior watcher. *"I'm now watching PR NN; this took over event ownership from any existing steward"* is the shape; the human should see it alongside the findings rather than discover later that events were silently re-routed.
+
+## Two-session authoring / review workflow
+
+For parallel agentic development, the seed's default topology is **two sessions per track**: one authors, one reviews. They never share the three verbs below. See [ADR-0009](../meta/decisions/ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md) for the rationale and rejected alternatives. The open/merge authorization this section assumes is set in [`../CLAUDE.md`](../CLAUDE.md) §5.
+
+### Roles
+
+- **Authoring session** — implements an item from the active phase plan's PR sequence, opens the PR, pushes fixes, and **merges on the maintainer's *"merge and proceed."*** Owns the code. It does **not** perform the open-PR review (that is the reviewing session's job); its only review duty is the **pre-push self-review of its own diff** (§"Pre-push self-review"), which is *not* the same as reviewing a PR.
+- **Reviewing session** — **only reviews** (on *"review PR X"*, per §"Reviewing an open PR") and subscribes / follows through. It never edits or pushes code, and **never merges** — not even a clean, approved PR; the authoring session merges, on the maintainer's say-so.
+
+At a glance — the three verbs, per session:
+
+| Session | Authors / edits code | Reviews open PRs | Merges |
+|---|---|---|---|
+| **Authoring** | yes | no — only the pre-push self-review of its *own* diff | yes, on `merge and proceed` |
+| **Reviewing** | no | yes | no |
+
+### The loop
+
+1. **Authoring** implements and **opens the PR** — no separate approval for in-plan work (`CLAUDE.md` §5); the pre-push self-review and pre-push CI disciplines run first.
+2. **Reviewing** reviews on the maintainer's *"review PR X"*, per §"Reviewing an open PR". Never touches code.
+3. Maintainer tells authoring *"reviews posted"*; it analyses the comments and pushes any fixes.
+4. Repeat 2–3 until the review is clean.
+5. Maintainer tells authoring *"merge and proceed"*; it merges (squash / rebase for linear history) and starts the next plan item.
+
+### Command vocabulary
+
+| Phrase | Session | Means |
+|---|---|---|
+| `review PR X` | reviewing | run §"Reviewing an open PR" against PR X |
+| `reviews posted` | authoring | analyse the posted review, push fixes |
+| `merge and proceed` | authoring | merge the open PR, then start the next plan item |
+
+When two authoring sessions run in parallel and share a contract surface, prefer **one shared reviewer** over one-per-author — cross-track contract drift is exactly what a single reviewer holding both contexts catches and two siloed reviewers each miss.
+
+The kickoff collapses to one line: *"you are the authoring / reviewing session for Phase N, per `CONTRIBUTING.md` §Two-session authoring / review workflow."* Only the variable bits (role + phase) are seeded per session.
 
 ## Pre-push CI run (once CI exists)
 
@@ -267,7 +310,7 @@ Once the CI suite defined in §CI strategy lands, **run it locally before every 
 - **Exceptions**: same narrow list as the reviewer — one-line typo fixes, formatting-only changes, pure reverts. The ceremony costs more than the signal for these.
 - Note the outcome briefly in the PR description: `local CI: green` or `local CI: <job> failed, fixed in <sha>`.
 
-**Commands.** The same commands your CI workflow runs should be runnable locally. If your stack has a task runner (`tox`, `nox`, `just`, `cargo`, `npm scripts`, `go` subcommands, etc.), define your CI commands there once and call them from both the workflow and the pre-push invocation. A small `Makefile` or shell script is a reasonable fallback when no ecosystem-native task runner fits. `act` is available for testing workflow YAML *changes* themselves but is overkill as the default pre-push mechanism — for most CI logic, invoking the underlying commands directly is faster and equally drift-resistant. The seed's own [`ci.yml`](../.github/workflows/ci.yml) currently inlines these commands directly (the fallback path) because the seed has no stack with a task runner yet; see [ADR-0004](../meta/decisions/ADR-0004-pre-push-ci-via-ecosystem-task-runner.md) for the reasoning and the revisit conditions for dogfooding the task-runner pattern.
+**Commands.** The same commands your CI workflow runs should be runnable locally. If your stack has a task runner (`tox`, `nox`, `just`, `cargo`, `npm scripts`, `go` subcommands, etc.), define your CI commands there once and call them from both the workflow and the pre-push invocation. A small `Makefile` or shell script is a reasonable fallback when no ecosystem-native task runner fits. `act` is available for testing workflow YAML *changes* themselves but is overkill as the default pre-push mechanism — for most CI logic, invoking the underlying commands directly is faster and equally drift-resistant. The seed's **own** doc-CI is exactly that fallback case — heterogeneous tools (markdownlint-cli2, lychee, actionlint, two Python scripts) that no single runner drives — so the seed dogfoods [`scripts/local-ci.sh`](../scripts/local-ci.sh), which runs its active tier-3 jobs in [`ci.yml`](../.github/workflows/ci.yml) order, fail-fast. This is the seed's glue across heterogeneous doc tools, not a recommendation to prefer a wrapper over your stack's task runner; see [ADR-0004](../meta/decisions/ADR-0004-pre-push-ci-via-ecosystem-task-runner.md) (Revised) for the dogfooding decision. In a web session, [`.claude/hooks/session-start.sh`](../.claude/hooks/session-start.sh) provisions the toolchain this script drives.
 
 **Scope.** Pre-push runs **tier 1 + tier 3 only**. Tier 2's runner matrix doesn't run locally (single-machine can't emulate cross-OS coverage meaningfully); tier 4 doesn't run anywhere until promoted out of "deferred". A pre-push command that takes longer than ~30 seconds will get bypassed — that's the design budget.
 
