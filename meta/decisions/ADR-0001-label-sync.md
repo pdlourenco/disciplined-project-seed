@@ -3,6 +3,7 @@
 ## Status
 
 Accepted — 2026-05-31.
+Revised — 2026-06-18: re-pinned `EndBug/label-sync` to the `main` commit `9e7b9e13` (runs on Node 24) and bumped `actions/checkout` `@v4` → `@v5`, clearing the GitHub Actions Node-20-runner deprecation warning. Also corrects a factual error in the original §Decision — v2.3.3 targets node20, not node24; only `main` carries the node24 runtime. See the revision notes inline in §Decision and §Consequences. ([#29](https://github.com/pdlourenco/disciplined-project-seed/pull/29))
 
 ## Context
 
@@ -19,7 +20,9 @@ Surfaced and decided in [#7](https://github.com/pdlourenco/disciplined-project-s
 
 ## Decision
 
-Ship `.github/labels.yml` as the machine-readable source of truth, paired with `docs/LABELS.md` as the human doc. Reconcile via [`EndBug/label-sync`](https://github.com/EndBug/label-sync), pinned to SHA `52074158190acb45f3077f9099fea818aa43f97a` (v2.3.3, latest stable as of 2026-05-31, action.yml uses `node24`).
+Ship `.github/labels.yml` as the machine-readable source of truth, paired with `docs/LABELS.md` as the human doc. Reconcile via [`EndBug/label-sync`](https://github.com/EndBug/label-sync), SHA-pinned.
+
+> **Revised 2026-06-18.** Originally pinned to v2.3.3's SHA `52074158190acb45f3077f9099fea818aa43f97a`. Re-pinned to the `main` commit `9e7b9e132c14c20e0a3d2269b12f0ab39623e38b`, whose `action.yml` runs on Node 24. The latest *tagged* release, v2.3.3, still targets the deprecated node20 runtime — the original parenthetical that v2.3.3 "uses node24" was incorrect; node24 landed only on `main`. Re-pin to a tagged release SHA once EndBug cuts one on node24.
 
 `.github/workflows/sync-labels.yml` runs on `workflow_dispatch` only — no push-to-main auto-trigger — with `delete-other-labels: false` by default. Both defaults are conservative; flip conditions are documented in [`docs/LABELS.md` §"Seeding the catalogue"](../../docs/LABELS.md) and in §Consequences below.
 
@@ -28,8 +31,8 @@ Ship `.github/labels.yml` as the machine-readable source of truth, paired with `
 - **`LABELS.md` and `labels.yml` are paired.** Edits to one require edits to the other in the same PR — the same co-landing rule that applies to ADR + SPEC changes (per PR #3 and `decisions/README.md`).
 - **`delete-other-labels: false` default.** Adopters extending the catalogue organically (project-specific labels like `priority:p0`, `client:acme`) don't get them nuked on the next sync run. *Flip condition*: once the taxonomy is stable and the YAML should own the catalogue authoritatively, set `delete-other-labels: true`.
 - **`workflow_dispatch` trigger only.** A PR that accidentally edits a label row doesn't nuke the live label on merge. *Flip condition*: once contributors trust label-YAML edits to be caught at PR review time, add `push: branches: [main]` to the trigger so sync runs automatically.
-- **SHA-pinned action.** Reproducible behaviour across the seed and adopter forks. Adopters bump on their own cadence; the seed bumps via a routine PR when an upstream release earns it (security fix, runtime upgrade).
-- **Pinning policy: third-party actions SHA-pinned; first-party `actions/*` tag-pinned.** `EndBug/label-sync` is SHA-pinned because third-party Actions are the threat surface — a moving tag there is unaudited code. `actions/checkout` and other `actions/*` are tag-pinned (`@v4`) because they're under GitHub's own maintenance and the standard ecosystem pattern is tag-pin for first-party. If this asymmetry ever stops feeling defensible, the upgrade path is uniform SHA-pinning.
+- **SHA-pinned action.** Reproducible behaviour across the seed and adopter forks. Adopters bump on their own cadence; the seed bumps via a routine PR when an upstream release earns it (security fix, runtime upgrade). *(2026-06-18: the node20 → node24 runner deprecation is exactly such a runtime upgrade. Because EndBug had not yet cut a node24 release, the bump targets the `main` commit carrying node24 rather than a release tag — a deliberate, documented exception to release-only pinning, reverted to a tag once one ships.)*
+- **Pinning policy: third-party actions SHA-pinned; first-party `actions/*` tag-pinned.** `EndBug/label-sync` is SHA-pinned because third-party Actions are the threat surface — a moving tag there is unaudited code. `actions/checkout` and other `actions/*` are tag-pinned (`@v5` as of 2026-06-18, bumped from `@v4` for the node24 runner) because they're under GitHub's own maintenance and the standard ecosystem pattern is tag-pin for first-party. If this asymmetry ever stops feeling defensible, the upgrade path is uniform SHA-pinning.
 - **Workflow permissions list `contents: read` alongside `issues: write`.** A `permissions:` block sets every unlisted scope to `none`. With `issues: write` only, the implicit `contents: none` breaks `actions/checkout` on private repos with a 404 — silently fine on public ones because unauthenticated reads work. The seed never noticed this in its own (public) repo; a private adopter surfaced it. `contents: read` is harmless on public repos, required on private. Same shape `check-branch-protection.yml` already uses; documented as a general seed rule in `docs/CONTRIBUTING.md §"Workflow permissions"`.
 - **The workflow ships effectively dormant on the seed itself.** The seed has near-zero label activity, so the workflow rarely runs here; it's scaffolding adopters inherit. Documented in this ADR rather than via a new `# seed-only:` marker convention (overengineering for one file; the marker convention can be promoted if a future PR adds more seed-only scaffolding).
 - **Phase labels are not maintained by the YAML.** Per `LABELS.md §"Phase (apply at most one)"`, phase labels are added on demand. The YAML deliberately omits them so the sync action doesn't churn them as phases come and go.

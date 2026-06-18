@@ -12,6 +12,8 @@
 > **Positioning.** This document is the *rationale* half of the DESIGN / SPEC pair. It answers "why is the project shaped this way?" — architecture choices, alternatives considered, trade-offs accepted. The *contract* half lives in [`SPEC.md`](SPEC.md): the on-disk formats, RPC shapes, and cross-boundary conventions that different implementations must agree on. If DESIGN drifts into contract details (field tables, wire formats), or SPEC drifts into rationale (prose arguments for why), both rot. When in doubt, link to the other rather than duplicate.
 >
 > If DESIGN.md grows past roughly 300 lines, consider applying the same split shape used for ROADMAP + plans/ — keep DESIGN.md as a slim shell linking to `docs/design/<topic>.md` files per topic. The slim DESIGN.md holds the load-bearing architectural principle, constraints, and a navigation index; the per-topic files hold module-level rationale.
+>
+> When that split lands, a `docs/design/README.md` **pointer index** — a table mapping each module / entity / table to the `docs/design/<topic>.md` that defines it — buys discoverability without a regen tax, *as long as it points rather than copies*: no columns, field tables, or constraints duplicated from the owning doc (those live in the doc plus the code), just the pointer and a one-line maintenance rule. A generated, drift-gated schema reference is the heavier alternative; defer it with conditions (wire it only once the hand-maintained index actually starts drifting) — the same deferred-with-conditions discipline used elsewhere in the set.
 
 ## Overview
 

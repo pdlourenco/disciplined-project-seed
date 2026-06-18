@@ -24,12 +24,14 @@ jobs:
       contents: read
       issues: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Sync labels from .github/labels.yml
-        # Pinned to v2.3.3 (Feb 2024). action.yml on main uses node24;
-        # bump SHA when an upstream release earns it.
-        uses: EndBug/label-sync@52074158190acb45f3077f9099fea818aa43f97a
+        # Pinned to the main commit that runs on node24 (the latest
+        # tagged release, v2.3.3, still targets the deprecated node20).
+        # Re-pin to a tagged release SHA once EndBug cuts one on node24.
+        # See ADR-0001 §Consequences for the SHA-pinning policy.
+        uses: EndBug/label-sync@9e7b9e132c14c20e0a3d2269b12f0ab39623e38b
         with:
           config-file: .github/labels.yml
           # delete-other-labels: false by default — labels added

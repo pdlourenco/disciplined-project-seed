@@ -35,6 +35,11 @@
 ├── CHANGELOG.md                    # adopter project changelog (Keep a Changelog format)
 ├── <config>.example.<ext>          # example configuration, generated from SPEC
 │
+├── .claude/                        # Claude Code config (optional, adopter-tunable)
+│   ├── settings.json               # registers the SessionStart hook
+│   └── hooks/
+│       └── session-start.sh        # provisions doc-CI toolchain in web sessions
+│
 ├── .github/
 │   ├── ISSUE_TEMPLATE/             # issue forms with pre-applied labels
 │   │   ├── bug.yml
@@ -50,6 +55,7 @@
 │   └── pull_request_template.md
 │
 ├── scripts/                        # human-triggered repo-level scripts
+│   ├── local-ci.sh                 # runs the doc-CI suite locally (pre-push)
 │   ├── normalize-branch-protection.jq  # shared filter (script + workflow)
 │   └── setup-branch-protection.sh  # apply branch-protection.yml → live
 │

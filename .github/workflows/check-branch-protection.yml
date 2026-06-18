@@ -39,7 +39,7 @@ jobs:
     name: Compare live config to YAML
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # YAML → JSON via the runner's pre-installed Python + PyYAML
       # (ubuntu-latest ships both). Avoids fetching a yq binary from

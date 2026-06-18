@@ -40,6 +40,7 @@ The "Alternatives considered" section is what makes an ADR useful six months lat
 
 - Filenames: `ADR-NNNN-kebab-case-title.md`, where `NNNN` is a zero-padded sequence number.
 - Numbers are assigned sequentially as ADRs are merged, never reused, never reordered.
+- **Parallel tracks: rebase before finalizing the number.** When two tracks (e.g. parallel agent sessions) both append to this sequence, a number assigned off a shared merge-base collides at the *second* merge. Reserve a per-track band **and rebase onto `main` before finalizing the number** — the rebase surfaces an in-flight neighbour the merge-base hid, which is otherwise discovered only as a filename / number collision (or a red contract test) at the second merge. The same rule applies to any identifier drawn from a sequence that parallel tracks both append to — set-for-set catalogues among them, not just ADR numbers.
 - Titles in filenames should be short and specific — "pre-push-self-review" rather than "review-process".
 - If an ADR supersedes another, the new one references the old one in its Status section, and the old one's Status flips to "Superseded by ADR-NNNN".
 

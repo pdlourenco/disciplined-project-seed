@@ -8,6 +8,10 @@ Binding rules for Claude (and any other coding agent) working on this repo.
      - "from day one"
      - "once the contracts in docs/SPEC.md are stable"
      - "from Phase N onward"
+     - "active from day one, but a specific gate (e.g. the spec-as-contract
+       check in §3) is a no-op until the implementation it guards lands
+       (Phase 1+)" — binds the workflow rules immediately while honestly
+       deferring the gates that have nothing to check yet
 
      Default, if you're unsure: active from the first PR that touches
      production code. -->
@@ -39,13 +43,21 @@ The narrow exceptions — one-line typo, formatting-only, pure revert — and th
 
 A "major decision" is anything that:
 
-- changes a contract in `docs/SPEC.md`, `docs/DESIGN.md`, `docs/ROADMAP.md`, `docs/LABELS.md` (whose taxonomy is load-bearing for issue / PR hygiene), or <!-- any other source-of-truth artifact, e.g. docs/schema.toml -->;
+- changes a contract in `docs/SPEC.md`, `docs/DESIGN.md`, `docs/ROADMAP.md`, a per-topic rationale file under `docs/design/*.md`, `docs/REVIEW_CONTEXT.md` (whose principles are load-bearing for every review), `docs/LABELS.md` (whose taxonomy is load-bearing for issue / PR hygiene), or <!-- any other source-of-truth artifact, e.g. docs/schema.toml -->;
 - introduces a new external dependency, a new process boundary, or a new on-disk artifact;
 - locks in a trade-off a future PR could reasonably want to revisit (thresholds, fallback ordering, error-handling policy, schema seams);
 - materially changes the scope or shape of the phase being worked on.
 
 For any of the above:
 
-1. **Pause and surface the decision** — describe the choice, the alternatives, and the trade-off in the conversation. Wait for an explicit go-ahead before implementing.
+1. **Pause and surface the decision** — describe the choice, the alternatives, and the trade-off in the conversation. Wait for an explicit go-ahead before implementing. **Recommend, don't decide:** lay out the possibilities and mark the one you'd choose with a one-line why, then let the maintainer choose. This recommend-don't-decide posture applies to *every* question you put to the maintainer — including `AskUserQuestion` prompts, not only §4 decisions.
 2. **If the decision is accepted and non-obvious, write an ADR** in `docs/decisions/` following the convention in `docs/decisions/README.md`. Link the ADR from the PR description.
 3. **Tactical and mechanical choices do not need this** — formatter settings, import ordering, internal naming, obvious refactors. When in doubt, ask; the cost of a question is lower than the cost of an unwanted commit.
+
+## 5. Opening a PR is free for planned work; merging needs approval
+
+Opening a PR for work that implements an already-approved item in a phase / subphase plan (`docs/plans/PHASE-*.md` §"PR sequence") does **not** need separate approval — open it once the work is ready and the §2 pre-push self-review (plus the local CI run, once CI exists) pass. Work that is **not** part of an approved plan follows §4 — surface it and wait for the go-ahead before opening the PR.
+
+**Merging always requires explicit maintainer approval.** Never merge on your own initiative, not even a green PR. A §4 major decision discovered *mid-implementation* is still surfaced, even though opening the PR itself was pre-authorized.
+
+The full loop lives in `docs/CONTRIBUTING.md` §"Two-session authoring / review workflow". Note this is repo *policy*: the binding per-session authorization still comes from how the session is launched, so the standing grant must be given there too — the repo doc does not override a session instruction.

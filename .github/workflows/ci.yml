@@ -40,7 +40,7 @@ jobs:
     name: Tier 3 — Markdown lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Lint Markdown
         # Pinned SHA = v23.2.0 (2026-05-06). See ADR-0001 §Consequences
         # for the pinning policy. Config (rules + globs + ignores)
@@ -51,7 +51,7 @@ jobs:
     name: Tier 3 — Link check (internal)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Build file list
         # Template files have placeholder URLs (`<!-- link -->`) and
         # references to files adopters create (PHASE-2.md, schema.toml,
@@ -92,7 +92,7 @@ jobs:
     name: Tier 3 — Dangling-placeholder audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Audit dangling inline placeholders
         # The seed's templates (PHASE-TEMPLATE, ADR-TEMPLATE, SPEC,
         # DESIGN, ROADMAP, REVIEW_CONTEXT, STRUCTURE, RISKS) ship with
@@ -122,7 +122,7 @@ jobs:
     name: Tier 3 — Workflow YAML lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Lint workflow YAML with actionlint
         # actionlint binary via Docker image, tag-pinned. The upstream
         # repo isn't itself a GitHub Action; the Docker image is the
@@ -135,7 +135,7 @@ jobs:
     name: Tier 3 — Branch-protection contexts consistency
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check branch-protection.yml contexts ⊆ ci.yml job names
         # Static, token-free, no-network consistency check. Runs the
         # script every PR / push; cheap (two YAML loads + a set diff).
@@ -158,7 +158,7 @@ jobs:
   #     name: Tier 1 — Spec / impl consistency
   #     runs-on: ubuntu-latest
   #     steps:
-  #       - uses: actions/checkout@v4
+  #       - uses: actions/checkout@v5
   #       - run: <command that asserts the contract matches code>
 
   # ─── Tier 2 — Cross-platform matrix (placeholder) ───────────────
