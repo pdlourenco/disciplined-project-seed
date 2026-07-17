@@ -5,6 +5,7 @@ This directory holds artifacts about *how the [disciplined-project-seed](https:/
 ## What's in here
 
 - **`decisions/`** — Architecture Decision Records capturing the seed's own design choices. Why labels sync via a GitHub Action; why CI ships as an active trivial workflow rather than an `.example` skeleton; why branch protection is human-triggered apply rather than auto-sync; etc.
+- **`analysis/`** — dated, immutable analysis snapshots about the seed itself (adopter studies, backport analyses). Each declares the state it captured and is not maintained afterwards; live status stays in the issues/PRs it links.
 - **`CHANGELOG.md`** — Keep-a-Changelog format documenting the seed's evolution.
 
 ## For adopters
