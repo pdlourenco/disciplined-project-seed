@@ -18,15 +18,18 @@ its open PRs, since its adoption is in flight there:
 - `adigator-embedded` (GMV) — MATLAB automatic-differentiation fork
   (Weinstein/Rao ADiGator) targeting embedded code generation. Solo-maintained,
   GPLv3, ~378 commits, 29 ADRs. GitHub: `pdlourenco/adigator-embedded`.
-- `ppqq` (a.k.a. `ppqq-active` in earlier seed records) — TypeScript/pnpm
+- `ppqq` (a.k.a. `ppqq-active` in earlier seed records; private GitHub) —
+  TypeScript/pnpm
   monorepo (NestJS + React SPA) condominium-management SaaS. Regulated-domain,
   69 ADRs, 14 phase plans.
-- `tombo` — Python indexer + Rust CLI over a shared Tantivy index. Forked the
+- `tombo` (private GitHub) — Python indexer + Rust CLI over a shared Tantivy
+  index. Forked the
   seed's **v0.1.0 core**, then back-ported the governance machinery the seed
   matured afterwards as an explicit workstream (its ADRs 0018–0022, each
   naming its seed meta-ADR origin). 23 ADR-directory files; owns the seed's
   named example of an extra source-of-truth artifact, `docs/schema.toml`.
-- `sid` (GMV; local checkout `sid-matlab`, GitHub: `pdlourenco/sid`) —
+- `sid` (local checkout `sid-matlab`; public GitHub: `pdlourenco/sid`, so
+  the claims here about it are externally verifiable) —
   trilingual system-identification toolbox (MATLAB + Python shipped, Julia
   planned) bound by a shared `spec/SPEC.md` and cross-language reference
   vectors in `testdata/`. Independently realized the seed's spec-as-contract
@@ -50,7 +53,7 @@ decision is recorded here.
 | Profile | **Minimal** — deliberate trim, decided up front in a written analysis (`docs/analyses/SEED_ADOPTION_ANALYSIS.md`) | **Full spine** — every seed artifact adopted; seed doctrine quoted verbatim in its READMEs | **Fork + catch-up sync** — v0.1.0 core, later back-ported governance (reviewer convention, labels-as-code, doc-CI, branch-protection-as-code, V&V) as issues #65–#71 / epic #72 | **Governance retrofit** — already realized the spec-as-contract core independently; adopting only the governance layer, one artifact per stacked PR (its epic #117: "adapt to SID's layout, don't impose the seed's") |
 | SPEC | Folded into `DESIGN.md §Contracts` ("single implementation, no cross-language/process boundaries, a standalone spec would be overhead") | Standalone `SPEC.md`, 25+ sections, per-rule `Verified by:` | Standalone `SPEC.md` + `docs/schema.toml` as a second, machine-shared contract artifact (its ADR-0008) | Pre-existing `spec/SPEC.md` + `testdata/reference_*.json` machine-shared vectors; `Verified by:` retrofitted with a 6-value vocabulary (its PR #127) |
 | Dropped | `STRUCTURE.md`, `RISKS.md`, `LABELS.md`, labels-as-code, branch-protection-as-code, `docs/plans/` (inline ROADMAP) | Only `RISKS.md` ("adopt when the first concrete risk needs tracking, rather than shipping an empty template now") | `meta/`, `STRUCTURE.md`, `RISKS.md` (explicitly de-scoped in its epic #72); seed's `UX`/`UI` labels ("no human-facing UI surface" yet) | Labels-as-code, branch-protection-as-code, open-PR-review convention, `docs/plans/`, project `CHANGELOG.md` — each parked in the epic's deferral table with a named trigger, "not filed as issues to avoid stale-backlog noise" |
-| Scale evidence | Discipline held across 29 ADRs and a spec-first CI plan | Discipline held across 69 ADRs, ~24 PRs/phase; two conventions showed documented rot (§7) | Contract gates held across a polyglot boundary; prose docs and serial identifiers showed documented rot (§7) | Trilingual contract gate held for years; the shared artifact itself showed staleness rot (§7) |
+| Scale evidence | Discipline held across 29 ADRs and a spec-first CI plan | Discipline held across 69 ADRs, ~24 PRs/phase; two conventions showed documented rot (§7) | Contract gates held across a polyglot boundary; prose docs and serial identifiers showed documented rot (§7) | Cross-language contract gate (MATLAB + Python shipped, third planned) held across the project's few-month life — breadth evidence, not longevity; the shared artifact itself showed staleness rot (§7) |
 
 All four profiles worked. The lesson stands: the seed scales down by
 **dropping files, not by diluting rules** — no adopter weakened ADRs,
@@ -109,8 +112,8 @@ New inventions (beyond MATLAB specifics):
   every failing seed **delta-debugged to a minimal reproducer and promoted**
   to a deterministic committed regression case. Motivated by bugs living
   "precisely in the *combinations* nobody enumerated." Convergent with ppqq's
-  PBT convention (§4) — see the randomized-exploration item under Tier 2 in
-  §9.
+  PBT convention (§4) — see the randomized-exploration item, §9 Tier 1
+  item 9.
 - **Docs are state-based and release-relative** (their ADR-0029): user-facing
   docs describe current behavior with **no dev-tracking references** (no
   `ADR-nnnn`, `#issue`, internal revision tags); dev docs and code comments
@@ -277,7 +280,7 @@ New inventions (beyond MATLAB specifics):
 - **Monte-Carlo present, ad hoc**: the repo-wide review used a 200-trial
   Monte-Carlo calibration to prove its highest-severity finding, and one
   committed MC uncertainty test predates adoption — a partial third data
-  point for the randomized-exploration convergence (§9 Tier 2), though no
+  point for the randomized-exploration convergence (§9 item 9), though no
   seeded/promoted convention exists.
 - **Polyglot ops patterns** (noted, not backported — see §9): per-language
   release tags (`v0.1-matlab` / `v0.1-python`) assembling curated archives;
@@ -357,7 +360,9 @@ what keeps the folder from becoming a stale-doc graveyard.
 Maintainer approved 2026-07-17 (originally from the two-adopter study; items
 1, 2, 5, 7, 8 extended and item 4 materially changed 2026-07-18 after the
 tombo pass; the sid pass, also 2026-07-18, further extended items 1, 2, 3,
-4, 5, 8). **Tier 1** ships as one PR series (one commit per item;
+4, 5, 8; item 8 renamed and given two optional companions, and item 9
+promoted from Tier 2 — with a periodic-forced-run requirement added — by
+maintainer decisions in the PR #37 review, 2026-07-18). **Tier 1** ships as one PR series (one commit per item;
 seed-meta ADRs where marked), tracked in
 [#35](https://github.com/pdlourenco/disciplined-project-seed/issues/35).
 **Tier 2** is parked as one `deferred + decided` issue with named triggers,
@@ -456,7 +461,41 @@ Tier 1:
    so the convention should name the committed file as the default (in-repo,
    diffable, survives tracker migration) while allowing a pinned tracking
    issue as the record for issue-centric repos; the ADR records that
-   trade-off. *(maintainer-originated, this study)* **ADR.**
+   trade-off. Two optional companions, added at maintainer suggestion in the
+   PR #37 review and recorded in the same ADR: (a) an **adoption-display
+   sentence** — adopters may add a one-line pointer in their README and/or
+   CONTRIBUTING (e.g. "This repository adopts the disciplined agentic coding
+   practices of the disciplined-project-seed \<link\>"; wording free, purely
+   optional — the marker stays the record, the README line is the
+   shop-window); (b) **upstream backport-suggestion issues** — adopters are
+   encouraged to open issues on the seed proposing backports of conventions
+   they invent or failures they document, making the upstream direction of
+   §2's fix-distribution hub a stated convention rather than something only
+   a maintainer-initiated study like this one triggers.
+   *(maintainer-originated, this study)* **ADR.**
+9. **Randomized-exploration testing convention (PBT / Monte-Carlo V&V)** —
+   guidance-only convention capturing the three design choices two adopters
+   independently converged on (adigator's Monte-Carlo ADR-0007, §3; ppqq's
+   PBT ADR-0059, §4): assert **invariants/oracles, never a
+   reimplementation**; **seeded reproducibility**, with every failing case
+   promoted to a committed deterministic regression fixture (adigator
+   additionally delta-debugs each failing seed to a minimal reproducer
+   first — worth carrying as the recommended form); the **unbounded
+   campaign stays out of the PR gate** (a
+   fixed-seed smoke test covers per-merge drift). Both adopter ADRs ship as
+   the worked examples; sid is a partial third data point (§6: ad-hoc
+   Monte-Carlo as a review/verification tool, no seeded convention).
+   *Promoted from Tier 2 by maintainer decision in the PR #37 review
+   (2026-07-18), which also added a forcing requirement:* keeping the
+   campaign out of the PR gate must be paired with **periodic forced
+   runs** — the convention's mandatory floor, for adopters who take it, is
+   a "run the randomized campaign and triage failures" step in the
+   phase-completion admin
+   checklist (`PHASE-TEMPLATE.md §10`, alongside the item-3 deferral sweep,
+   which fires at the same moment) and in the PR checklist for
+   major-bug-fix / major-feature PRs; a scheduled CI run with failures
+   auto-filed as issues is named as optional hardening for adopters with
+   the runner budget. *(adigator + ppqq — convergent; sid partial)* **ADR.**
 
 Supporting change: the seed starts **cutting git tags** at CHANGELOG
 versions, so adopters pin `vX.Y.Z (sha)` in their marker and flow-down reads
@@ -465,16 +504,6 @@ the Tier-1 PR ships as.
 
 Tier 2 (deferred, named triggers):
 
-- **Randomized-exploration testing convention (PBT / Monte-Carlo V&V)**
-  (§3, §4) — **convergent**: two adopters independently built the same three
-  design choices (assert invariants/oracles, not a reimplementation; seeded
-  reproducibility with failing cases promoted to committed deterministic
-  fixtures; the unbounded run kept out of the PR gate); sid adds a partial
-  third data point (§6: ad-hoc Monte-Carlo as a review/verification tool,
-  no seeded convention). Maintainer flagged the convergence in PR #37
-  review; promotion to Tier 1 is a live option. If it stays deferred —
-  trigger: first adopter with a pure, invariant-bearing engine surface asks
-  for testing guidance.
 - **Full traceability-matrix option** for SPEC (§3) — trigger: an adopter in
   a regulated / V&V-heavy domain needs requirement-level traceability beyond
   per-rule `Verified by:`.
@@ -500,7 +529,9 @@ wrapper as the binary-first fallback).
   assumed. If a claim here seems insufficient to write an item, say so rather
   than guessing.
 - One commit per Tier-1 item, in the numbered order above (item 8 depends on
-  item 5's guidance section existing; item 7 is independent).
+  item 5's guidance section existing; item 7 is independent; item 9 lands
+  after item 3 in numbered order, extending the same `PHASE-TEMPLATE.md §10`
+  and PR-checklist steps the item-3 sweep adds).
 - Seed-meta ADRs go in `meta/decisions/` (next free numbers — rebase and scan
   open PRs before claiming, per `docs/decisions/README.md`); adopter-facing
   conventions land in the adopter-facing docs.
