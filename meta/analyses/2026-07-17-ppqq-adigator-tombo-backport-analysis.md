@@ -88,6 +88,17 @@ New inventions (beyond MATLAB specifics):
   bug-register→test mapping. Independently invented *before* adopting the seed
   — their adoption analysis flags the convergence with the seed's
   `Verified by:` idea as evidence the idea is load-bearing.
+- **Randomized / Monte-Carlo V&V** (their ADR-0007): a `tests/montecarlo/`
+  campaign randomizing function bodies, shapes, sizes, and parameters against
+  **tolerance-free oracles** (cross-mode exact equality; generators emitting
+  functions whose exact derivative is known by construction; sparsity-superset
+  checks), explicitly **never a required PR check** (a fixed-seed smoke test
+  covers per-merge drift; the unbounded campaign is a local/release run), with
+  every failing seed **delta-debugged to a minimal reproducer and promoted**
+  to a deterministic committed regression case. Motivated by bugs living
+  "precisely in the *combinations* nobody enumerated." Convergent with ppqq's
+  PBT convention (§4) — see the randomized-exploration item under Tier 2 in
+  §8.
 - **Docs are state-based and release-relative** (their ADR-0029): user-facing
   docs describe current behavior with **no dev-tracking references** (no
   `ADR-nnnn`, `#issue`, internal revision tags); dev docs and code comments
@@ -166,7 +177,7 @@ New inventions (beyond MATLAB specifics):
   `disciplined-project-seed` (its meta ADR-N)"), and seed fixes were pulled
   down post-adoption — but there is **no seed-version pin** (only "v0.1.0
   core"), **no sync log**, and **no per-artifact adoption table**. The
-  strongest single motivation observed for the `SEED_ADOPTION.md` marker
+  strongest single motivation observed for the `DISCIPLINE_ADOPTION.md` marker
   (§8 item 8).
 - **Visible-debt markers instead of xfail** (its ADR-0022): rules found with
   no automated verifier get a visible-debt marker in SPEC plus an entry in a
@@ -333,7 +344,9 @@ Tier 1:
    and re-banded a phase to a fresh decade when a shared one exhausted); a
    one-line markdownlint auto-fix caution (§5) in the doc-CI guidance.
    *(all three)*
-8. **`SEED_ADOPTION.md` marker** — new template file recording seed
+8. **`DISCIPLINE_ADOPTION.md` marker** — new template file (named for the
+   discipline being adopted, not the seed artifact, per maintainer review on
+   PR #37; final name settled in the ADR) recording seed
    provenance (repo URL + seed version/SHA + date), a per-artifact adoption
    table (`adopted` / `adapted (where)` / `dropped (why/ADR)`), an
    append-only sync log (date + seed ref range + taken/skipped), and an
@@ -352,7 +365,13 @@ the Tier-1 PR ships as.
 
 Tier 2 (deferred, named triggers):
 
-- **PBT convention** (§4) — trigger: first adopter with a pure,
+- **Randomized-exploration testing convention (PBT / Monte-Carlo V&V)**
+  (§3, §4) — **convergent**: two adopters independently built the same three
+  design choices (assert invariants/oracles, not a reimplementation; seeded
+  reproducibility with failing cases promoted to committed deterministic
+  fixtures; the unbounded run kept out of the PR gate). Maintainer flagged
+  the convergence in PR #37 review; promotion to Tier 1 is a live option.
+  If it stays deferred — trigger: first adopter with a pure,
   invariant-bearing engine surface asks for testing guidance.
 - **Full traceability-matrix option** for SPEC (§3) — trigger: an adopter in
   a regulated / V&V-heavy domain needs requirement-level traceability beyond
@@ -385,7 +404,7 @@ wrapper as the binary-first fallback).
   documented reasons).
 - Every item lands with its `meta/CHANGELOG.md` entry (MINOR for new
   conventions/files, PATCH for guidance-only), per the existing format.
-- Follow-up to open as an issue, not bundled: retrofit `SEED_ADOPTION.md` in
+- Follow-up to open as an issue, not bundled: retrofit `DISCIPLINE_ADOPTION.md` in
   the three adopters (adigator's is mostly a lift of its
   `SEED_ADOPTION_ANALYSIS.md`; tombo's consolidates its per-ADR provenance
   lines and epic #72 into the table + sync log). The Tier-2 deferrals are
