@@ -1,18 +1,19 @@
-# 2026-07-17 — Three-adopter backport analysis (ppqq, adigator-embedded, tombo)
+# 2026-07-17 — Four-adopter backport analysis (ppqq, adigator-embedded, tombo, sid)
 
 **Dated snapshot at seed `main` `090b2a7`. Will not be maintained** — it records
-the state of three downstream adopters on this date and the backport decision
+the state of four downstream adopters on this date and the backport decision
 taken from it. Live status of the resulting work:
 [#35](https://github.com/pdlourenco/disciplined-project-seed/issues/35)
 (Tier 1) and
 [#36](https://github.com/pdlourenco/disciplined-project-seed/issues/36)
 (Tier 2). This is the seed's first `meta/analyses/` document; the
 adopter-facing convention for analysis documents is itself one of the backport
-items below (§8 item 1).
+items below (§9 item 1).
 
-**Inputs.** Local checkouts of the three adopters — ppqq and
-adigator-embedded studied 2026-07-17, tombo 2026-07-18 (the doc keeps the
-study's start date):
+**Inputs.** The four adopters — ppqq and adigator-embedded studied
+2026-07-17, tombo and sid 2026-07-18 (the doc keeps the study's start date).
+The first three were studied from local checkouts; sid additionally through
+its open PRs, since its adoption is in flight there:
 
 - `adigator-embedded` (GMV) — MATLAB automatic-differentiation fork
   (Weinstein/Rao ADiGator) targeting embedded code generation. Solo-maintained,
@@ -25,25 +26,33 @@ study's start date):
   matured afterwards as an explicit workstream (its ADRs 0018–0022, each
   naming its seed meta-ADR origin). 23 ADR-directory files; owns the seed's
   named example of an extra source-of-truth artifact, `docs/schema.toml`.
+- `sid` (GMV; local checkout `sid-matlab`, GitHub: `pdlourenco/sid`) —
+  trilingual system-identification toolbox (MATLAB + Python shipped, Julia
+  planned) bound by a shared `spec/SPEC.md` and cross-language reference
+  vectors in `testdata/`. Independently realized the seed's spec-as-contract
+  core before adopting; the governance layer is being retrofitted **right
+  now** as a stacked PR series (its PRs #125–#130 + #132), with a repo-wide
+  review (its PR #133) alongside.
 
 **Method.** One deep-read subagent per adopter (all discipline docs, ADR
-indexes, process ADRs in full, workflows, scripts, git history), findings
-spot-verified first-hand, then deduplicated against the seed's already-absorbed
-backports (§2). The tombo pass additionally scored each already-decided Tier-1
-item as confirmed / contradicted / extended. The executing session does
-**not** need access to the adopter repos; every claim used by the decision is
-recorded here.
+indexes, process ADRs in full, workflows, scripts, git history; for sid also
+the open-PR descriptions, diffs, and review threads), findings spot-verified
+first-hand, then deduplicated against the seed's already-absorbed backports
+(§2). The tombo and sid passes additionally scored each already-decided
+Tier-1 item as confirmed / contradicted / extended. The executing session
+does **not** need access to the adopter repos; every claim used by the
+decision is recorded here.
 
 ## 1. Adoption profiles
 
-| | adigator-embedded | ppqq | tombo |
-|---|---|---|---|
-| Profile | **Minimal** — deliberate trim, decided up front in a written analysis (`docs/analyses/SEED_ADOPTION_ANALYSIS.md`) | **Full spine** — every seed artifact adopted; seed doctrine quoted verbatim in its READMEs | **Fork + catch-up sync** — v0.1.0 core, later back-ported governance (reviewer convention, labels-as-code, doc-CI, branch-protection-as-code, V&V) as issues #65–#71 / epic #72 |
-| SPEC | Folded into `DESIGN.md §Contracts` ("single implementation, no cross-language/process boundaries, a standalone spec would be overhead") | Standalone `SPEC.md`, 25+ sections, per-rule `Verified by:` | Standalone `SPEC.md` + `docs/schema.toml` as a second, machine-shared contract artifact (its ADR-0008) |
-| Dropped | `STRUCTURE.md`, `RISKS.md`, `LABELS.md`, labels-as-code, branch-protection-as-code, `docs/plans/` (inline ROADMAP) | Only `RISKS.md` ("adopt when the first concrete risk needs tracking, rather than shipping an empty template now") | `meta/`, `STRUCTURE.md`, `RISKS.md` (explicitly de-scoped in its epic #72); seed's `UX`/`UI` labels ("no human-facing UI surface" yet) |
-| Scale evidence | Discipline held across 29 ADRs and a spec-first CI plan | Discipline held across 69 ADRs, ~24 PRs/phase; two conventions showed documented rot (§6) | Contract gates held across a polyglot boundary; prose docs and serial identifiers showed documented rot (§6) |
+| | adigator-embedded | ppqq | tombo | sid |
+|---|---|---|---|---|
+| Profile | **Minimal** — deliberate trim, decided up front in a written analysis (`docs/analyses/SEED_ADOPTION_ANALYSIS.md`) | **Full spine** — every seed artifact adopted; seed doctrine quoted verbatim in its READMEs | **Fork + catch-up sync** — v0.1.0 core, later back-ported governance (reviewer convention, labels-as-code, doc-CI, branch-protection-as-code, V&V) as issues #65–#71 / epic #72 | **Governance retrofit** — already realized the spec-as-contract core independently; adopting only the governance layer, one artifact per stacked PR (its epic #117: "adapt to SID's layout, don't impose the seed's") |
+| SPEC | Folded into `DESIGN.md §Contracts` ("single implementation, no cross-language/process boundaries, a standalone spec would be overhead") | Standalone `SPEC.md`, 25+ sections, per-rule `Verified by:` | Standalone `SPEC.md` + `docs/schema.toml` as a second, machine-shared contract artifact (its ADR-0008) | Pre-existing `spec/SPEC.md` + `testdata/reference_*.json` machine-shared vectors; `Verified by:` retrofitted with a 6-value vocabulary (its PR #127) |
+| Dropped | `STRUCTURE.md`, `RISKS.md`, `LABELS.md`, labels-as-code, branch-protection-as-code, `docs/plans/` (inline ROADMAP) | Only `RISKS.md` ("adopt when the first concrete risk needs tracking, rather than shipping an empty template now") | `meta/`, `STRUCTURE.md`, `RISKS.md` (explicitly de-scoped in its epic #72); seed's `UX`/`UI` labels ("no human-facing UI surface" yet) | Labels-as-code, branch-protection-as-code, open-PR-review convention, `docs/plans/`, project `CHANGELOG.md` — each parked in the epic's deferral table with a named trigger, "not filed as issues to avoid stale-backlog noise" |
+| Scale evidence | Discipline held across 29 ADRs and a spec-first CI plan | Discipline held across 69 ADRs, ~24 PRs/phase; two conventions showed documented rot (§7) | Contract gates held across a polyglot boundary; prose docs and serial identifiers showed documented rot (§7) | Trilingual contract gate held for years; the shared artifact itself showed staleness rot (§7) |
 
-All three profiles worked. The lesson stands: the seed scales down by
+All four profiles worked. The lesson stands: the seed scales down by
 **dropping files, not by diluting rules** — no adopter weakened ADRs,
 pre-push review, contracts-with-teeth, or recommend-don't-decide. Adaptation
 lesson from tombo: reconcile the seed's vocabulary against local usage before
@@ -65,11 +74,14 @@ branch-protection contexts-consistency check + two-layer drift model,
 `GH_REPO`-explicit rule, label 100-char cap, `contents: read` rule,
 hex-colour quoting, V&V / `Verified by:` additions, `LABELS.md`, pre-push CI
 run section, ADR lifecycle shapes, design-meeting phase variant, DESIGN
-slim/per-topic split, PR-template rows. Nothing from adigator-embedded or
-tombo has ever been backported; tombo has so far been a pure *consumer* of
-seed updates (its commits "back-port seed fix" pulled the `contents: read`,
-colour-quoting, and two-layer drift fixes downstream — evidence the seed
-already functions as a bidirectional fix-distribution hub).
+slim/per-topic split, PR-template rows. Nothing from adigator-embedded,
+tombo, or sid has ever been backported; tombo and sid have so far been pure
+*consumers* of seed updates (tombo's commits "back-port seed fix" pulled the
+`contents: read`, colour-quoting, and two-layer drift fixes downstream; sid's
+PR #132 "[seed adoption +1]" backported the `contents: read` + `GH_REPO`
+fixes citing the exact seed commits, recording the non-applicable fixes from
+the same wave with reasons — evidence the seed already functions as a
+bidirectional fix-distribution hub).
 
 ## 3. adigator-embedded — findings
 
@@ -82,7 +94,7 @@ New inventions (beyond MATLAB specifics):
   the same PR. Their own caveat, worth carrying: a stale tag downgrades the
   guard (a re-introduced regression reports as *filtered*, not *failed*), so
   tag removal is part of the fix, and a stale-tag detector is the residual
-  debt. (See §8 item 4 — tombo deliberately uses a different mechanism.)
+  debt. (See §9 item 4 — tombo and sid use a different mechanism.)
 - **`CI_PLAN.md` traceability model.** Stable requirement IDs (`REQ-T-*`,
   `REQ-C-*`) × test IDs (`TS-U/I/S-*`) in a traceability matrix, plus a
   bug-register→test mapping. Independently invented *before* adopting the seed
@@ -98,7 +110,7 @@ New inventions (beyond MATLAB specifics):
   to a deterministic committed regression case. Motivated by bugs living
   "precisely in the *combinations* nobody enumerated." Convergent with ppqq's
   PBT convention (§4) — see the randomized-exploration item under Tier 2 in
-  §8.
+  §9.
 - **Docs are state-based and release-relative** (their ADR-0029): user-facing
   docs describe current behavior with **no dev-tracking references** (no
   `ADR-nnnn`, `#issue`, internal revision tags); dev docs and code comments
@@ -112,7 +124,7 @@ New inventions (beyond MATLAB specifics):
   incidentally-loaded path and reddened CI twice; fixed with a clean-path test
   base class plus a **meta-test that scans sibling test classes** for the
   violation — a test enforcing a contributor convention.
-- **`docs/analyses/`** — see §7.
+- **`docs/analyses/`** — see §8.
 - **ADR in-flight scan.** Their numbering rule adds a concrete command the
   seed's rule lacks: scan open PRs (`gh pr list --search 'ADR- in:files'`) as
   well as merged history before claiming a number.
@@ -178,13 +190,13 @@ New inventions (beyond MATLAB specifics):
   down post-adoption — but there is **no seed-version pin** (only "v0.1.0
   core"), **no sync log**, and **no per-artifact adoption table**. The
   strongest single motivation observed for the `DISCIPLINE_ADOPTION.md` marker
-  (§8 item 8).
+  (§9 item 8).
 - **Visible-debt markers instead of xfail** (its ADR-0022): rules found with
   no automated verifier get a visible-debt marker in SPEC plus an entry in a
   tracking issue, *deliberately rejecting* a forced same-PR test gate. Its
   2026-07-16 independent review notes "no skip/xfail anywhere." A second,
   incompatible mechanism for the same problem adigator solves with
-  self-healing tests — see §8 item 4.
+  self-healing tests — see §9 item 4.
 - **Cross-workstream serial-identifier collisions, live.** Running the
   governance backport concurrently with feature work collided on **both** an
   ADR number and a SPEC version string (an open PR reused `v0.2.3` and
@@ -205,7 +217,7 @@ New inventions (beyond MATLAB specifics):
 - **Contract gates hold; prose rots.** Its review's central conclusion: the
   schema/contract gates worked, while DESIGN/ROADMAP "lag the contract by
   one to two versions" because nothing gates prose — independently
-  reproducing ppqq's §6.2 finding. Recommended remedy: fold a doc-refresh
+  reproducing ppqq's §7.2 finding. Recommended remedy: fold a doc-refresh
   step into the contract-change checklist.
 - **markdownlint auto-fix hazard** (its ADR-0020): auto-fixes silently
   changed meaning twice (`__pycache__` → `**pycache**`; a trailing-space
@@ -216,7 +228,63 @@ New inventions (beyond MATLAB specifics):
   invocations with KEEP-IN-SYNC notes — the same seam the seed itself
   carries; tombo names a promotion trigger for factoring it out.
 
-## 6. Convention-failure evidence (the most valuable findings)
+## 6. sid — findings
+
+- **The strongest polyglot validation of the contract-gate model.** The
+  binding contract is the written spec; the machine-shared artifact is
+  `testdata/reference_*.json` (22 files: function, params, input, 16-digit
+  output, tolerance), generated by MATLAB and validated *independently* by
+  each language in CI. The doctrine is stated more concretely than the
+  seed's: "Implementations conform to the spec, not to each other. MATLAB is
+  not a ground truth"; "Cross-language reference vectors are a check, not a
+  proof"; and the joint-drift failure mode is named — "a bug in a shared
+  helper can make every downstream caller silently violate the spec in the
+  same way, which will not be caught by cross-validation tests."
+- **`Verified by:` with a closed value vocabulary** (its PR #127): six values
+  (`cross-vector` / `unit(M|Py)` / `lint` / `manual` / `deferred` / `none`),
+  with the explainer that "a `cross-vector` check proves the two ports
+  agree, not that either satisfies the spec; the strongest rules pair it
+  with a `unit` test." `none` is the visible-debt marker — sid lands on the
+  same known-bug mechanism as tombo (marker + register: its gap issues and
+  the review's severity-graded register → issues), not adigator's xfail.
+- **The shared contract artifact itself rotted** (its PR #133, finding S10):
+  the generator double-divides one quantity so a stored reference doesn't
+  match production; four reference files are consumed by no test; no JSON
+  carries generator version/date/seed metadata "so staleness is undetectable
+  from file contents"; and a zero absolute-tolerance floor makes the gate
+  environment-flaky (passes on CI's Octave, fails on Octave 8.4.0).
+  Concrete hardening requirement: **generator-provenance metadata + an
+  absolute tolerance floor** on any machine-shared numeric artifact.
+- **Issue-based provenance instead of a marker file.** No
+  `DISCIPLINE_ADOPTION.md`-like file exists; the per-artifact adoption table,
+  value/effort ordering, and deferral table live in epic issue #117, the
+  seed attribution in CLAUDE.md's header, the pre-existing-principle record
+  in a retroactive ADR-0001, and the sync log in PR #132's body (exact seed
+  commits `4335ee7` / `28a007c`, with N/A items reasoned). A live
+  counterpoint to §9 item 8's file convention.
+- **Adoption-as-stacked-PR-series mechanics**: one artifact per PR, each
+  branch stacked on the previous so every diff is single-topic; strictly
+  ordered review; an original monolith PR was closed and split "for easier
+  review." **Forward-reference bookkeeping**: CLAUDE.md landed first,
+  pointing at conventions two PRs away as "being added" via issue links,
+  each later PR closing its forward-reference. The `[1/6]`…`[6/6]` +
+  `[seed adoption +1]` title banding marks in-plan vs post-plan increments.
+- **Retroactive ADR as provenance anchor**: ADR-0001 records the
+  spec-is-contract principle "the project has operated under since its early
+  multi-language structure... so the rationale is recoverable, not because
+  the decision is new" — the pattern for adopting a decision trail onto a
+  codebase that already made its decisions.
+- **Monte-Carlo present, ad hoc**: the repo-wide review used a 200-trial
+  Monte-Carlo calibration to prove its highest-severity finding, and one
+  committed MC uncertainty test predates adoption — a partial third data
+  point for the randomized-exploration convergence (§9 Tier 2), though no
+  seeded/promoted convention exists.
+- **Polyglot ops patterns** (noted, not backported — see §9): per-language
+  release tags (`v0.1-matlab` / `v0.1-python`) assembling curated archives;
+  a GitHub-App token bypassing branch protection so CI can auto-commit
+  regenerated reference vectors, with a pull-rebase-retry loop.
+
+## 7. Convention-failure evidence (the most valuable findings)
 
 Documented failures **of seed conventions at scale**:
 
@@ -240,10 +308,16 @@ Documented failures **of seed conventions at scale**:
    and a SPEC version; ppqq, three recorded migration-timestamp collisions).
    The discipline needs the in-flight scan — and optionally a CI uniqueness
    check — not just the rebase rule.
+5. **A machine-shared contract artifact can itself rot** (sid, §6): a
+   generator bug shipped a wrong stored reference, orphan reference files
+   went unconsumed, and missing generator metadata plus a zero tolerance
+   floor made the gate staleness-blind and environment-flaky. Gates guard
+   the consumers; the artifact's own generation needs provenance and a
+   verifier too.
 
-## 7. Convergent signal — the analyses folder
+## 8. Convergent signal — the analyses folder
 
-All three adopters independently created one:
+All four adopters independently created one:
 
 - **adigator `docs/analyses/`**: a running series of **dated immutable
   snapshots** — field reports, a code-quality review, an "objective
@@ -265,17 +339,25 @@ All three adopters independently created one:
   findings as they get fixed — the follow-up issues and PRs are the live
   tracking surface. Supersede by writing a new dated analysis"; **"Not a
   contract"** — "Nothing here binds implementations."
+- **sid `docs/analyses/`**: its PR #133 introduces
+  `docs/analyses/2026-07-12-repo-wide-review.md` — dated filename, immutable
+  snapshot anchored to a named HEAD state (test counts and the executing
+  Octave version recorded), findings severity-graded and spun out to twelve
+  companion issues. Produced *before* sid formally adopted any analyses
+  convention, and outside its adoption epic — a fourth independent
+  convergence on the same shape.
 
 The folder fills a real gap — analysis artifacts that are neither decisions
 (ADRs) nor living contracts (SPEC/DESIGN). Tombo's README is close to the
 convention text the seed should ship; the immutability-plus-pointers rule is
 what keeps the folder from becoming a stale-doc graveyard.
 
-## 8. Backport decision
+## 9. Backport decision
 
 Maintainer approved 2026-07-17 (originally from the two-adopter study; items
 1, 2, 5, 7, 8 extended and item 4 materially changed 2026-07-18 after the
-tombo pass). **Tier 1** ships as one PR series (one commit per item;
+tombo pass; the sid pass, also 2026-07-18, further extended items 1, 2, 3,
+4, 5, 8). **Tier 1** ships as one PR series (one commit per item;
 seed-meta ADRs where marked), tracked in
 [#35](https://github.com/pdlourenco/disciplined-project-seed/issues/35).
 **Tier 2** is parked as one `deferred + decided` issue with named triggers,
@@ -285,13 +367,14 @@ Tier 1:
 
 1. **`analyses/` as a first-class optional doc type** — adopter-facing
    convention at `docs/analyses/` with a convention README covering the
-   usage models from §7. **Start from tombo's four rules** (dated filename,
+   usage models from §8. **Start from tombo's four rules** (dated filename,
    anchored-to-a-commit, immutable-once-merged, not-a-contract), extended
    with the canonical-register variant (adigator) and the periodic
-   independent-review → issues → remediation-phase loop (ppqq, tombo). The
-   seed dogfoods it as `meta/analyses/` (this document); the maintainer
-   settled the naming on `analyses` (plural). *(all three adopters —
-   convergent)* **ADR.**
+   independent-review → issues → remediation-phase loop (ppqq, tombo, sid).
+   The seed dogfoods it as `meta/analyses/` (this document); the maintainer
+   settled the naming on `analyses` (plural). *(all four adopters —
+   convergent; sid produced a textbook instance before adopting any
+   convention)* **ADR.**
 2. **Contract-gate pattern catalogue + drift-hardening doctrine** — extend
    `docs/CONTRIBUTING.md §"CI strategy" §1` with the §4 gate patterns
    (codegen-diff, set-for-set enrollment, totality-over-enum, spec-prose
@@ -299,17 +382,25 @@ Tier 1:
    contract-artifact pattern** (§5: one machine-parsed file both sides
    consume — "drift structurally impossible" — preferred over
    mirror-plus-equality-test where feasible, with the polyglot
-   integration-probe gate). State the doctrine; fold the §6.2 "prose points,
+   integration-probe gate). State the doctrine — with sid's sharper polyglot
+   phrasing (implementations conform to the spec, not to each other;
+   equivalence vectors are a check, not a proof; shared helpers drift
+   jointly past cross-validation) — and sid's artifact-hardening requirement
+   (§6, §7.5): machine-shared numeric artifacts carry generator-provenance
+   metadata and an absolute tolerance floor. Fold the §7.2 "prose points,
    doesn't restate" caveat into the pointer-index guidance and add a
    prose-refresh step to the contract-change checklist; carry tombo's
    caveats that a gate must test the production idiom (not a test-oriented
    reimplementation) and that `Verified by:` annotations need a cross-check
-   (§6.3). Patterns only; contents stay downstream. *(ppqq + tombo)* **ADR.**
+   (§7.3) — sid's closed `Verified by:` value vocabulary (§6) is the
+   worked option for making the annotation checkable. Patterns only;
+   contents stay downstream. *(ppqq + tombo + sid)* **ADR.**
 3. **Deferral-sweep step** — pair the deferred-with-conditions convention
    with a sweep: on phase completion (PHASE-TEMPLATE §10 admin) and in the
    contributing guidance, scan for deferrals whose named trigger fired.
-   Evidence: §6.1. Tombo confirms the need in weaker form (pervasive named
-   triggers, no sweep mechanism). *(ppqq)*
+   Evidence: §7.1. Tombo confirms the need in weaker form (pervasive named
+   triggers, no sweep mechanism); sid's epic deferral table with per-item
+   triggers is the born-sweepable form. *(ppqq)*
 4. **Known-bug lifecycle — two documented mechanisms, presented as
    options.** *(Changed from the two-adopter decision, which prescribed the
    xfail mechanism alone; tombo deliberately rejects it.)* Present both with
@@ -317,20 +408,24 @@ Tier 1:
    (a) **self-healing xfail tests** (adigator, §3): a tagged test that skips
    on the buggy outcome and asserts otherwise; becomes a regression guard on
    fix; the fixing PR flips the tag; stale tags are the residual debt.
-   (b) **visible-debt markers + register** (tombo, §5): unverified rules get
+   (b) **visible-debt markers + register** (tombo, §5; sid, §6 — its
+   `Verified by: none` value plus gap/finding issues): unverified rules get
    a marker in SPEC plus an entry in a tracking issue; no forced same-PR
-   test. Common core for the PR checklist either way: *a bug fix closes its
-   known-bug tracking artifact (tag or marker) in the same PR.*
-   *(adigator + tombo)* **ADR.**
+   test. Adopter count now 1 vs 2, still no ranking. Common core for the PR
+   checklist either way: *a bug fix closes its known-bug tracking artifact
+   (tag or marker) in the same PR.* *(adigator + tombo + sid)* **ADR.**
 5. **Scale-based adoption guidance** — a short "adopting at small scale"
-   section (README or CONTRIBUTING): the three-profile contrast from §1 with
+   section (README or CONTRIBUTING): the four-profile contrast from §1 with
    thresholds (single implementation → SPEC folds into `DESIGN §Contracts`;
    solo/small team → labels-as-code and branch-protection-as-code optional;
    small scope → inline ROADMAP), the frozen-`notes/` migration pattern for
-   pre-existing material (ppqq), the fork + catch-up-sync path as a third
-   adoption mode (tombo), and the vocabulary-reconciliation warning (§1:
-   diff the seed's names — tiers, labels, section titles — against local
-   usage before importing). *(all three)*
+   pre-existing material (ppqq), the fork + catch-up-sync path (tombo) and
+   the governance-retrofit path (sid) as further adoption modes, the
+   staged-PR-series mechanics for retrofits (§6: one artifact per stacked
+   PR, forward-reference bookkeeping, retroactive ADR anchoring pre-existing
+   principles), and the vocabulary-reconciliation warning (§1: diff the
+   seed's names — tiers, labels, section titles — against local usage
+   before importing). *(all four)*
 6. **State-based / release-relative docs rule** — user-facing docs describe
    current state with no dev-tracking references; dev docs keep the audit
    trail. Example principle in `REVIEW_CONTEXT.md` + a CONTRIBUTING note.
@@ -343,7 +438,7 @@ Tier 1:
    leading-decade blocks of the timestamp — ppqq banded per active phase,
    and re-banded a phase to a fresh decade when a shared one exhausted); a
    one-line markdownlint auto-fix caution (§5) in the doc-CI guidance.
-   *(all three)*
+   *(adigator + ppqq + tombo)*
 8. **`DISCIPLINE_ADOPTION.md` marker** — new template file (named for the
    discipline being adopted, not the seed artifact, per maintainer review on
    PR #37; final name settled in the ADR) recording seed
@@ -356,7 +451,12 @@ Tier 1:
    recorded ref, triage against your table). Tombo is the motivating
    counterexample: its provenance is distributed per-ADR with no version pin
    and no sync log, which is exactly what made its sync state expensive to
-   reconstruct. *(maintainer-originated, this study)* **ADR.**
+   reconstruct. sid is the live counterpoint (§6): it keeps an equivalent
+   record in a pinned epic issue + retroactive ADR + backport-PR bodies —
+   so the convention should name the committed file as the default (in-repo,
+   diffable, survives tracker migration) while allowing a pinned tracking
+   issue as the record for issue-centric repos; the ADR records that
+   trade-off. *(maintainer-originated, this study)* **ADR.**
 
 Supporting change: the seed starts **cutting git tags** at CHANGELOG
 versions, so adopters pin `vX.Y.Z (sha)` in their marker and flow-down reads
@@ -369,25 +469,32 @@ Tier 2 (deferred, named triggers):
   (§3, §4) — **convergent**: two adopters independently built the same three
   design choices (assert invariants/oracles, not a reimplementation; seeded
   reproducibility with failing cases promoted to committed deterministic
-  fixtures; the unbounded run kept out of the PR gate). Maintainer flagged
-  the convergence in PR #37 review; promotion to Tier 1 is a live option.
-  If it stays deferred — trigger: first adopter with a pure,
-  invariant-bearing engine surface asks for testing guidance.
+  fixtures; the unbounded run kept out of the PR gate); sid adds a partial
+  third data point (§6: ad-hoc Monte-Carlo as a review/verification tool,
+  no seeded convention). Maintainer flagged the convergence in PR #37
+  review; promotion to Tier 1 is a live option. If it stays deferred —
+  trigger: first adopter with a pure, invariant-bearing engine surface asks
+  for testing guidance.
 - **Full traceability-matrix option** for SPEC (§3) — trigger: an adopter in
   a regulated / V&V-heavy domain needs requirement-level traceability beyond
   per-rule `Verified by:`.
 - **Expensive-CI cost patterns** (§3) — trigger: first adopter whose required
   checks are licensed or slow enough that docs-only skips / a committed
-  pre-push hook pay for themselves.
+  pre-push hook pay for themselves. sid's cross-engine equivalence gate
+  history (BLAS-dependent tolerance flakiness, race-prone auto-commits,
+  App-token bypass) is further evidence the pattern set is needed.
 
 Explicitly **not** backported: reproducible-artifact commit-back workflow
-(adigator's PDF pipeline; niche), the meta-test-over-tests idea as a separate
-pattern (covered by the existing structural-lint pattern; at most an example
-in item 2), local-ci self-healing extensions (machine-specific), tombo's
+(adigator's PDF pipeline and sid's App-token reference-vector auto-commit;
+niche polyglot/generated-artifact ops — revisit if a third adopter needs
+it), per-language release tagging and archive assembly (sid; polyglot
+release ops), the meta-test-over-tests idea as a separate pattern (covered
+by the existing structural-lint pattern; at most an example in item 2),
+local-ci self-healing extensions (machine-specific), tombo's
 Docker-actionlint cold-pull trade-off (already documented in the seed's
 wrapper as the binary-first fallback).
 
-## 9. Implementation notes for the executing session
+## 10. Implementation notes for the executing session
 
 - Work from this document only; adopter repo access is not needed and not
   assumed. If a claim here seems insufficient to write an item, say so rather
@@ -397,16 +504,17 @@ wrapper as the binary-first fallback).
 - Seed-meta ADRs go in `meta/decisions/` (next free numbers — rebase and scan
   open PRs before claiming, per `docs/decisions/README.md`); adopter-facing
   conventions land in the adopter-facing docs.
-- Item 1's convention README: tombo's four rules (§7) are the base to adapt,
+- Item 1's convention README: tombo's four rules (§8) are the base to adapt,
   not text to copy verbatim — reword freely, keep the four rules' substance.
 - Item 4 presents **both** mechanisms without ranking them; the ADR records
-  why the seed doesn't pick one (two adopters chose differently for
+  why the seed doesn't pick one (adopters chose differently, 1 vs 2, for
   documented reasons).
 - Every item lands with its `meta/CHANGELOG.md` entry (MINOR for new
   conventions/files, PATCH for guidance-only), per the existing format.
 - Follow-up to open as an issue, not bundled: retrofit `DISCIPLINE_ADOPTION.md` in
-  the three adopters (adigator's is mostly a lift of its
+  the four adopters (adigator's is mostly a lift of its
   `SEED_ADOPTION_ANALYSIS.md`; tombo's consolidates its per-ADR provenance
-  lines and epic #72 into the table + sync log). The Tier-2 deferrals are
-  already tracked in
+  lines and epic #72 into the table + sync log; sid's lifts its epic #117
+  table, ADR-0001, and PR #132 sync record — or stays issue-based per item
+  8's allowance). The Tier-2 deferrals are already tracked in
   [#36](https://github.com/pdlourenco/disciplined-project-seed/issues/36).
