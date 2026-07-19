@@ -23,6 +23,20 @@ The discipline pays off most when contributors — human and agent — edit inde
 
 CI and packaging examples assume GitHub Actions and common tooling; adapt to your platform.
 
+## Adopting at small scale — choosing a profile
+
+Four adoption profiles are proven downstream. All four worked; the scaling rule they share is that the seed scales down by **dropping files, not by diluting rules** — no adopter that succeeded weakened ADRs, pre-push review, contracts-with-teeth, or recommend-don't-decide.
+
+- **Full spine** — every seed artifact adopted as-is. Fits multi-contributor or regulated projects where each artifact will actually be exercised.
+- **Minimal** — a deliberate trim, decided up front in a written analysis of what to drop and why. Concrete thresholds that have worked: a **single implementation** (no cross-language / process boundaries) folds `SPEC.md` into `DESIGN.md` §Contracts rather than carrying a standalone spec; a **solo or small team** can drop labels-as-code and branch-protection-as-code; a **small scope** inlines the roadmap instead of `docs/plans/`.
+- **Fork + catch-up sync** — fork an early version's core, then back-port the governance machinery later as an explicit workstream (issues per artifact, an epic to track them).
+- **Governance retrofit** — for a project that already has its own contract core: adopt only the governance layer, adapted to the existing layout ("adapt to the project's layout, don't impose the seed's"). Mechanics that worked: **one artifact per stacked PR**, strictly ordered review; **forward-reference bookkeeping** (an early PR may point at conventions still to land — via issue links each later PR closes); a **retroactive ADR** anchoring a pre-existing principle the project already operated under, so the rationale is recoverable without pretending the decision is new.
+
+Two further patterns, whatever the profile:
+
+- **Pre-existing design material**: keep it verbatim in a frozen `notes/` (marked "not authoritative"), migrate the load-bearing parts into the disciplined `docs/` tree with a mapping table, and keep the old TODO scratchpad with resolved items struck through as an audit trail.
+- **Vocabulary reconciliation**: before importing the seed's names (tiers, labels, section titles), diff them against local usage — an adopter whose "Tier 3" already meant *deferred* had to rename the seed's "Tier 3 —" CI jobs to avoid an actively misleading collision. Reconcile first; renaming after adoption is churn.
+
 ## What's in the seed
 
 **Root-level signal**
