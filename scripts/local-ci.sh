@@ -45,6 +45,7 @@ doc_files() {
     -not -path './docs/REVIEW_CONTEXT.md' \
     -not -path './docs/STRUCTURE.md' \
     -not -path './docs/RISKS.md' \
+    -not -path './DISCIPLINE_ADOPTION.md' \
     -not -name 'PHASE-TEMPLATE.md' \
     -not -name 'ADR-TEMPLATE.md'
 }

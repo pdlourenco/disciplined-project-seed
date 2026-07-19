@@ -10,16 +10,17 @@ The discipline pays off most when contributors — human and agent — edit inde
 2. **Decide what to do with `meta/`.** The seed ships its own evolution history (ADRs about how the seed was built, plus a CHANGELOG) under [`meta/`](meta/). Two paths:
    - **Strip it** with `rm -rf meta/` for a clean repo — `docs/decisions/` is then yours to start at ADR-0001, and the root `CHANGELOG.md` is yours to start fresh. The inherited scaffolding still works.
    - **Keep it as reference** if you want to understand why the inherited CI workflow / labels.yml / branch-protection.yml are shaped the way they are. See [`meta/README.md`](meta/README.md).
-3. **Replace markers.** Search the tree for `[PROJECT]` and `<!-- FILL IN -->`. Each one is intentional. Also scan for inline `<!-- ... -->` placeholders — they render as nothing, so leaving one in production text leaves the doc visibly unfinished (em-dash artifacts, dangling commas).
-4. **Strip what doesn't apply.** Common prunings:
+3. **Record your adoption in [`DISCIPLINE_ADOPTION.md`](DISCIPLINE_ADOPTION.md).** Pin the seed version + SHA you adopted, choose your profile per §"Adopting at small scale — choosing a profile" below, and fill the per-artifact table as you make the calls in the steps that follow — a `dropped` row with a reason is the record working. The file also carries your append-only sync log for later seed flow-downs. (Issue-centric repos may keep the same record in a pinned tracking issue instead; the committed file is the default.) Optionally, *display* the adoption with a one-line pointer in your README and/or CONTRIBUTING — e.g. "This repository adopts the disciplined agentic coding practices of the [disciplined-project-seed](https://github.com/pdlourenco/disciplined-project-seed)." Purely optional; the marker stays the record.
+4. **Replace markers.** Search the tree for `[PROJECT]` and `<!-- FILL IN -->`. Each one is intentional. Also scan for inline `<!-- ... -->` placeholders — they render as nothing, so leaving one in production text leaves the doc visibly unfinished (em-dash artifacts, dangling commas).
+5. **Strip what doesn't apply.** Common prunings:
    - Cross-language contract sections in `docs/SPEC.md` for single-language projects.
    - Cross-platform sections in `docs/DESIGN.md` for platform-specific projects.
    - The "Tier 1 — Contract enforcement" section in `docs/CONTRIBUTING.md` for projects without cross-component contracts.
    - Optional sections in `docs/DESIGN.md` (process architecture, cross-platform strategy, installation).
-5. **Keep section headings stable** even when their content is empty for now. Consistent structure across your projects pays off.
-6. **Replace `LICENSE`.** The seed ships under MIT with the seed author as copyright holder; adopters should replace the file with their project's chosen license (or rewrite the copyright line to point at the adopter).
-7. **Seed the label catalogue.** Run Actions → Sync labels → Run workflow once against the new repo so the live labels match [`docs/LABELS.md`](docs/LABELS.md).
-8. **Set up branch protection** with `scripts/setup-branch-protection.sh` once your CI workflow's job names are settled.
+6. **Keep section headings stable** even when their content is empty for now. Consistent structure across your projects pays off.
+7. **Replace `LICENSE`.** The seed ships under MIT with the seed author as copyright holder; adopters should replace the file with their project's chosen license (or rewrite the copyright line to point at the adopter).
+8. **Seed the label catalogue.** Run Actions → Sync labels → Run workflow once against the new repo so the live labels match [`docs/LABELS.md`](docs/LABELS.md).
+9. **Set up branch protection** with `scripts/setup-branch-protection.sh` once your CI workflow's job names are settled.
 
 CI and packaging examples assume GitHub Actions and common tooling; adapt to your platform.
 
@@ -36,6 +37,8 @@ Two further patterns, whatever the profile:
 
 - **Pre-existing design material**: keep it verbatim in a frozen `notes/` (marked "not authoritative"), migrate the load-bearing parts into the disciplined `docs/` tree with a mapping table, and keep the old TODO scratchpad with resolved items struck through as an audit trail.
 - **Vocabulary reconciliation**: before importing the seed's names (tiers, labels, section titles), diff them against local usage — an adopter whose "Tier 3" already meant *deferred* had to rename the seed's "Tier 3 —" CI jobs to avoid an actively misleading collision. Reconcile first; renaming after adoption is churn.
+
+Whichever profile you choose, record it — and the per-artifact calls it implies — in [`DISCIPLINE_ADOPTION.md`](DISCIPLINE_ADOPTION.md) (step 3 of *How to adopt*).
 
 ## What's in the seed
 
@@ -88,7 +91,7 @@ If the plan isn't roughly an order of magnitude longer than its roadmap entry, o
 
 The seed is a living artifact. When a downstream adopter discovers a convention that should belong here, it gets back-ported as a refinement; when scaffolding stops earning its keep, it's removed.
 
-- **What changed in the seed since you forked:** [`meta/CHANGELOG.md`](meta/CHANGELOG.md). Each entry names the PR and describes what an adopter needs to merge back. (Your project's own CHANGELOG lives at the repo root and tracks your changes; the seed's history lives under `meta/`.)
+- **What changed in the seed since you forked:** [`meta/CHANGELOG.md`](meta/CHANGELOG.md). Each entry names the PR and describes what an adopter needs to merge back. (Your project's own CHANGELOG lives at the repo root and tracks your changes; the seed's history lives under `meta/`.) The seed cuts a **git tag at each CHANGELOG version** (from the version this convention shipped in, onward): pin `vX.Y.Z (sha)` in your `DISCIPLINE_ADOPTION.md`, and a flow-down pass is "read the seed CHANGELOG between two pinned versions, triage against your per-artifact table, append a sync-log row".
 - **Why the inherited scaffolding is the way it is:** [`meta/decisions/`](meta/decisions/) holds the ADRs that captured the trade-offs. Useful when you're considering deviating from a default — read the ADR first.
 - **Adopting a refinement:** the `meta/CHANGELOG.md` entries are written to be self-contained. For minor refinements (new conventions, wording tightenings), copy the merged PR's diff into your fork. For structural changes (renamed docs, restructured sections), the entry calls out the adoption path explicitly.
-- **Proposing a refinement:** if you've adopted the seed and found a convention that should belong here, open an issue against [the seed repo](https://github.com/pdlourenco/disciplined-project-seed) describing the gap. The seed's own discipline (ADR lifecycle in `docs/decisions/README.md`, label conventions in `docs/LABELS.md`) applies to changes to the seed itself.
+- **Proposing a refinement:** if you've adopted the seed and found a convention that should belong here — or documented a convention *failing* at scale, which is just as valuable — open an issue against [the seed repo](https://github.com/pdlourenco/disciplined-project-seed) describing the gap; `DISCIPLINE_ADOPTION.md`'s backport log is the natural place to track what you've proposed. The seed's own discipline (ADR lifecycle in `docs/decisions/README.md`, label conventions in `docs/LABELS.md`) applies to changes to the seed itself.
