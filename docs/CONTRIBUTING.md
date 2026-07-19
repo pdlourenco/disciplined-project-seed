@@ -56,8 +56,8 @@ The seed ships an active baseline workflow at [`.github/workflows/ci.yml`](../.g
 
 #### Contract-gate pattern catalogue
 
-Adopter-proven shapes for tier-1 gates. Patterns only — the contents are
-domain-specific and stay downstream:
+Patterns for tier-1 gates — the contents are domain-specific and stay
+downstream:
 
 - **Spec-prose parsing gate** — tests parse the catalogue tables out of `SPEC.md` (or a canonical schema file) and assert set-for-set equality with the code-side unions / schema definition. Useful side effect: forces a documented, machine-parseable shape onto the SPEC tables themselves.
 - **Codegen-diff gate** — emit the interface description from the real application (e.g. OpenAPI from the running app), regenerate the client types, then `git diff --exit-code`: an unregenerated contract change fails CI.
@@ -69,12 +69,12 @@ domain-specific and stay downstream:
 - **Integration probe** — one side's writes exercised against the other side's reads with a real on-disk artifact, asserting the field set and types.
 - **Shared contract artifact** — one language-agnostic, machine-parsed file (a schema file, a TOML/JSON catalogue) that *every* implementation parses at build/run time, instead of per-language mirrors reconciled by an equality test. Drift in the source of truth becomes structurally impossible; drift in the parsers is caught at CI time by the integration probe. Prefer this over mirror-plus-equality-test where feasible: the equality test catches drift only after it's already pushed, and dies when one language is retired.
 
-Two caveats, both from documented downstream failures:
+Two caveats:
 
 - **Gate the production idiom, not a mirror.** A gate that verifies a parallel, test-oriented reimplementation of the production function passes while the production idiom goes unverified. Point the gate at the code that ships.
-- **`Verified by:` annotations need a cross-check.** An annotation claiming "verified: every rule above" while rules have zero tests is worse than no annotation — it converts visible debt into hidden debt. Either mechanize the cross-check or use a closed value vocabulary (e.g. `cross-vector` / `unit` / `lint` / `manual` / `deferred` / `none`) so each rule's claim is individually checkable; `none` doubles as the visible-debt marker.
+- **`Verified by:` annotations need a cross-check.** An annotation claiming "verified: every rule above" while rules have zero tests is worse than no annotation — it converts visible debt into hidden debt. Either mechanize the cross-check or use a closed value vocabulary (values are per-project; e.g. `unit` / `integration` / `lint` / `manual` / `deferred` / `none`) so each rule's claim is individually checkable; `none` doubles as the visible-debt marker.
 
-**Hardening for machine-shared artifacts.** Gates guard the consumers; the artifact's own generation needs guards too. Machine-shared numeric artifacts (reference vectors, golden files) carry **generator-provenance metadata** (generator version, date, seed) so staleness is detectable from file contents, and an **absolute tolerance floor** so the gate isn't environment-flaky at zero tolerance. Assert that every shipped artifact is consumed by at least one test, so orphans can't accumulate.
+**Hardening for machine-shared artifacts.** Gates guard the consumers; the artifact's own generation needs guards too. Any generated shared artifact carries **generator-provenance metadata** (generator version, date, seed) so staleness is detectable from file contents; numeric artifacts (reference vectors, golden files) additionally set an **absolute tolerance floor** so the gate isn't environment-flaky at zero tolerance. Assert that every shipped artifact is consumed by at least one test, so orphans can't accumulate.
 
 #### The drift-hardening doctrine
 
@@ -102,7 +102,7 @@ The doctrine behind the catalogue, stated once so reviews can cite it:
 
 These checks are valuable but don't earn their keep today, either because the surface they protect hasn't landed yet or because their signal-to-noise ratio is poor until the codebase is larger. Each entry names the check, what it does, why we're deferring it, and the **trigger condition** that should prompt us to wire it in.
 
-**The sweep step.** A named trigger only works if someone notices it fired — the documented failure mode is deferrals sitting unswept after their trigger fired (one adopter counted five sites whose "deferred to Phase 4" trigger had long since come true). The convention is therefore paired with a sweep: **on every phase completion** (see `docs/plans/PHASE-TEMPLATE.md` §10 Follow-ups, *Admin*), scan the project's deferred-with-conditions surfaces — this section, `SPEC.md` §Deferred, `DESIGN.md` future extensions, `ROADMAP.md` future phases, phase-plan follow-ups, and issues labelled `deferred` — for triggers that named the completing phase or fired during it. Each hit is either wired in or explicitly re-deferred with a new trigger; silence is the one prohibited outcome.
+**The sweep step.** A named trigger only works if someone notices it fired — the documented failure mode is deferrals sitting unswept after their trigger fired. The convention is therefore paired with a sweep: **on every phase completion** (see `docs/plans/PHASE-TEMPLATE.md` §10 Follow-ups, *Admin*), scan the project's deferred-with-conditions surfaces — this section, `SPEC.md` §Deferred, `DESIGN.md` future extensions, `ROADMAP.md` future phases, phase-plan follow-ups, and issues labelled `deferred` — for triggers that named the completing phase or fired during it. Each hit is either wired in or explicitly re-deferred with a new trigger; silence is the one prohibited outcome.
 
 <!-- The deferred-with-conditions pattern is the same discipline used in
      SPEC.md §"Deferred" and ROADMAP.md "Future phases". It prevents
@@ -331,7 +331,7 @@ Once the CI suite defined in §CI strategy lands, **run it locally before every 
 
 **Commands.** The same commands your CI workflow runs should be runnable locally. If your stack has a task runner (`tox`, `nox`, `just`, `cargo`, `npm scripts`, `go` subcommands, etc.), define your CI commands there once and call them from both the workflow and the pre-push invocation. A small `Makefile` or shell script is a reasonable fallback when no ecosystem-native task runner fits. `act` is available for testing workflow YAML *changes* themselves but is overkill as the default pre-push mechanism — for most CI logic, invoking the underlying commands directly is faster and equally drift-resistant. The seed's **own** doc-CI is exactly that fallback case — heterogeneous tools (markdownlint-cli2, lychee, actionlint, two Python scripts) that no single runner drives — so the seed dogfoods [`scripts/local-ci.sh`](../scripts/local-ci.sh), which runs its active tier-3 jobs in [`ci.yml`](../.github/workflows/ci.yml) order, fail-fast. This is the seed's glue across heterogeneous doc tools, not a recommendation to prefer a wrapper over your stack's task runner; see [ADR-0004](../meta/decisions/ADR-0004-pre-push-ci-via-ecosystem-task-runner.md) (Revised) for the dogfooding decision. In a web session, [`.claude/hooks/session-start.sh`](../.claude/hooks/session-start.sh) provisions the toolchain this script drives.
 
-**Markdown auto-fix caution.** Linters' auto-fix modes can silently change meaning, not just form — documented downstream: `__pycache__` auto-"fixed" to `**pycache**`, and a code span with a significant trailing space collapsed. Review auto-fix output like any other diff, and disable meaning-changing rules (e.g. markdownlint's MD038) rather than accepting their fixes.
+**Auto-fix caution.** Linters' auto-fix modes can silently change meaning, not just form (e.g. `__pycache__` auto-"fixed" to `**pycache**`, a code span with a significant trailing space collapsed). Review auto-fix output like any other diff, and disable meaning-changing rules (e.g. markdownlint's MD038) rather than accepting their fixes.
 
 **Scope.** Pre-push runs **tier 1 + tier 3 only**. Tier 2's runner matrix doesn't run locally (single-machine can't emulate cross-OS coverage meaningfully); tier 4 doesn't run anywhere until promoted out of "deferred". A pre-push command that takes longer than ~30 seconds will get bypassed — that's the design budget.
 
@@ -367,7 +367,7 @@ Adding a new label or changing the taxonomy is a major decision (see [`../CLAUDE
 
 ## Known-bug lifecycle
 
-A documented bug that can't be fixed now still needs a **tracking artifact wired to the test surface** — otherwise "known" degrades to "forgotten". Two adopter-proven mechanisms exist; they encode different test cultures, and the seed deliberately does not rank them (see [ADR-0012](../meta/decisions/ADR-0012-known-bug-lifecycle-two-mechanisms.md) for why). Pick one per project and state the choice here:
+A documented bug that can't be fixed now still needs a **tracking artifact wired to the test surface** — otherwise "known" degrades to "forgotten". Two mechanisms exist; they encode different test cultures, and the seed deliberately does not rank them. Pick one per project and state the choice here:
 
 - **(a) Self-healing xfail tests.** The bug ships with a tagged test (`xfail` / `KnownIssue` + assume-fail, per your framework) that *detects the buggy outcome and skips, otherwise asserts* — so it becomes a regression guard the moment the bug is fixed. The fixing PR flips the tag in the same PR. Residual debt: a stale tag downgrades the guard (a re-introduced regression reports as *filtered*, not *failed*), so tag removal is part of the fix and a stale-tag detector is worth adding when tags accumulate.
 - **(b) Visible-debt markers + register.** The unverified or known-broken rule gets a visible marker in `SPEC.md` (e.g. `Verified by: none`) plus an entry in a tracking register (issues, or a severity-graded list), with no forced same-PR test. Residual debt: the marker is only as good as its honesty — see §"CI strategy" §1's `Verified by:` cross-check caveat.
@@ -376,7 +376,7 @@ A documented bug that can't be fixed now still needs a **tracking artifact wired
 
 ## Randomized-exploration testing (PBT / Monte-Carlo)
 
-An optional convention for projects with a pure, invariant-bearing engine surface — property-based testing, Monte-Carlo campaigns, randomized V&V. Two adopters built this independently and converged on the same three design rules (see [ADR-0014](../meta/decisions/ADR-0014-randomized-exploration-convention.md)); the motivation on record: bugs live "precisely in the *combinations* nobody enumerated."
+An optional convention for projects with a pure, invariant-bearing engine surface — property-based testing, Monte-Carlo campaigns, randomized V&V. The motivation: bugs live precisely in the *combinations* nobody enumerated.
 
 The three rules:
 

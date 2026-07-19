@@ -33,7 +33,7 @@ can rot.
 
 ## Usage models
 
-Three models proven downstream; combine freely:
+Three usage models; combine freely:
 
 - **Dated snapshot series** — field reports, code-quality reviews,
   reassessments. Each self-declares its snapshot state and points at the

@@ -11,8 +11,8 @@ requirement added — by maintainer decision in the PR #37 review.
 
 ## Context
 
-Two adopters independently built randomized-exploration testing and
-converged on the **same three design choices** without contact:
+Two adopters built randomized-exploration testing and converged on the
+**same three design choices** independently:
 
 - One (MATLAB, Monte-Carlo V&V): a campaign randomizing function bodies,
   shapes, sizes, and parameters against tolerance-free oracles (cross-mode

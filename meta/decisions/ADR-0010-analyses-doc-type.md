@@ -16,7 +16,7 @@ none of the seed's doc types: dated repo-wide reviews, field reports,
 adoption studies, canonical registers. One adopter (sid) produced a textbook
 instance — dated filename, commit-anchored, severity-graded findings spun
 out to twelve issues — *before* adopting any convention, and outside its
-adoption epic: convergence without contact. A fourth-way convergence is the
+adoption epic: independent convergence. A fourth-way convergence is the
 strongest demand signal the seed has recorded for any candidate convention.
 
 The gap is real: an analysis is neither a decision (ADRs record what was

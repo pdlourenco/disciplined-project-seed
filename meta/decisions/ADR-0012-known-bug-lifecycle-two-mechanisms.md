@@ -63,7 +63,8 @@ marker + register entry) in the same PR.**
   mechanism encodes a test culture, not a universal best practice.
 - **Prescribe visible-debt markers alone.** Rejected symmetrically: the
   xfail lifecycle's self-arming regression guard is a real property the
-  marker form lacks, and the adopter running it has years of it working.
+  marker form lacks, and the adopter running it has substantial scale
+  evidence behind it (29 ADRs, a spec-first CI plan).
 - **Rank one as default, other as exception.** Rejected: with a 1-vs-2
   split and both sides' reasoning documented, a ranking would be the seed
   picking a side the evidence doesn't pick. Recommend-don't-decide applies
