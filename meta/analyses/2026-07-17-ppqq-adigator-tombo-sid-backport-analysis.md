@@ -17,7 +17,7 @@ its open PRs, since its adoption is in flight there:
 
 - `adigator-embedded` (GMV) — MATLAB automatic-differentiation fork
   (Weinstein/Rao ADiGator) targeting embedded code generation. Solo-maintained,
-  GPLv3, ~378 commits, 29 ADRs. GitHub: `pdlourenco/adigator-embedded`.
+  GPLv3, ~378 commits, 29 ADRs. Public GitHub: `pdlourenco/adigator-embedded`.
 - `ppqq` (a.k.a. `ppqq-active` in earlier seed records; private GitHub) —
   TypeScript/pnpm
   monorepo (NestJS + React SPA) condominium-management SaaS. Regulated-domain,
