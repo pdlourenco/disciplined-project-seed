@@ -33,6 +33,17 @@ A rule with `*Verified by:* <!-- nothing -->` is visible debt; reviewers running
      ADR-0007 §Alternatives for the deferral reasoning. Skip for tight
      single-author SPECs. -->
 
+### Traceability matrix (optional — regulated / V&V-heavy domains)
+
+The per-rule `Verified by:` annotation above is the light form of the right side, and the right weight for most projects. Projects with **requirement-level** V&V obligations (regulated, safety, formal review) can upgrade to a full traceability matrix — adopter-proven, independently invented before this seed's `Verified by:` convention and convergent with it:
+
+- **Stable requirement IDs** on every binding rule — `REQ-<area>-N` (e.g. `REQ-T-3` for tooling requirements, `REQ-C-7` for codegen). Prerequisite: the stable-ID convention in the comment above; the matrix is unusable over rules that renumber.
+- **Stable test IDs** on the verifying artifacts — e.g. `TS-U-*` / `TS-I-*` / `TS-S-*` for unit / integration / system tests.
+- **The matrix itself** — a table mapping each requirement ID to the test IDs that verify it. Every requirement row must be non-empty or carry the project's visible-debt marker (see `CONTRIBUTING.md` §"Known-bug lifecycle"). Keep the table machine-parseable (one requirement per row) so a CI gate can assert row-level coverage — the spec-prose parsing gate pattern from `CONTRIBUTING.md` §"CI strategy" §1.
+- **Bug-register → test mapping** — each known-bug register entry names the test that will detect its regression once fixed; pairs with the known-bug lifecycle's common core (the fixing PR closes the tracking artifact).
+
+Skip this section entirely unless the domain demands requirement-level traceability.
+
 ---
 
 ## 1. Filesystem layout <!-- or equivalent shared-artifact section -->
