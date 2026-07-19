@@ -39,6 +39,7 @@ CI and packaging examples assume GitHub Actions and common tooling; adapt to you
 - `LABELS.md` — issue and PR label taxonomy (lifecycle / topic / phase). Load-bearing for hygiene; changes are a major decision per `CLAUDE.md` §4.
 - `REVIEW_CONTEXT.md` — seed context for a reviewer agent (and new contributors).
 - `STRUCTURE.md` — target project layout. Aspirational, updated as the repo evolves.
+- `analyses/README.md` — convention for dated, immutable analysis snapshots (optional doc type; add the folder when the first analysis is written).
 
 **Plans and decisions**
 
