@@ -170,6 +170,8 @@ Non-obvious design choices live in `docs/decisions/` as Architecture Decision Re
 
 Link ADRs from PR descriptions: `Implements X per ADR-NNNN.` Inline code comments can point to ADRs for tactical values (`# See ADR-NNNN` beside a magic number).
 
+**Scope of dev-tracking references: dev-facing surfaces only.** User-facing docs are **state-based and release-relative** — they describe current behavior and never carry `ADR-NNNN`, `#issue`, or internal revision tags; the audit trail lives in dev docs and code comments. A user reading the manual should not need the tracker to parse a sentence.
+
 ## Pre-push self-review (agent convention)
 
 Before every `git push` on a PR branch, Claude agents working on this repo should launch a reviewer agent on the local diff and act on what it flags. This catches the "I would have caught that if I thought about it harder" class of bugs before they burn CI minutes, PR-thread attention, or reviewer time.
