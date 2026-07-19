@@ -16,7 +16,7 @@
 - **Seed:** <https://github.com/pdlourenco/disciplined-project-seed>
 - **Adopted at:** <!-- vX.Y.Z (sha) — pin both; flow-down reads the seed's meta/CHANGELOG.md between two pinned versions -->
 - **Adoption date:** <!-- YYYY-MM-DD -->
-- **Profile:** <!-- full spine | minimal | fork + catch-up sync | governance retrofit — per the seed README §"Adopting at small scale" -->
+- **Profile:** <!-- full spine | minimal | fork + catch-up sync | governance retrofit — per the seed README §"Adopting at small scale — choosing a profile" -->
 
 ## Per-artifact adoption table
 

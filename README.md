@@ -45,6 +45,7 @@ Whichever profile you choose, record it — and the per-artifact calls it implie
 **Root-level signal**
 
 - `CLAUDE.md` — short operating rules for coding agents; delegates to the authoritative docs below.
+- `DISCIPLINE_ADOPTION.md` — adoption/sync marker template: seed provenance, per-artifact adoption table, append-only sync log.
 - `.github/pull_request_template.md` — PR form referencing the pre-push review convention.
 
 **Docs (`docs/`)**

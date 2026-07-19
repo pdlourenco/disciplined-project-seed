@@ -47,7 +47,7 @@ failing cases promoted to committed deterministic fixtures — delta-debug
 first as the strongest form; unbounded campaign out of the PR gate, fixed-
 seed smoke per merge) plus the **mandatory floor for adopters of the
 convention**: a "run the campaign and triage failures" step at every phase
-completion (`PHASE-TEMPLATE.md` §10 Admin, alongside the deferral sweep)
+completion (`PHASE-TEMPLATE.md` §10 Follow-ups, *Admin*, alongside the deferral sweep)
 and in the PR checklist for major-bug-fix / major-feature PRs. A scheduled
 CI run with auto-filed issues is named as optional hardening.
 
