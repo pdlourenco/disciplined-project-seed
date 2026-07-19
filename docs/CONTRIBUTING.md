@@ -43,24 +43,9 @@ The seed ships an active baseline workflow at [`.github/workflows/ci.yml`](../.g
 
 <!-- The highest-leverage tests in the repo: they catch silent drift between
      independently developed components. Name them concretely with what they
-     check and what drift they prevent.
-
-     Common patterns:
-
-     - A test that parses a field table out of SPEC.md (or a canonical schema
-       file) and asserts it matches the code-side schema definition.
-
-     - Version-pinning tests that ensure two implementations of a shared
-       dependency agree on a minor version.
-
-     - An integration job that exercises one side's writes against another
-       side's reads with a real on-disk artifact.
-
-     - A structural lint rule (AST-level) that makes violating an
-       architectural invariant a build error, paired with a drift-guard
-       test that derives the same target set from metadata so the rule's
-       hardcoded list can't silently diverge from the schema. Pattern
-       only — the rule's contents are domain-specific and stay downstream.
+     check and what drift they prevent. Pick shapes from the pattern
+     catalogue below (rendered text, so it survives into your adopted
+     CONTRIBUTING).
 
      If your project has no cross-component contracts, delete this tier and
      the four-tier structure collapses to three. -->
@@ -68,6 +53,36 @@ The seed ships an active baseline workflow at [`.github/workflows/ci.yml`](../.g
 - **`<!-- contract-consistency-test -->`** — <!-- what it asserts; what drift it catches -->
 - **`<!-- version-pinning-test -->`** — <!-- which versions it pins together, why -->
 - **`<!-- integration-job -->`** — <!-- what writes, what reads, what assertion -->
+
+#### Contract-gate pattern catalogue
+
+Adopter-proven shapes for tier-1 gates. Patterns only — the contents are
+domain-specific and stay downstream:
+
+- **Spec-prose parsing gate** — tests parse the catalogue tables out of `SPEC.md` (or a canonical schema file) and assert set-for-set equality with the code-side unions / schema definition. Useful side effect: forces a documented, machine-parseable shape onto the SPEC tables themselves.
+- **Codegen-diff gate** — emit the interface description from the real application (e.g. OpenAPI from the running app), regenerate the client types, then `git diff --exit-code`: an unregenerated contract change fails CI.
+- **Set-for-set enrollment gate** — enumerate every route / handler / member from framework metadata and force each into an explicit disposition (`matrix` / `exempt` / `pending`); an unenrolled newcomer fails CI.
+- **Totality-over-enum gate** — every enum member declaring a capability must appear in the registry that implements it.
+- **Metadata-derived cross-check** — any hand-maintained list inside a lint rule or gate is asserted equal to the same set derived from schema metadata, so the gate itself can't drift from the schema.
+- **Structural lint rule** — an AST-level rule that makes violating an architectural invariant a build error, paired with the metadata-derived cross-check above so the rule's hardcoded list can't silently diverge.
+- **Version-pinning test** — two implementations of a shared dependency asserted to agree on (at least) a minor version.
+- **Integration probe** — one side's writes exercised against the other side's reads with a real on-disk artifact, asserting the field set and types.
+- **Shared contract artifact** — one language-agnostic, machine-parsed file (a schema file, a TOML/JSON catalogue) that *every* implementation parses at build/run time, instead of per-language mirrors reconciled by an equality test. Drift in the source of truth becomes structurally impossible; drift in the parsers is caught at CI time by the integration probe. Prefer this over mirror-plus-equality-test where feasible: the equality test catches drift only after it's already pushed, and dies when one language is retired.
+
+Two caveats, both from documented downstream failures:
+
+- **Gate the production idiom, not a mirror.** A gate that verifies a parallel, test-oriented reimplementation of the production function passes while the production idiom goes unverified. Point the gate at the code that ships.
+- **`Verified by:` annotations need a cross-check.** An annotation claiming "verified: every rule above" while rules have zero tests is worse than no annotation — it converts visible debt into hidden debt. Either mechanize the cross-check or use a closed value vocabulary (e.g. `cross-vector` / `unit` / `lint` / `manual` / `deferred` / `none`) so each rule's claim is individually checkable; `none` doubles as the visible-debt marker.
+
+**Hardening for machine-shared artifacts.** Gates guard the consumers; the artifact's own generation needs guards too. Machine-shared numeric artifacts (reference vectors, golden files) carry **generator-provenance metadata** (generator version, date, seed) so staleness is detectable from file contents, and an **absolute tolerance floor** so the gate isn't environment-flaky at zero tolerance. Assert that every shipped artifact is consumed by at least one test, so orphans can't accumulate.
+
+#### The drift-hardening doctrine
+
+The doctrine behind the catalogue, stated once so reviews can cite it:
+
+- **A mandate enforced only by an outcome test that two idioms both pass will drift.** Replace it with a structural gate.
+- **Implementations conform to the spec, not to each other.** No implementation is ground truth. Cross-implementation equivalence vectors are a check, not a proof: a bug in a shared helper makes every downstream caller violate the spec in the same way, invisibly to cross-validation.
+- **Prose points, doesn't restate.** Set-for-set gates protect the tables they parse; prose that *restates* a machine-checked catalogue falls behind within a version or two. Docs describing a contract link to it rather than repeating its contents. The paired refresh step lives in §"When you change a contract in `docs/SPEC.md`".
 
 ### 2. Cross-platform matrix
 
@@ -323,7 +338,8 @@ Once the CI suite defined in §CI strategy lands, **run it locally before every 
 1. Update the spec first.
 2. Update each implementation side in the same PR.
 3. Add a note in `docs/SPEC.md`'s change log.
-4. Run the contract-consistency checks and integration job locally before pushing.
+4. Refresh the prose docs that describe the contract (`DESIGN.md`, `ROADMAP.md`, per-topic notes under `docs/design/`): update what they say about the change and, where they restate contract details, make them **point** at the contract instead — restated catalogues are the documented drift surface (see §"CI strategy" §1, *drift-hardening doctrine*).
+5. Run the contract-consistency checks and integration job locally before pushing.
 
 If the contract change is motivated by an ADR, the ADR lands in the same PR too — see [`decisions/README.md`](decisions/README.md) §"What an ADR is — and isn't".
 
