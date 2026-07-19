@@ -17,7 +17,8 @@ its open PRs, since its adoption is in flight there:
 
 - `adigator-embedded` (GMV) — MATLAB automatic-differentiation fork
   (Weinstein/Rao ADiGator) targeting embedded code generation. Solo-maintained,
-  GPLv3, ~378 commits, 29 ADRs. Public GitHub: `pdlourenco/adigator-embedded`.
+  GPLv3, ~378 commits, 29 ADRs. Public GitHub:
+  [`pdlourenco/adigator-embedded`](https://github.com/pdlourenco/adigator-embedded).
 - `ppqq` (a.k.a. `ppqq-active` in earlier seed records; private GitHub) —
   TypeScript/pnpm
   monorepo (NestJS + React SPA) condominium-management SaaS. Regulated-domain,
@@ -28,8 +29,9 @@ its open PRs, since its adoption is in flight there:
   matured afterwards as an explicit workstream (its ADRs 0018–0022, each
   naming its seed meta-ADR origin). 23 ADR-directory files; owns the seed's
   named example of an extra source-of-truth artifact, `docs/schema.toml`.
-- `sid` (local checkout `sid-matlab`; public GitHub: `pdlourenco/sid`, so
-  the claims here about it are externally verifiable) —
+- `sid` (local checkout `sid-matlab`; public GitHub:
+  [`pdlourenco/sid`](https://github.com/pdlourenco/sid), so the claims here
+  about it are externally verifiable) —
   trilingual system-identification toolbox (MATLAB + Python shipped, Julia
   planned) bound by a shared `spec/SPEC.md` and cross-language reference
   vectors in `testdata/`. Independently realized the seed's spec-as-contract
