@@ -361,6 +361,15 @@ The live catalogue is reconciled from [`.github/labels.yml`](../.github/labels.y
 
 Adding a new label or changing the taxonomy is a major decision (see [`../CLAUDE.md`](../CLAUDE.md) §4 and [`LABELS.md`](LABELS.md) §Adding a new label); routine labelling is not.
 
+## Known-bug lifecycle
+
+A documented bug that can't be fixed now still needs a **tracking artifact wired to the test surface** — otherwise "known" degrades to "forgotten". Two adopter-proven mechanisms exist; they encode different test cultures, and the seed deliberately does not rank them (see [ADR-0012](../meta/decisions/ADR-0012-known-bug-lifecycle-two-mechanisms.md) for why). Pick one per project and state the choice here:
+
+- **(a) Self-healing xfail tests.** The bug ships with a tagged test (`xfail` / `KnownIssue` + assume-fail, per your framework) that *detects the buggy outcome and skips, otherwise asserts* — so it becomes a regression guard the moment the bug is fixed. The fixing PR flips the tag in the same PR. Residual debt: a stale tag downgrades the guard (a re-introduced regression reports as *filtered*, not *failed*), so tag removal is part of the fix and a stale-tag detector is worth adding when tags accumulate.
+- **(b) Visible-debt markers + register.** The unverified or known-broken rule gets a visible marker in `SPEC.md` (e.g. `Verified by: none`) plus an entry in a tracking register (issues, or a severity-graded list), with no forced same-PR test. Residual debt: the marker is only as good as its honesty — see §"CI strategy" §1's `Verified by:` cross-check caveat.
+
+**Common core, either way:** *a bug fix closes its known-bug tracking artifact — tag or marker plus register entry — in the same PR.* The PR checklist carries this row.
+
 ## When CI fails
 
 - **Contract jobs failed**: almost always means two sides of a contract disagree. Fix both in the same commit.
