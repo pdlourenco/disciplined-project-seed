@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted — 2026-06-01.
+Accepted — 2026-06-01. Revised — 2026-07-19: the requirements traceability matrix, rejected below as part of full ECSS adoption (Alternative D), now ships as an explicitly **optional** SPEC section for regulated / V&V-heavy domains (`docs/SPEC.md` §"Traceability matrix"), pulled forward from the Tier-2 backport set ([#36](https://github.com/pdlourenco/disciplined-project-seed/issues/36)) by maintainer decision after an adopter independently invented the same model. The rejection of *mandatory* ECSS-grade ceremony stands, as does the stable-SPEC-IDs deferral (they become the matrix's prerequisite when a project opts in).
 
 ## Context
 
