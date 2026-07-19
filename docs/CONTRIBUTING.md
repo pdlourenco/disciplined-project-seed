@@ -102,6 +102,8 @@ The doctrine behind the catalogue, stated once so reviews can cite it:
 
 These checks are valuable but don't earn their keep today, either because the surface they protect hasn't landed yet or because their signal-to-noise ratio is poor until the codebase is larger. Each entry names the check, what it does, why we're deferring it, and the **trigger condition** that should prompt us to wire it in.
 
+**The sweep step.** A named trigger only works if someone notices it fired — the documented failure mode is deferrals sitting unswept after their trigger fired (one adopter counted five sites whose "deferred to Phase 4" trigger had long since come true). The convention is therefore paired with a sweep: **on every phase completion** (see `docs/plans/PHASE-TEMPLATE.md` §10 Admin), scan the project's deferred-with-conditions surfaces — this section, `SPEC.md` §Deferred, `DESIGN.md` future extensions, `ROADMAP.md` future phases, phase-plan follow-ups, and issues labelled `deferred` — for triggers that named the completing phase or fired during it. Each hit is either wired in or explicitly re-deferred with a new trigger; silence is the one prohibited outcome.
+
 <!-- The deferred-with-conditions pattern is the same discipline used in
      SPEC.md §"Deferred" and ROADMAP.md "Future phases". It prevents
      "someday" from meaning "never" by accident.
