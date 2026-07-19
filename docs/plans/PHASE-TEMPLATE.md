@@ -341,6 +341,7 @@ A Phase N PR must not have:
 **Admin.**
 
 - **Deferral sweep** — on phase completion, scan the deferred-with-conditions surfaces (`CONTRIBUTING.md` §CI strategy "Deferred", `SPEC.md` §Deferred, `DESIGN.md` future extensions, `ROADMAP.md` future phases, earlier phase plans' follow-ups, issues labelled `deferred`) for triggers that named Phase N or fired during it; wire each hit in or explicitly re-defer it with a new trigger. See `CONTRIBUTING.md` §"CI strategy" §4, *The sweep step*.
+- **Randomized-exploration campaign run** — if the project has adopted `CONTRIBUTING.md` §"Randomized-exploration testing", run the unbounded campaign at phase completion and triage failures (promote each failing case to a committed deterministic fixture). This is the convention's mandatory floor; delete this bullet only if the convention isn't adopted.
 - **<!-- CHANGELOG / doc update / cleanup -->** — <!-- who picks up, when -->.
 - **<!-- Typo, rename, link fix -->** — <!-- usually ships with this phase's gating PR or follow-up -->.
 

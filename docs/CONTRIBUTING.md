@@ -374,6 +374,23 @@ A documented bug that can't be fixed now still needs a **tracking artifact wired
 
 **Common core, either way:** *a bug fix closes its known-bug tracking artifact — tag or marker plus register entry — in the same PR.* The PR checklist carries this row.
 
+## Randomized-exploration testing (PBT / Monte-Carlo)
+
+An optional convention for projects with a pure, invariant-bearing engine surface — property-based testing, Monte-Carlo campaigns, randomized V&V. Two adopters built this independently and converged on the same three design rules (see [ADR-0014](../meta/decisions/ADR-0014-randomized-exploration-convention.md)); the motivation on record: bugs live "precisely in the *combinations* nobody enumerated."
+
+The three rules:
+
+1. **Assert invariants and oracles, never a reimplementation.** The oracle is a property the result must satisfy (exactness by construction, cross-mode equality, superset checks, round-trips) — a parallel reimplementation of the engine drifts with it and proves nothing.
+2. **Seeded reproducibility, failures promoted.** Runs are seeded and reproducible; every failing case is promoted to a committed **deterministic** regression fixture (the strongest form first delta-debugs the failing seed to a minimal reproducer, then commits that).
+3. **The unbounded campaign stays out of the PR gate.** A fixed-seed smoke test covers per-merge drift; the open-ended campaign is a local / scheduled / release run. Randomized wall-clock does not belong in the merge path.
+
+**Mandatory floor (for projects that adopt this convention): periodic forced runs.** Rule 3 keeps the campaign out of the PR gate, so something else must force it to actually run — otherwise "not in CI" quietly becomes "never". The floor is a *"run the randomized campaign and triage failures"* step:
+
+- at **every phase completion** (`docs/plans/PHASE-TEMPLATE.md` §10 Admin, alongside the deferral sweep), and
+- in the **PR checklist for major-bug-fix and major-feature PRs** — the moments the input space just changed.
+
+**Optional hardening:** a scheduled CI run (cron) of the campaign with failures auto-filed as issues, for projects with the runner budget.
+
 ## When CI fails
 
 - **Contract jobs failed**: almost always means two sides of a contract disagree. Fix both in the same commit.
