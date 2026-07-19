@@ -125,6 +125,15 @@ These checks are valuable but don't earn their keep today, either because the su
 - **Trigger to wire in:**
 - **Sketch:**
 
+### Expensive required checks — cost patterns
+
+When a required check is costly — licensed toolchains, long runs, metered runners — two adopter-proven patterns keep the merge gate intact without paying for runs that prove nothing:
+
+- **Docs-only skip inside the job.** The expensive job starts with an in-job base-diff; when the diff touches no surface the check exercises (e.g. a docs-only PR), the job exits successfully without running the expensive part, so **the required context still reports green**. Keep the skip *inside* the job rather than in a workflow-level `paths:` filter: a `paths:`-filtered required check that never starts reports pending forever and wedges the merge gate.
+- **Committed pre-push hook mirroring CI.** A committed hook directory (e.g. `.githooks/pre-push`, opted into via `git config core.hooksPath .githooks`) runs the *same entry point CI runs*, on a clean environment, and **skips cleanly when the toolchain is absent** — contributors with the toolchain catch failures before burning licensed CI minutes; contributors without it aren't blocked.
+
+Adopt these when a required check is expensive enough that they pay for themselves; for cheap checks (like the seed's own doc-CI) they're overhead.
+
 ## Workflow permissions
 
 Any shipped workflow that uses `actions/checkout` (or otherwise reads repo contents) must list `contents: read` explicitly in its `permissions:` block. A `permissions:` block sets every unlisted scope to `none`, so the implicit `contents: none` breaks `actions/checkout` on private repos with a 404 — silently fine on public repos because unauthenticated reads work, which is how this class of bug can hide until a private adopter hits it. `contents: read` is harmless on public repos and required on private — a strict improvement with no downside. The seed's own `sync-labels.yml`, `check-branch-protection.yml`, and `ci.yml` all ship with explicit `contents: read`; extend the same discipline to any new workflow.
