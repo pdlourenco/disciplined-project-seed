@@ -35,7 +35,7 @@ A rule with `*Verified by:* <!-- nothing -->` is visible debt; reviewers running
 
 ### Traceability matrix (optional — regulated / V&V-heavy domains)
 
-The per-rule `Verified by:` annotation above is the light form of the right side, and the right weight for most projects. Projects with **requirement-level** V&V obligations (regulated, safety, formal review) can upgrade to a full traceability matrix. The core shape — stable requirement IDs × test IDs plus a bug-register→test mapping — is adopter-proven, independently invented before this seed's `Verified by:` convention and convergent with it; the wiring into the seed's visible-debt and spec-prose-gate conventions is this seed's own:
+The per-rule `Verified by:` annotation above is the light form of the right side, and the right weight for most projects. Projects with **requirement-level** V&V obligations (regulated, safety, formal review) can upgrade to a full traceability matrix:
 
 - **Stable requirement IDs** on every binding rule — `REQ-<area>-N` (e.g. `REQ-T-3`, `REQ-C-7`, with `<area>` codes of your choosing). Prerequisite: adopt a stable-ID convention for binding rules first (the optional stable-IDs note in this file's source; ADR-0007 §Alternatives has the deferral reasoning) — the matrix is unusable over rules that renumber.
 - **Stable test IDs** on the verifying artifacts — e.g. `TS-U-*` / `TS-I-*` / `TS-S-*` for unit / integration / system tests.

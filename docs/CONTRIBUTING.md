@@ -127,7 +127,7 @@ These checks are valuable but don't earn their keep today, either because the su
 
 ### Expensive required checks — cost patterns
 
-When a required check is costly — licensed toolchains, long runs, metered runners — two adopter-proven patterns keep the merge gate intact without paying for runs that prove nothing:
+When a required check is costly — licensed toolchains, long runs, metered runners — two patterns keep the merge gate intact without paying for runs that prove nothing:
 
 - **Docs-only skip inside the job.** The expensive job starts with an in-job base-diff; when the diff touches no surface the check exercises (e.g. a docs-only PR), the job exits successfully without running the expensive part, so **the required context still reports green**. Keep the skip *inside* the job rather than in a workflow-level `paths:` filter: a `paths:`-filtered required check that never starts reports pending forever and wedges the merge gate.
 - **Committed pre-push hook mirroring CI.** A committed hook directory (e.g. `.githooks/pre-push`, opted into via `git config core.hooksPath .githooks`) runs the *same entry point CI runs*, on a clean environment, and **skips cleanly when the toolchain is absent** — contributors with the toolchain catch failures before burning licensed CI minutes; contributors without it aren't blocked.
