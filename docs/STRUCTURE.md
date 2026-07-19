@@ -33,6 +33,7 @@
 ├── CLAUDE.md                      # agent operating rules
 ├── README.md                      # user-facing entry point
 ├── CHANGELOG.md                    # adopter project changelog (Keep a Changelog format)
+├── DISCIPLINE_ADOPTION.md          # seed provenance + per-artifact adoption table + sync log
 ├── <config>.example.<ext>          # example configuration, generated from SPEC
 │
 ├── .claude/                        # Claude Code config (optional, adopter-tunable)
@@ -68,6 +69,8 @@
 │   ├── REVIEW_CONTEXT.md
 │   ├── RISKS.md                    # OPTIONAL — regulated / life-safety / hard-reliability only
 │   ├── STRUCTURE.md                # this file
+│   ├── analyses/                   # OPTIONAL — dated, immutable analysis snapshots
+│   │   └── README.md               # the four-rule convention
 │   ├── decisions/                  # adopter ADRs (your project's decisions)
 │   │   ├── README.md               # ADR conventions + index
 │   │   └── ADR-NNNN-*.md

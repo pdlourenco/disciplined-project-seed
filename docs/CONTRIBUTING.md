@@ -43,24 +43,9 @@ The seed ships an active baseline workflow at [`.github/workflows/ci.yml`](../.g
 
 <!-- The highest-leverage tests in the repo: they catch silent drift between
      independently developed components. Name them concretely with what they
-     check and what drift they prevent.
-
-     Common patterns:
-
-     - A test that parses a field table out of SPEC.md (or a canonical schema
-       file) and asserts it matches the code-side schema definition.
-
-     - Version-pinning tests that ensure two implementations of a shared
-       dependency agree on a minor version.
-
-     - An integration job that exercises one side's writes against another
-       side's reads with a real on-disk artifact.
-
-     - A structural lint rule (AST-level) that makes violating an
-       architectural invariant a build error, paired with a drift-guard
-       test that derives the same target set from metadata so the rule's
-       hardcoded list can't silently diverge from the schema. Pattern
-       only — the rule's contents are domain-specific and stay downstream.
+     check and what drift they prevent. Pick shapes from the pattern
+     catalogue below (rendered text, so it survives into your adopted
+     CONTRIBUTING).
 
      If your project has no cross-component contracts, delete this tier and
      the four-tier structure collapses to three. -->
@@ -68,6 +53,36 @@ The seed ships an active baseline workflow at [`.github/workflows/ci.yml`](../.g
 - **`<!-- contract-consistency-test -->`** — <!-- what it asserts; what drift it catches -->
 - **`<!-- version-pinning-test -->`** — <!-- which versions it pins together, why -->
 - **`<!-- integration-job -->`** — <!-- what writes, what reads, what assertion -->
+
+#### Contract-gate pattern catalogue
+
+Patterns for tier-1 gates — the contents are domain-specific and stay
+downstream:
+
+- **Spec-prose parsing gate** — tests parse the catalogue tables out of `SPEC.md` (or a canonical schema file) and assert set-for-set equality with the code-side unions / schema definition. Useful side effect: forces a documented, machine-parseable shape onto the SPEC tables themselves.
+- **Codegen-diff gate** — emit the interface description from the real application (e.g. OpenAPI from the running app), regenerate the client types, then `git diff --exit-code`: an unregenerated contract change fails CI.
+- **Set-for-set enrollment gate** — enumerate every route / handler / member from framework metadata and force each into an explicit disposition (`matrix` / `exempt` / `pending`); an unenrolled newcomer fails CI.
+- **Totality-over-enum gate** — every enum member declaring a capability must appear in the registry that implements it.
+- **Metadata-derived cross-check** — any hand-maintained list inside a lint rule or gate is asserted equal to the same set derived from schema metadata, so the gate itself can't drift from the schema.
+- **Structural lint rule** — an AST-level rule that makes violating an architectural invariant a build error, paired with the metadata-derived cross-check above so the rule's hardcoded list can't silently diverge.
+- **Version-pinning test** — two implementations of a shared dependency asserted to agree on (at least) a minor version.
+- **Integration probe** — one side's writes exercised against the other side's reads with a real on-disk artifact, asserting the field set and types.
+- **Shared contract artifact** — one language-agnostic, machine-parsed file (a schema file, a TOML/JSON catalogue) that *every* implementation parses at build/run time, instead of per-language mirrors reconciled by an equality test. Drift in the source of truth becomes structurally impossible; drift in the parsers is caught at CI time by the integration probe. Prefer this over mirror-plus-equality-test where feasible: the equality test catches drift only after it's already pushed, and dies when one language is retired.
+
+Two caveats:
+
+- **Gate the production idiom, not a mirror.** A gate that verifies a parallel, test-oriented reimplementation of the production function passes while the production idiom goes unverified. Point the gate at the code that ships.
+- **`Verified by:` annotations need a cross-check.** An annotation claiming "verified: every rule above" while rules have zero tests is worse than no annotation — it converts visible debt into hidden debt. Either mechanize the cross-check or use a closed value vocabulary (values are per-project; e.g. `unit` / `integration` / `lint` / `manual` / `deferred` / `none`) so each rule's claim is individually checkable; `none` doubles as the visible-debt marker.
+
+**Hardening for machine-shared artifacts.** Gates guard the consumers; the artifact's own generation needs guards too. Any generated shared artifact carries **generator-provenance metadata** (generator version, date, seed) so staleness is detectable from file contents; numeric artifacts (reference vectors, golden files) additionally set an **absolute tolerance floor** so the gate isn't environment-flaky at zero tolerance. Assert that every shipped artifact is consumed by at least one test, so orphans can't accumulate.
+
+#### The drift-hardening doctrine
+
+The doctrine behind the catalogue, stated once so reviews can cite it:
+
+- **A mandate enforced only by an outcome test that two idioms both pass will drift.** Replace it with a structural gate.
+- **Implementations conform to the spec, not to each other.** No implementation is ground truth. Cross-implementation equivalence vectors are a check, not a proof: a bug in a shared helper makes every downstream caller violate the spec in the same way, invisibly to cross-validation.
+- **Prose points, doesn't restate.** Set-for-set gates protect the tables they parse; prose that *restates* a machine-checked catalogue falls behind within a version or two. Docs describing a contract link to it rather than repeating its contents. The paired refresh step lives in §"When you change a contract in `docs/SPEC.md`".
 
 ### 2. Cross-platform matrix
 
@@ -86,6 +101,8 @@ The seed ships an active baseline workflow at [`.github/workflows/ci.yml`](../.g
 ### 4. Deferred (not yet wired)
 
 These checks are valuable but don't earn their keep today, either because the surface they protect hasn't landed yet or because their signal-to-noise ratio is poor until the codebase is larger. Each entry names the check, what it does, why we're deferring it, and the **trigger condition** that should prompt us to wire it in.
+
+**The sweep step.** A named trigger only works if someone notices it fired — the documented failure mode is deferrals sitting unswept after their trigger fired. The convention is therefore paired with a sweep: **on every phase completion** (see `docs/plans/PHASE-TEMPLATE.md` §10 Follow-ups, *Admin*), scan the project's deferred-with-conditions surfaces — this section, `SPEC.md` §Deferred, `DESIGN.md` future extensions, `ROADMAP.md` future phases, phase-plan follow-ups, and issues labelled `deferred` — for triggers that named the completing phase or fired during it. Each hit is either wired in or explicitly re-deferred with a new trigger; silence is the one prohibited outcome.
 
 <!-- The deferred-with-conditions pattern is the same discipline used in
      SPEC.md §"Deferred" and ROADMAP.md "Future phases". It prevents
@@ -152,6 +169,8 @@ Non-obvious design choices live in `docs/decisions/` as Architecture Decision Re
 - The choice is purely mechanical (import ordering, formatter settings).
 
 Link ADRs from PR descriptions: `Implements X per ADR-NNNN.` Inline code comments can point to ADRs for tactical values (`# See ADR-NNNN` beside a magic number).
+
+**Scope of dev-tracking references: dev-facing surfaces only.** User-facing docs are **state-based and release-relative** — they describe current behavior and never carry `ADR-NNNN`, `#issue`, or internal revision tags; the audit trail lives in dev docs and code comments. A user reading the manual should not need the tracker to parse a sentence.
 
 ## Pre-push self-review (agent convention)
 
@@ -312,6 +331,8 @@ Once the CI suite defined in §CI strategy lands, **run it locally before every 
 
 **Commands.** The same commands your CI workflow runs should be runnable locally. If your stack has a task runner (`tox`, `nox`, `just`, `cargo`, `npm scripts`, `go` subcommands, etc.), define your CI commands there once and call them from both the workflow and the pre-push invocation. A small `Makefile` or shell script is a reasonable fallback when no ecosystem-native task runner fits. `act` is available for testing workflow YAML *changes* themselves but is overkill as the default pre-push mechanism — for most CI logic, invoking the underlying commands directly is faster and equally drift-resistant. The seed's **own** doc-CI is exactly that fallback case — heterogeneous tools (markdownlint-cli2, lychee, actionlint, two Python scripts) that no single runner drives — so the seed dogfoods [`scripts/local-ci.sh`](../scripts/local-ci.sh), which runs its active tier-3 jobs in [`ci.yml`](../.github/workflows/ci.yml) order, fail-fast. This is the seed's glue across heterogeneous doc tools, not a recommendation to prefer a wrapper over your stack's task runner; see [ADR-0004](../meta/decisions/ADR-0004-pre-push-ci-via-ecosystem-task-runner.md) (Revised) for the dogfooding decision. In a web session, [`.claude/hooks/session-start.sh`](../.claude/hooks/session-start.sh) provisions the toolchain this script drives.
 
+**Auto-fix caution.** Linters' auto-fix modes can silently change meaning, not just form (e.g. `__pycache__` auto-"fixed" to `**pycache**`, a code span with a significant trailing space collapsed). Review auto-fix output like any other diff, and disable meaning-changing rules (e.g. markdownlint's MD038) rather than accepting their fixes.
+
 **Scope.** Pre-push runs **tier 1 + tier 3 only**. Tier 2's runner matrix doesn't run locally (single-machine can't emulate cross-OS coverage meaningfully); tier 4 doesn't run anywhere until promoted out of "deferred". A pre-push command that takes longer than ~30 seconds will get bypassed — that's the design budget.
 
 ## When you change a contract in `docs/SPEC.md`
@@ -323,7 +344,8 @@ Once the CI suite defined in §CI strategy lands, **run it locally before every 
 1. Update the spec first.
 2. Update each implementation side in the same PR.
 3. Add a note in `docs/SPEC.md`'s change log.
-4. Run the contract-consistency checks and integration job locally before pushing.
+4. Refresh the prose docs that describe the contract (`DESIGN.md`, `ROADMAP.md`, per-topic notes under `docs/design/`): update what they say about the change and, where they restate contract details, make them **point** at the contract instead — restated catalogues are the documented drift surface (see §"CI strategy" §1, *drift-hardening doctrine*).
+5. Run the contract-consistency checks and integration job locally before pushing.
 
 If the contract change is motivated by an ADR, the ADR lands in the same PR too — see [`decisions/README.md`](decisions/README.md) §"What an ADR is — and isn't".
 
@@ -342,6 +364,32 @@ Labels follow the taxonomy in [`LABELS.md`](LABELS.md). On decision-bearing issu
 The live catalogue is reconciled from [`.github/labels.yml`](../.github/labels.yml) via the **Sync labels** workflow ([ADR-0001](../meta/decisions/ADR-0001-label-sync.md)); `.github/labels.yml` and `docs/LABELS.md` are paired and must change together.
 
 Adding a new label or changing the taxonomy is a major decision (see [`../CLAUDE.md`](../CLAUDE.md) §4 and [`LABELS.md`](LABELS.md) §Adding a new label); routine labelling is not.
+
+## Known-bug lifecycle
+
+A documented bug that can't be fixed now still needs a **tracking artifact wired to the test surface** — otherwise "known" degrades to "forgotten". Two mechanisms exist; they encode different test cultures, and the seed deliberately does not rank them. Pick one per project and state the choice here:
+
+- **(a) Self-healing xfail tests.** The bug ships with a tagged test (`xfail` / `KnownIssue` + assume-fail, per your framework) that *detects the buggy outcome and skips, otherwise asserts* — so it becomes a regression guard the moment the bug is fixed. The fixing PR flips the tag in the same PR. Residual debt: a stale tag downgrades the guard (a re-introduced regression reports as *filtered*, not *failed*), so tag removal is part of the fix and a stale-tag detector is worth adding when tags accumulate.
+- **(b) Visible-debt markers + register.** The unverified or known-broken rule gets a visible marker in `SPEC.md` (e.g. `Verified by: none`) plus an entry in a tracking register (issues, or a severity-graded list), with no forced same-PR test. Residual debt: the marker is only as good as its honesty — see §"CI strategy" §1's `Verified by:` cross-check caveat.
+
+**Common core, either way:** *a bug fix closes its known-bug tracking artifact — tag or marker plus register entry — in the same PR.* The PR checklist carries this row.
+
+## Randomized-exploration testing (PBT / Monte-Carlo)
+
+An optional convention for projects with a pure, invariant-bearing engine surface — property-based testing, Monte-Carlo campaigns, randomized V&V. The motivation: bugs live precisely in the *combinations* nobody enumerated.
+
+The three rules:
+
+1. **Assert invariants and oracles, never a reimplementation.** The oracle is a property the result must satisfy (exactness by construction, cross-mode equality, superset checks, round-trips) — a parallel reimplementation of the engine drifts with it and proves nothing.
+2. **Seeded reproducibility, failures promoted.** Runs are seeded and reproducible; every failing case is promoted to a committed **deterministic** regression fixture (the strongest form first delta-debugs the failing seed to a minimal reproducer, then commits that).
+3. **The unbounded campaign stays out of the PR gate.** A fixed-seed smoke test covers per-merge drift; the open-ended campaign is a local / scheduled / release run. Randomized wall-clock does not belong in the merge path.
+
+**Mandatory floor (for projects that adopt this convention): periodic forced runs.** Rule 3 keeps the campaign out of the PR gate, so something else must force it to actually run — otherwise "not in CI" quietly becomes "never". The floor is a *"run the randomized campaign and triage failures"* step:
+
+- at **every phase completion** (`docs/plans/PHASE-TEMPLATE.md` §10 Follow-ups, *Admin*, alongside the deferral sweep), and
+- in the **PR checklist for major-bug-fix and major-feature PRs** — the moments the input space just changed.
+
+**Optional hardening:** a scheduled CI run (cron) of the campaign with failures auto-filed as issues, for projects with the runner budget.
 
 ## When CI fails
 

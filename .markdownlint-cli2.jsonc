@@ -47,6 +47,7 @@
     "docs/REVIEW_CONTEXT.md",
     "docs/STRUCTURE.md",
     "docs/RISKS.md",
+    "DISCIPLINE_ADOPTION.md",
     "docs/plans/PHASE-TEMPLATE.md",
     "docs/decisions/ADR-TEMPLATE.md"
   ]

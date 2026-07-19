@@ -84,6 +84,12 @@ The distinction is borrowed from [V-cycle](https://en.wikipedia.org/wiki/V-model
      7. **Composition over dependency.** [Reference implementations]
         are studied, not imported as libraries.
 
+     8. **User-facing docs are state-based and release-relative.**
+        They describe current behavior with no dev-tracking references
+        (no ADR-NNNN, no #issue, no internal revision tags); dev docs
+        and code comments keep the full audit trail. Flag a PR that
+        leaks tracker vocabulary into a user-facing surface.
+
      Replace wholesale with your project's actual invariants. -->
 
 1. **<!-- Principle -->** <!-- Description + consequences for PRs. -->
