@@ -158,7 +158,7 @@ jobs:
              GitHub): run \`scripts/setup-branch-protection.sh\` from an
              authenticated environment to reapply the YAML.
 
-          See [ADR-0005](https://github.com/${{ github.repository }}/blob/main/meta/decisions/ADR-0005-branch-protection-as-code-classic.md)
+          See [ADR-0005](https://github.com/pdlourenco/disciplined-project-seed/blob/main/meta/decisions/ADR-0005-branch-protection-as-code-classic.md)
           for the policy.
           EOF
           )
@@ -194,7 +194,7 @@ jobs:
           authenticated environment to apply the policy from
           \`.github/branch-protection.yml\`.
 
-          See [ADR-0005](https://github.com/${{ github.repository }}/blob/main/meta/decisions/ADR-0005-branch-protection-as-code-classic.md).
+          See [ADR-0005](https://github.com/pdlourenco/disciplined-project-seed/blob/main/meta/decisions/ADR-0005-branch-protection-as-code-classic.md).
           EOF
           )
           gh issue create \

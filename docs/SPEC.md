@@ -76,10 +76,11 @@ Skip this section entirely unless the domain demands requirement-level traceabil
 
 <!-- OPTIONAL — delete if your project has no user-facing config.
 
-     If it does: this section is authoritative. A `config.example.toml`
-     in the repo root should be generated from (or kept in sync with)
-     this section. Unknown keys should cause a warning, not fail loading
-     — that's what makes the schema forward-compatible. -->
+     If it does: this section is authoritative. A `config.example.<ext>`
+     in the repo root (TOML shown below; substitute your format) should
+     be generated from (or kept in sync with) this section. Unknown keys
+     should cause a warning, not fail loading — that's what makes the
+     schema forward-compatible. -->
 
 <!-- Organize sections by consumer. The discipline is: one section per
      consumer-side, plus a shared [general] section. Avoid sections
@@ -104,7 +105,9 @@ Skip this section entirely unless the domain demands requirement-level traceabil
 <!-- Enumerate what a config loader must check and what happens on
      failure. "Load error" = fail loud and exit; "warning" = log and
      continue. The default bias: unknown keys are warnings (forward
-     compatibility), invalid values for known keys are errors. -->
+     compatibility) (the trade-off: strict-unknown-keys catches typos
+     earlier; if you choose it, say so here), invalid values for known
+     keys are errors. -->
 
 - Missing required keys → load error with the offending key path.
 - Invalid enum values → load error listing allowed values.
@@ -157,9 +160,8 @@ Skip this section entirely unless the domain demands requirement-level traceabil
 
      Examples from other projects to show the shape:
 
-     - "`path` is stored raw (keyword type), not tokenized. Tokenized
-       paths break exact-match queries for any path with punctuation
-       or path separators."
+     - "Amounts are stored in minor units (integer cents), never
+       floats. Float arithmetic produces silently-wrong totals."
      - "`modified` is stored in UTC. Producers that use local time
        produce silently-wrong sort orders."
      - "IDs are minted as UUIDv5 over the canonical path, not an
@@ -185,7 +187,7 @@ Skip this section entirely unless the domain demands requirement-level traceabil
 ### Invocation
 
 ```
-<!-- tombo search <query> [flags...] -->
+<!-- myproj search <query> [flags...] -->
 ```
 
 ### Output schema
@@ -214,8 +216,8 @@ Skip this section entirely unless the domain demands requirement-level traceabil
      consumers don't try to work around them. Examples:
 
      - "Pagination is not supported; use --limit."
-     - "Faceted aggregation is not specified; deferred to v2."
-     - "Snippet highlighting is hardcoded to <b>...</b>." -->
+     - "Bulk endpoints are not specified; deferred to v2."
+     - "Timestamps are second-granularity; sub-second ordering is unspecified." -->
 
 ### Non-goals
 
@@ -228,7 +230,7 @@ Skip this section entirely unless the domain demands requirement-level traceabil
 ## 5. <!-- ID minting rule / canonical identifier convention -->
 
 <!-- If the project uses stable IDs that cross boundaries (e.g., a
-     document ID passed from indexer → search → opener), define the
+     order ID passed from ingester → processor → notifier), define the
      minting rule here.
 
      Delete if not applicable. -->

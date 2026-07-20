@@ -3,7 +3,7 @@
 Audit Markdown files for inline HTML-comment placeholders that render
 as visible artifacts in the published output.
 
-Bug class this catches: PR #4. Source lines like
+Bug class this catches: the seed's PR #4. Source lines like
 
     defines the external contracts — <!-- describe the boundaries -->.
     gates in CI — <!-- name them --> — are not optional.
