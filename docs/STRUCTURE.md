@@ -48,10 +48,12 @@
 │   ├── branch-protection.yml       # main's branch protection, classic schema
 │   ├── labels.yml                  # machine source for label catalogue
 │   ├── scripts/
-│   │   └── audit-placeholders.py   # tier-3 audit (see CONTRIBUTING.md)
+│   │   ├── audit-placeholders.py   # tier-3 audit (see CONTRIBUTING.md)
+│   │   └── release_changelog.py    # release.yml gate: tag ↔ CHANGELOG
 │   ├── workflows/                  # CI definitions
 │   │   ├── check-branch-protection.yml  # weekly drift check (read-only)
 │   │   ├── ci.yml                  # active baseline + four-tier framing
+│   │   ├── release.yml             # tag-push release + CHANGELOG gate (ADR-0015)
 │   │   └── sync-labels.yml         # reconciles labels.yml → live repo
 │   └── pull_request_template.md
 │
