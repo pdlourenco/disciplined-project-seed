@@ -100,13 +100,13 @@ Phase N implementation work does not begin until the items below land.
      enumerating the issues / ADRs the phase produces. No PRs in the phase
      itself; PRs follow as decisions close. -->
 
-After §2 prerequisites land, Phase N implementation decomposes into N PRs. Each lands in a sideloadable / deployable / CI-green state. Per-PR depth lives in §4–§7; this section is the order-of-operations and the visible outcome that gates each merge.
+After §2 prerequisites land, Phase N implementation decomposes into N PRs. Each lands in a shippable / deployable / CI-green state. Per-PR depth lives in §4–§7; this section is the order-of-operations and the visible outcome that gates each merge.
 
 <!-- PR labeling scheme — pick one:
 
      - Alphabetic: "PR Na", "PR Nb", "PR Nc" (for small sequences)
      - Numeric: "PR N.1", "PR N.2"
-     - Descriptive: "Scaffold PR", "Live-search PR", "Rich-item PR"
+     - Descriptive: "Scaffold PR", "Core-flow PR", "Polish PR"
 
      The important thing is that each PR has a memorable short name so
      later sections can reference it without re-describing. -->
@@ -138,7 +138,7 @@ After §2 prerequisites land, Phase N implementation decomposes into N PRs. Each
 <!-- OPTIONAL: note explicitly what IS NOT in the sequence. Example:
 
      Settings UI is intentionally not in this sequence — Phase N ships
-     with no in-extension settings surface. See §8.
+     with no in-app settings surface. See §8.
 
      This prevents reviewers from wondering "did they forget to plan the
      settings PR?". -->
@@ -214,7 +214,7 @@ After §2 prerequisites land, Phase N implementation decomposes into N PRs. Each
      - Signing (dev vs production)
      - Build + deploy inner loop for developers
      - Log location, rotation policy
-     - Distribution channels in scope vs deferred
+     - Distribution channels in scope vs deferred (store / registry / direct download)
 
      Keep production-signing / Store submission / auto-update etc.
      out of scope if they belong to a later phase, but NAME them so
@@ -236,7 +236,7 @@ After §2 prerequisites land, Phase N implementation decomposes into N PRs. Each
 
      Example shape:
 
-         Phase N ships **no in-extension settings surface**. This is
+         Phase N ships **no in-app settings surface**. This is
          a deliberate non-goal, not an omission.
 
          **Why none.** [Reasoning — usually that the capability belongs

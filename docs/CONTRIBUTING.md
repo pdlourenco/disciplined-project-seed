@@ -140,7 +140,7 @@ Any shipped workflow that uses `actions/checkout` (or otherwise reads repo conte
 
 ## `gh` CLI in workflows
 
-Any shipped workflow that invokes the `gh` CLI against a specific repo (`gh issue create`, `gh pr create`, `gh api /repos/...`, …) must target the repo explicitly — either via `--repo ${{ github.repository }}` per call site, or by setting `GH_REPO: ${{ github.repository }}` in the step's `env:`. Without it, `gh` falls back to inferring the target from the current working directory's git remote, which only works if `actions/checkout` ran. Workflows that legitimately don't check out (or any future workflow that drops the checkout step "because the API call doesn't need it") silently break the first time the `gh` command actually fires — typically with `fatal: not a git repository`. The seed's `check-branch-protection.yml` sets `GH_REPO` on every step that calls `gh issue create`; extend the same discipline to any new workflow that invokes `gh` outside a checked-out tree.
+Any shipped workflow that invokes the `gh` CLI against a specific repo (`gh issue create`, `gh pr create`, `gh api /repos/...`, …) must target the repo explicitly — either via `--repo ${{ github.repository }}` per call site, or by setting `GH_REPO: ${{ github.repository }}` in the step's `env:`. Without it, `gh` falls back to inferring the target from the current working directory's git remote, which only works if `actions/checkout` ran. Workflows that legitimately don't check out (or any future workflow that drops the checkout step "because the API call doesn't need it") silently break the first time the `gh` command actually fires — typically with `fatal: not a git repository`. The seed's `check-branch-protection.yml` sets `GH_REPO` on every step that calls `gh issue create`; extend the same discipline to any new workflow that invokes `gh` outside a checked-out tree. The failure shape is tool-independent: any CLI invoked in CI that infers its target repo or context from the working directory, rather than from an explicit flag or environment variable, breaks silently in workflows without a checkout — always pass the target explicitly.
 
 ## Local development
 
@@ -404,7 +404,7 @@ The three rules:
 
 - **Contract jobs failed**: almost always means two sides of a contract disagree. Fix both in the same commit.
 - **Matrix job failed on one platform only**: platform-specific bug. Reproduce locally with the appropriate platform-specific tooling before guessing.
-- **Pre-commit failed**: run `pre-commit run --all-files` locally and commit the fix. Do not bypass with `--no-verify`.
+- **Hook or formatter gate failed**: run the same gate locally against all files (e.g. `pre-commit run --all-files`) and commit the fix. Never bypass hooks to push (`--no-verify` or equivalent).
 - **Coverage floor breached**: add tests; do not lower the floor in the same PR that breached it.
 
 ## Warnings are actionable
