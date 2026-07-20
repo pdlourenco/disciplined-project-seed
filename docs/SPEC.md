@@ -105,7 +105,7 @@ Skip this section entirely unless the domain demands requirement-level traceabil
 <!-- Enumerate what a config loader must check and what happens on
      failure. "Load error" = fail loud and exit; "warning" = log and
      continue. The default bias: unknown keys are warnings (forward
-     compatibility) (the trade-off: strict-unknown-keys catches typos
+     compatibility — the trade-off: strict-unknown-keys catches typos
      earlier; if you choose it, say so here), invalid values for known
      keys are errors. -->
 
