@@ -14,6 +14,8 @@ Entries are dated by merge into `main`.
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-07-21
+
 ### Added
 
 - `.github/workflows/release.yml` + `.github/scripts/release_changelog.py` — **release-as-code** ([ADR-0015](decisions/ADR-0015-release-as-code.md)): a `v*`-tag-push workflow that (1) **gates** the tag against the CHANGELOG — the version must have a dated `## [X.Y.Z] — YYYY-MM-DD` section and `[Unreleased]` must be empty at the tagged commit, or the run fails and no release is created — (2) extracts that section as the release body, (3) assembles a curated `<repo>-vX.Y.Z-template.zip`/`.tar.gz` (the tagged tree minus `meta/`) so "download the latest release" is the clean-start adoption path, and (4) creates the release via plain `gh` (no third-party action; `GH_REPO` explicit). Turns ADR-0013's tag convention from a discipline-only promise into a structural gate. Human-decides / machine-executes (as ADR-0005); the seed's first `contents: write` workflow, scoped to tag pushes; branch protection untouched (runs on tags, not PRs). Both the CHANGELOG path and the archive exclusion list are single, commented `env:` variables adopters flip — this ships as a small adopter convention, not seed-only plumbing. The gate logic is a dry-runnable script, not inline one-liners. `README.md` (§"How to adopt" template-archive path, §"How the seed evolves" update feed) and `docs/STRUCTURE.md` updated; ADR-0013's supporting-change note extended. MINOR (new workflow + convention). ([#42](https://github.com/pdlourenco/disciplined-project-seed/issues/42))
