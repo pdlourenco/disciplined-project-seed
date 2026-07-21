@@ -90,6 +90,11 @@ jobs:
           done
           zip -qr "${name}.zip" "$name"
           tar -czf "${name}.tar.gz" "$name"
+          # Re-run recovery: `gh release create` errors if the release
+          # already exists, so a partial run (release created but an asset
+          # upload died) does NOT self-heal on re-run — delete the partial
+          # release (or re-push the tag) first, then re-run. ADR-0015 leaves
+          # workflow_dispatch open as a future re-run convenience.
           gh release create "$GITHUB_REF_NAME" \
             --title "$GITHUB_REF_NAME" \
             --notes-file release-notes.md \

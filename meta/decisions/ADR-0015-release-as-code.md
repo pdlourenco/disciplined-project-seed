@@ -97,6 +97,12 @@ convention**, not seed-only plumbing.
   scope is justified and narrow: it runs only on `v*` tag pushes, never on
   arbitrary `main` pushes. A tag pusher is already trusted with the release
   decision.
+- **The gate validates CHANGELOG shape, not lineage.** A tag on a
+  non-`main` commit whose CHANGELOG happens to validate releases *that
+  commit's* tree — deliberately: the tag pusher's judgment is the control,
+  the same trust the release decision itself rests on. Constraining releases
+  to `main` (or to a signed/annotated tag) is a separate, additive check to
+  add only if a concrete need arises — not a silent default here.
 - **Branch protection is unaffected.** The workflow triggers on tags, not
   pull requests, so it is not a merge-gating status check; no
   `.github/branch-protection.yml` context is added and the `check-bp-contexts`
