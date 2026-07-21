@@ -48,7 +48,9 @@ and tracked in the marker's backport log.
 Supporting change: the seed starts **cutting a git tag at each
 `meta/CHANGELOG.md` version** (first tag: the version this Tier-1 series
 ships as), so pinned `vX.Y.Z (sha)` references resolve and a flow-down pass
-is "read the seed CHANGELOG between two pinned versions".
+is "read the seed CHANGELOG between two pinned versions". (Those tags now
+cut through the release workflow of [ADR-0015](ADR-0015-release-as-code.md),
+which gates the tag↔CHANGELOG pairing this pin mechanism relies on.)
 
 ## Consequences
 
