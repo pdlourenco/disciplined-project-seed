@@ -137,7 +137,18 @@ The distinction is borrowed from [V-cycle](https://en.wikipedia.org/wiki/V-model
 
 **<!-- Architectural creep: daemon, cache, session state, ... -->.** <!-- Name the architectural moves this project has deliberately ruled out. A PR proposing one is a significant deviation and needs explicit justification. -->
 
-**<!-- Unrealistic assumptions about [known pain point] -->.** <!-- Every project has them. Python packaging, Windows path handling, timezone arithmetic. If a PR treats one of them as a solved problem, push back. -->
+**<!-- Unrealistic assumptions about [known pain point] -->.** <!-- Every project has them. Python packaging, Windows path handling, timezone arithmetic. If a PR treats one of them as a solved problem, push back.
+
+     Concrete example of the shape (adapt or delete — illustrative, not a
+     mandated rule): in a multi-tenant system that schedules future work at a
+     local wall-clock time, make it a citable assertion — "storage is UTC, but
+     the tenant's IANA timezone is canonical for every time-sensitive
+     operation." Flag a PR that anchors a schedule, or derives a tenant-facing
+     "today", from UTC (or the browser/device zone) instead of resolving it
+     from the tenant-carried zone at the write seam: the UTC-anchored branch is
+     the intuitive one and it silently produces wrong calendar dates for
+     tenants in other zones — dates that then flow into immutable downstream
+     artifacts. -->
 
 **<!-- Missing ADR for a decision that will stick -->.** <!-- When a PR makes a decision future contributors will wonder about, an ADR should accompany it. Small tactical choices don't need one; see CONTRIBUTING.md §"Design decisions". -->
 
