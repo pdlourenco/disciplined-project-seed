@@ -14,6 +14,15 @@ Entries are dated by merge into `main`.
 
 ## [Unreleased]
 
+### Added
+
+- `docs/analyses/README.md` — one-line caveat "a recorded command is a claim, not a fact": verify executable commands against a live system when carrying them into an analysis or backport, rather than trusting the source study. Added after a documented case where a PR-search command carried from the four-adopter study proved a silent no-op. PATCH (additive guidance). ([#47](https://github.com/pdlourenco/disciplined-project-seed/issues/47))
+- `docs/REVIEW_CONTEXT.md §"Common review patterns and red flags"` — expanded the existing "timezone arithmetic" known-pain-point red flag with a concrete, citable example shape for multi-tenant time-sensitive systems: storage is UTC, but the tenant's IANA timezone is canonical for scheduling and tenant-facing "today" derivations; flag UTC- or device-zone-anchored schedules. Illustrative (in-comment, adapt-or-delete), not a mandated principle — the seed ships principle *shapes*, not concrete principles. Backported from a downstream adopter (ppqq); single-adopter evidence. PATCH (additive example). ([#50](https://github.com/pdlourenco/disciplined-project-seed/issues/50))
+
+### Fixed
+
+- `docs/decisions/README.md §"Numbering and filenames"` — corrected the in-flight ADR-collision scan command. The documented `gh pr list --search 'ADR- in:files'` silently degrades to a title/body text match: `in:files` is not a supported PR-search qualifier (GitHub doesn't index PR changed files), so it is ignored and the scan misses exactly the in-flight ADR that doesn't name itself in its title/body — the case the scan exists for. Replaced with the `--json files` form (`gh pr list --state open --limit 200 --json number,title,files --jq '… docs/decisions/ADR- …'`), which does read changed files, plus an inline note that `in:files` is a no-op. The v0.4.0 item-7 entry below and the four-adopter analysis record the old command as immutable history; the correction lives in the convention text. PATCH. ([#47](https://github.com/pdlourenco/disciplined-project-seed/issues/47))
+
 ## [0.4.0] — 2026-07-21
 
 ### Added

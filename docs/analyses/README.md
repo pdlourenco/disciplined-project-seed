@@ -27,6 +27,12 @@ in time** and is then left alone.
    text lives in `SPEC.md`; decisions live in ADRs. An analysis can motivate
    either — the authoritative text then moves there.
 
+**A recorded command is a claim, not a fact.** When an analysis (or a backport
+citing one) records a shell command as *working*, test it against a live system
+at the time it is carried, not on the strength of the source study — a command
+can enter the record untested and then propagate as established fact. Verify
+executable commands at backport time.
+
 The immutability-plus-pointers rule is what keeps this folder from becoming
 a stale-doc graveyard: nothing in it claims to be current, so nothing in it
 can rot.
