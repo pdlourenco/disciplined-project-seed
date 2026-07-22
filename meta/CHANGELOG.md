@@ -14,6 +14,8 @@ Entries are dated by merge into `main`.
 
 ## [Unreleased]
 
+## [0.4.1] — 2026-07-22
+
 ### Added
 
 - `docs/analyses/README.md` — one-line caveat "a recorded command is a claim, not a fact": verify executable commands against a live system when carrying them into an analysis or backport, rather than trusting the source study. Added after a documented case where a PR-search command carried from the four-adopter study proved a silent no-op. PATCH (additive guidance). ([#47](https://github.com/pdlourenco/disciplined-project-seed/issues/47))
