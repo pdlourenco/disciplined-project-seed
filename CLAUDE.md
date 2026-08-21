@@ -24,7 +24,7 @@ Source-of-truth documents are linked inline; this file is a short index, not a r
 
 ## 2. Pre-push self-review is mandatory
 
-Before **every** `git push` on a PR branch, launch a reviewer subagent on the local diff using the prompt in `docs/CONTRIBUTING.md` §"Pre-push self-review (agent convention)". Seed the subagent with `docs/REVIEW_CONTEXT.md` (project principles and red flags) alongside `docs/DESIGN.md` / `docs/SPEC.md` / `docs/ROADMAP.md` so it reviews against what the project actually cares about, not surface-level lint. Act on findings before pushing; record the outcome in the PR description (`pre-push review: no findings` or `pre-push review flagged X, fixed in <sha>`).
+Before **every** `git push` on a PR branch, launch a reviewer subagent on the local diff using the prompt in `docs/CONTRIBUTING.md` §"Pre-push self-review (agent convention)". Seed the subagent with `docs/REVIEW_CONTEXT.md` (project principles and red flags) alongside `docs/DESIGN.md` / `docs/SPEC.md` / `docs/ROADMAP.md` so it reviews against what the project actually cares about, not surface-level lint. Launch the reviewer at the review-role tier — pin its model/effort explicitly per `docs/CONTRIBUTING.md` §"Model tier selection" rather than letting it inherit the authoring session's tier. Act on findings before pushing; record the outcome in the PR description (`pre-push review: no findings` or `pre-push review flagged X, fixed in <sha>`).
 
 The narrow exceptions — one-line typo, formatting-only, pure revert — and the rationale for pre-push (vs CI) are in `docs/CONTRIBUTING.md` §"Pre-push self-review".
 
