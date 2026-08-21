@@ -221,7 +221,7 @@ trusting it. A *"To reproduce:"* line beside the number is the shape.
      tenants in other zones — dates that then flow into immutable downstream
      artifacts. -->
 
-**<!-- A guard whose failure direction is unasserted -->.** A
+**A guard whose failure direction is unasserted.** A
 fallback that states which way it should fail when it cannot decide, with no
 test that puts it in that state. The happy path passing says nothing about the
 `catch`. Pin the *undeterminable* input, not just the valid and invalid ones.

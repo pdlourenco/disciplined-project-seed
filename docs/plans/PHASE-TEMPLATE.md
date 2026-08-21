@@ -115,28 +115,28 @@ After §2 prerequisites land, Phase N implementation decomposes into N PRs. Each
 
 - **Depends on:** §2 prerequisites complete.
 - **Gate:** <!-- what outcome must be demonstrable to merge. Phrase in outcome terms, not task terms. "Clone → build → [thing] appears in [system] → [thing] does [expected]" is better than "code scaffolding complete". -->
-- **Tier:** <!-- routine / complex / planning-and-review — a recommendation the plan's approval ratifies; rubric and tier→alias mapping in CONTRIBUTING.md §"Model tier selection". Don't put model names here. -->
+- **Model tier:** <!-- routine / complex / planning-and-review — a recommendation the plan's approval ratifies; rubric and tier→alias mapping in CONTRIBUTING.md §"Model tier selection". Don't put model names here. -->
 - **Detail:** §N (<!-- which section has the depth -->), §N (<!-- which -->).
 
 **PR Nb — <!-- Core functionality -->.** <!-- ... -->
 
 - **Depends on:** PR Na.
 - **Gate:** <!-- ... -->
-- **Tier:** <!-- ... -->
+- **Model tier:** <!-- ... -->
 - **Detail:** §N, §N.
 
 **PR Nc — <!-- Rich / polish / integration -->.** <!-- ... -->
 
 - **Depends on:** PR Nb.
 - **Gate:** <!-- ... -->
-- **Tier:** <!-- ... -->
+- **Model tier:** <!-- ... -->
 - **Detail:** §N.
 
 **PR Nd — <!-- Final polish + phase gating -->.** <!-- Manual test plan execution, perf budget verification, ROADMAP update, CHANGELOG entry. -->
 
 - **Depends on:** PR Nc.
 - **Gate:** all manual tests pass, performance budget met or gap explicitly documented, no open critical bugs from the chain.
-- **Tier:** <!-- often routine — gating PRs are mostly mechanical -->
+- **Model tier:** <!-- often routine — gating PRs are mostly mechanical -->
 - **Detail:** §N.
 
 <!-- OPTIONAL: note explicitly what IS NOT in the sequence. Example:

@@ -16,8 +16,8 @@ Entries are dated by merge into `main`.
 
 ### Added
 
-- `docs/REVIEW_CONTEXT.md` gains §"Evidence discipline — fact, or artifact of the measurement?" — seven portable tells that a measurement is an artifact of the method rather than a result, with a project-local `### Instances` slot — and a new red-flag category for guards whose stated failure direction has no test. Backported from adigator-embedded (#53); tell 7 (summarizing-intermediary fetch tools treated as primary sources) absorbs #55.
-- Model-tier selection as a plan-level field (ADR-0016, #54): phase-plan PR rows gain a **Tier** line (`routine` / `complex` / `planning-and-review`); `CONTRIBUTING.md` §"Model tier selection" holds the rubric and the only tier→alias mapping; per-role defaults for the two-session workflow (authoring = plan row's tier, reviewing = `planning-and-review`); the §2 pre-push reviewer is pinned to the review tier at launch; the PR template gains a `Model tier:` row. Companion CI gate and advisor-model escalation deferred with named triggers.
+- `docs/REVIEW_CONTEXT.md` gains §"Evidence discipline — fact, or artifact of the measurement?" — seven portable tells that a measurement is an artifact of the method rather than a result, with a project-local `### Instances` slot — and a new red-flag category for guards whose stated failure direction has no test (ADR-0017). Backported from adigator-embedded (#53); tell 7 (summarizing-intermediary fetch tools treated as primary sources) absorbs #55; #53's record-vs-guidance item deferred as #56.
+- Model-tier selection as a plan-level field (ADR-0016, #54): phase-plan PR rows gain a **Model tier** line (`routine` / `complex` / `planning-and-review`); `CONTRIBUTING.md` §"Model tier selection" holds the rubric and the only tier→alias mapping; per-role defaults for the two-session workflow (authoring = plan row's tier, reviewing = `planning-and-review`); the §2 pre-push reviewer is pinned to the review tier at launch; the PR template gains a `Model tier:` row. Companion CI gate deferred as #57; advisor-model escalation deferred with a named trigger in the ADR.
 
 ## [0.4.1] — 2026-07-22
 

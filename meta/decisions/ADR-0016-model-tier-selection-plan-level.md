@@ -36,7 +36,9 @@ asymmetry was written down nowhere.
 
 ## Decision
 
-1. **Tier is a field on each PR row of the phase plan's §"PR sequence".** The
+1. **The model tier is a field (`Model tier:`) on each PR row of the phase
+   plan's §"PR sequence".** ("Model tier" throughout, where the CI tiers 1–4
+   could be confused.) The
    authoring session proposes a tier per row when drafting the plan; plan
    approval makes it part of an approved artifact; whoever launches the
    session for that row reads it there. The §4 recommend-don't-decide posture
@@ -92,7 +94,9 @@ hard one."
   gate must earn its keep: no phase plan has yet been authored under the
   field. Trigger to wire in: **the first phase plan authored under the tier
   field** (at which point plan-approval review stops being the only
-  enforcement). Tracked as a `deferred + decided` issue.
+  enforcement). Tracked as
+  [#57](https://github.com/pdlourenco/disciplined-project-seed/issues/57)
+  (`deferred + decided`).
 - **Deferred with conditions: runtime escalation via an advisor model.**
   Configuring an advisor so a session consults a stronger model mid-task on
   its own judgement is the closest thing to "the author decides" and composes
