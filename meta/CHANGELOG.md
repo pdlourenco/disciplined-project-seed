@@ -14,6 +14,10 @@ Entries are dated by merge into `main`.
 
 ## [Unreleased]
 
+### Added
+
+- `docs/REVIEW_CONTEXT.md` gains §"Evidence discipline — fact, or artifact of the measurement?" — seven portable tells that a measurement is an artifact of the method rather than a result, with a project-local `### Instances` slot — and a new red-flag category for guards whose stated failure direction has no test. Backported from adigator-embedded (#53); tell 7 (summarizing-intermediary fetch tools treated as primary sources) absorbs #55.
+
 ## [0.4.1] — 2026-07-22
 
 ### Added
