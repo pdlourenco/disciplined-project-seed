@@ -21,9 +21,16 @@ review:` marker makes auditable), and unreviewable despite being exactly the
 kind of sticky choice `CLAUDE.md` §4 says should be surfaced and recommended
 rather than decided silently.
 
-A hard mechanical constraint decides where the field *can* live: **a session
-cannot change its own model.** `/model` is a user command and `--model` binds
-at launch, so an agent cannot re-tier itself mid-flight. Any convention that
+A hard mechanical constraint decides where the field *can* live: **an agent
+cannot re-tier itself mid-flight.** Every documented model-selection
+surface — `/model` during a session, `claude --model` at startup, and the
+operator-side environment/settings defaults — is operator-controlled; none
+is an agent tool
+(<https://code.claude.com/docs/en/model-config> §"Setting your model",
+retrieved 2026-08-22 via raw fetch of the page source; note the runtime
+*can* switch the serving model under a running session, e.g. automatic
+fallback — the claim here is only that the agent holds no re-tier surface).
+Any convention that
 wants tier to be *agent-recommended and maintainer-approved* must land the
 recommendation in a durable artifact the launch reads — which means the phase
 plan, or nothing. The plan's §"PR sequence" is the only place work is
@@ -60,15 +67,21 @@ asymmetry was written down nowhere.
    launches at the tier named by the plan row it implements (`routine` when
    the work is unplanned); the reviewing session launches at
    `planning-and-review`. The asymmetry ADR-0009 implied is now stated.
-5. **The §2 pre-push reviewer runs at the review tier**, pinned at launch via
-   the subagent's model/effort parameters (or `model` / `effort` frontmatter,
-   for projects that keep named subagent definitions) rather than inheriting
-   whatever tier the authoring session happens to be running. The seed
-   deliberately does **not** ship a `.claude/agents/` reviewer definition for
-   this: the reviewer prompt lives in `CONTRIBUTING.md` §"Pre-push
-   self-review", and duplicating it into an agent file would create a
-   restated-prose drift surface (§"CI strategy" §1, drift-hardening doctrine)
-   for one frontmatter line of value.
+5. **The §2 pre-push reviewer runs at the review tier**, its **model** pinned
+   at launch (or via `model` / `effort` frontmatter, for projects that keep
+   named subagent definitions) rather than inheriting whatever tier the
+   authoring session happens to be running. The seed deliberately does
+   **not** ship a `.claude/agents/` reviewer definition for this: the
+   reviewer prompt lives in `CONTRIBUTING.md` §"Pre-push self-review", and
+   duplicating it into an agent file would create a restated-prose drift
+   surface (§"CI strategy" §1, drift-hardening doctrine) for one frontmatter
+   line of value. Accepted residual: without a definition file the launch
+   surface pins model but not effort, which inherits the authoring
+   session's — the model pin captures the asymmetry that matters, since the
+   tier jump is the coarser dial. If effort-pinning proves worth it, the
+   escape hatch is a frontmatter-only definition (frontmatter plus a pointer
+   at the §"Pre-push self-review" prompt, never a copy), which would not
+   restate prose.
 6. **Tier is recorded per PR.** The PR template carries a `Model tier:`
    checklist row beside the pre-push review marker, so tier becomes auditable
    alongside review outcome — after a phase, the PR trail can answer whether
@@ -106,7 +119,7 @@ hard one."
   **at least one phase has run under this convention and the PR-description
   tier data shows where the rubric mispredicts.**
 
-## Rejected alternatives
+## Alternatives considered
 
 - **Do nothing (per-session launch flag).** The status quo whose costs are in
   §Context; worsens as phases get longer and more heterogeneous.

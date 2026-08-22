@@ -80,8 +80,9 @@ test or a gate, pin it; this section is for the rest.
    easily left implicit.
 6. **a negative result whose search space was narrower than the claim.**
    "I searched and found nothing" answers the question you *typed*, not the one
-   you asked. Distinct from tell 4 (there is one fact, not a relationship) and
-   from tell 2 (the tool answered honestly — the *query* was under-specified).
+   you asked. Distinct from the *inferred-relationship* tell (there is one
+   fact, not a relationship) and from the *unchecked-tool-state* tell (the
+   tool answered honestly — the *query* was under-specified).
    Before concluding *X is absent*, enumerate the forms X could take and check
    the pattern covers them: a dependency can be a filesystem call, a name that
    has to resolve at run time, or ambient state, and a pattern list built for
@@ -96,6 +97,11 @@ test or a gate, pin it; this section is for the rest.
    fetch tool that answers a prompt with a smaller model returns that model's
    summary of the page, not the page: its quotes, figures, and citations are
    the summarizer's output, with compression and invention as failure modes.
+   (E.g. Claude Code's WebFetch is documented to run "the prompt against the
+   content using a small, fast model. For most fetches, Claude receives that
+   model's answer, not the raw page" and to be "lossy by design" —
+   <https://code.claude.com/docs/en/tools> §"WebFetch tool behavior",
+   retrieved 2026-08-22 via raw fetch of the page source.)
    Fine for triage and leads; the tell is a specific figure or quote whose
    provenance is a fetch-tool result rather than the raw text. For any claim
    that will be quoted into a durable doc, retrieve the raw text (fetch the
@@ -112,7 +118,16 @@ trusting it. A *"To reproduce:"* line beside the number is the shape.
      project-specific instances (the PR / issue / doc where a tell fired
      here) accumulate below as short cited entries. Do not fold instance
      details back into the tells — the tells/instances split is the
-     convention that keeps this section liftable between projects. -->
+     convention that keeps this section liftable between projects.
+     Reference tells by name, not number, so insertions don't rot the
+     citations. -->
+
+- ***"CI is green"*** — the PR #58 review (the PR that added this section)
+  noted the seed's markdown-lint gate excludes `docs/REVIEW_CONTEXT.md` and
+  `docs/plans/PHASE-TEMPLATE.md`, which carried 84 of that PR's 335 added
+  lines — so "markdown lint green" there was a claim about the other seven
+  files. To reproduce: compare the ignore globs in `.markdownlint-cli2.jsonc`
+  against the PR's file list.
 
 ## Core principles (review against these)
 
