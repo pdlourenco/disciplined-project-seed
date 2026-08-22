@@ -124,10 +124,10 @@ trusting it. A *"To reproduce:"* line beside the number is the shape.
 
 - ***"CI is green"*** — the PR #58 review (the PR that added this section)
   noted the seed's markdown-lint gate excludes `docs/REVIEW_CONTEXT.md` and
-  `docs/plans/PHASE-TEMPLATE.md`, which carried 84 of that PR's 335 added
-  lines — so "markdown lint green" there was a claim about the other seven
-  files. To reproduce: compare the ignore globs in `.markdownlint-cli2.jsonc`
-  against the PR's file list.
+  `docs/plans/PHASE-TEMPLATE.md` — the files carrying most of that PR's
+  added lines — so "markdown lint green" there was a claim about the other
+  seven files. To reproduce: compare the ignore globs in
+  `.markdownlint-cli2.jsonc` against the PR's file list.
 
 ## Core principles (review against these)
 

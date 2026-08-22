@@ -362,11 +362,13 @@ The convention:
   higher effort at the current tier, not the next tier up; escalate tier when
   the difficulty is design freedom, not fiddliness.
   - **Escalating a `complex` row.** `complex` launches at its single mapped
-    alias below. Escalate that row's session to the `planning-and-review`
-    alias — and say so in the PR's `Model tier:` line — when a first pass
-    produced design churn rather than fiddliness. The recorded escalation is
-    the audit signal the tier row exists to collect: a `complex` row that
-    needed the jump is the rubric mispredicting (ADR-0016's revisit trigger).
+    alias below. Escalate that row's session to the next alias up the
+    table — and record it in the PR's `Model tier:` line as
+    `complex (escalated)`, so the row's task shape and the alias it actually
+    ran on stay separable — when a first pass produced design churn rather
+    than fiddliness. The recorded escalation is the audit signal the tier row
+    exists to collect: the `complex (escalated)` count is directly the rubric
+    mispredicting (ADR-0016's revisit trigger).
 - **Record the tier.** The PR description carries a `Model tier:` checklist
   row beside the pre-push review marker, so tier is auditable against review
   outcomes after the fact.
