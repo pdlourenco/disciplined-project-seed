@@ -14,6 +14,8 @@ Entries are dated by merge into `main`.
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-08-22
+
 ### Added
 
 - `docs/REVIEW_CONTEXT.md` gains §"Evidence discipline — fact, or artifact of the measurement?" — seven portable tells that a measurement is an artifact of the method rather than a result, with a project-local `### Instances` slot — and a new red-flag category for guards whose stated failure direction has no test. Backported from adigator-embedded; the summarizing-intermediary tell (fetch tools treated as primary sources) rests on documented, cited tool mechanism; the record-vs-guidance item deferred with a named trigger. MINOR (new review-discipline section adopters opt into). ([#53](https://github.com/pdlourenco/disciplined-project-seed/issues/53), [#55](https://github.com/pdlourenco/disciplined-project-seed/issues/55), [#56](https://github.com/pdlourenco/disciplined-project-seed/issues/56) (deferral), [ADR-0017](decisions/ADR-0017-evidence-discipline-backport.md))
