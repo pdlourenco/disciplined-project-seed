@@ -325,7 +325,74 @@ At a glance — the three verbs, per session:
 
 When two authoring sessions run in parallel and share a contract surface, prefer **one shared reviewer** over one-per-author — cross-track contract drift is exactly what a single reviewer holding both contexts catches and two siloed reviewers each miss.
 
-The kickoff collapses to one line: *"you are the authoring / reviewing session for Phase N, per `CONTRIBUTING.md` §Two-session authoring / review workflow."* Only the variable bits (role + phase) are seeded per session.
+The kickoff collapses to one line: *"you are the authoring / reviewing session for Phase N, per `CONTRIBUTING.md` §Two-session authoring / review workflow."* Only the variable bits (role + phase) are seeded per session; the model tier is set on the launch command rather than seeded in the prose (see §"Per-role default model tiers" below).
+
+### Per-role default model tiers
+
+Model tiers per role (rubric and tier→alias mapping in §"Model tier selection"): the **authoring** session launches at the model tier named by the plan row it implements (`routine` when the work is unplanned); the **reviewing** session launches at `planning-and-review`. Review deliberately runs hotter than authoring — the asymmetry [ADR-0009](../meta/decisions/ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md) implied in practice, stated as the default.
+
+## Model tier selection
+
+A session's model tier binds at launch (`--model`, or the launcher's config)
+and an agent cannot re-tier itself mid-flight: every documented
+model-selection surface — `/model` during a session, `claude --model` at
+startup, and the operator-side environment/settings defaults — is
+operator-controlled; none is an agent tool
+(<https://code.claude.com/docs/en/model-config> §"Setting your model",
+retrieved 2026-08-22 via raw fetch of the page source). So the tier is
+decided *before* the work starts, which makes it a plan-level concern, not a
+session-level one. See
+[ADR-0016](../meta/decisions/ADR-0016-model-tier-selection-plan-level.md) for
+the rationale and rejected alternatives. **Model tiers are unrelated to the
+CI tiers 1–4 in §"CI strategy"** — where both are in play, say "model tier".
+The convention:
+
+- **The model tier is named per PR row in the phase plan.** Each row of a
+  phase plan's §"PR sequence"
+  ([`docs/plans/PHASE-TEMPLATE.md`](plans/PHASE-TEMPLATE.md) §3) carries a
+  **Model tier** line. The authoring session proposes it when drafting the
+  plan (recommend-don't-decide, per `CLAUDE.md` §4); plan approval makes it
+  part of the approved artifact; whoever launches the session for that row
+  reads it there.
+- **Tiers are named by task shape, never by model.** Plans, PR descriptions,
+  and conversations carry the tier names below; the tier→alias mapping lives
+  in this section's table and **only** here, so alias churn never rots a plan.
+- **Effort before tier.** Effort levels are a finer and cheaper dial than a
+  tier jump. A task that is fiddly rather than architecturally hard wants
+  higher effort at the current tier, not the next tier up; escalate tier when
+  the difficulty is design freedom, not fiddliness.
+  - **Escalating a `complex` row.** `complex` launches at its single mapped
+    alias below. Escalate that row's session to the next alias up the
+    table — and record it in the PR's `Model tier:` line as
+    `complex (escalated)`, so the row's task shape and the alias it actually
+    ran on stay separable — when a first pass produced design churn rather
+    than fiddliness. The recorded escalation is the audit signal the tier row
+    exists to collect: the `complex (escalated)` count is directly the rubric
+    mispredicting (ADR-0016's revisit trigger).
+- **Record the tier.** The PR description carries a `Model tier:` checklist
+  row beside the pre-push review marker, so tier is auditable against review
+  outcomes after the fact.
+- **The pre-push reviewer runs at the review tier.** When launching the
+  §"Pre-push self-review" subagent, pin its **model** explicitly at launch
+  rather than letting it inherit the authoring session's. Effort is not
+  pinnable at launch without a named subagent definition, so it inherits —
+  an accepted residual, since the tier jump is the coarser, higher-value
+  dial (see the "Effort before tier" bullet above). Projects that keep named subagent
+  definitions can pin both via `model` / `effort` frontmatter. (No subagent
+  definition file ships for this; ADR-0016 §Decision 5 has the why and the
+  escape hatch.)
+
+### Tier rubric and mapping
+
+The alias column is the **single source of truth** for what each tier runs as;
+update it here (one-line PR) when aliases move. Changing the tier *vocabulary*
+is a major decision (`CLAUDE.md` §4).
+
+| Model tier | Task shape | Alias (maintained here only) |
+|---|---|---|
+| `routine` | Mechanical application of an established pattern: renames, doc syncs, fixture refreshes, mirroring an approved convention across files. | `sonnet` |
+| `complex` | Real design freedom inside an approved plan: a new gate, a non-trivial refactor, implementing a contract with open choices. | `sonnet` (high effort) |
+| `planning-and-review` | Phase-plan drafting, ADR authoring, architecture spikes, and all reviewing-session work. | `opus` (or `opusplan` for plan-then-execute sessions) |
 
 ## Pre-push CI run (once CI exists)
 

@@ -14,6 +14,11 @@ Entries are dated by merge into `main`.
 
 ## [Unreleased]
 
+### Added
+
+- `docs/REVIEW_CONTEXT.md` gains §"Evidence discipline — fact, or artifact of the measurement?" — seven portable tells that a measurement is an artifact of the method rather than a result, with a project-local `### Instances` slot — and a new red-flag category for guards whose stated failure direction has no test. Backported from adigator-embedded; the summarizing-intermediary tell (fetch tools treated as primary sources) rests on documented, cited tool mechanism; the record-vs-guidance item deferred with a named trigger. MINOR (new review-discipline section adopters opt into). ([#53](https://github.com/pdlourenco/disciplined-project-seed/issues/53), [#55](https://github.com/pdlourenco/disciplined-project-seed/issues/55), [#56](https://github.com/pdlourenco/disciplined-project-seed/issues/56) (deferral), [ADR-0017](decisions/ADR-0017-evidence-discipline-backport.md))
+- Model-tier selection as a plan-level field: phase-plan PR rows gain a **Model tier** line (`routine` / `complex` / `planning-and-review`); `docs/CONTRIBUTING.md §"Model tier selection"` holds the rubric and the only tier→alias mapping; per-role defaults for the two-session workflow (authoring = plan row's tier, reviewing = `planning-and-review`); the `CLAUDE.md` §2 pre-push reviewer is pinned to the review tier at launch; the PR template gains a `Model tier:` row. Companion CI gate and advisor-model escalation deferred with named triggers. MINOR (new convention across plan template, CONTRIBUTING, PR template). ([#54](https://github.com/pdlourenco/disciplined-project-seed/issues/54), [#57](https://github.com/pdlourenco/disciplined-project-seed/issues/57) (deferral), [ADR-0016](decisions/ADR-0016-model-tier-selection-plan-level.md))
+
 ## [0.4.1] — 2026-07-22
 
 ### Added
