@@ -38,8 +38,11 @@
 │
 ├── .claude/                        # Claude Code config (optional, adopter-tunable)
 │   ├── settings.json               # registers the SessionStart hook
-│   └── hooks/
-│       └── session-start.sh        # provisions doc-CI toolchain in web sessions
+│   ├── hooks/
+│   │   └── session-start.sh        # provisions doc-CI toolchain in web sessions
+│   └── skills/
+│       └── pre-push-review/
+│           └── SKILL.md            # ceremony orchestration for CLAUDE.md §2 (points at CONTRIBUTING; ADR-0018)
 │
 ├── .github/
 │   ├── ISSUE_TEMPLATE/             # issue forms with pre-applied labels

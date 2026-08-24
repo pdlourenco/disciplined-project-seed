@@ -185,6 +185,8 @@ Link ADRs from PR descriptions: `Implements X per ADR-NNNN.` Inline code comment
 
 Before every `git push` on a PR branch, Claude agents working on this repo should launch a reviewer agent on the local diff and act on what it flags. This catches the "I would have caught that if I thought about it harder" class of bugs before they burn CI minutes, PR-thread attention, or reviewer time.
 
+Claude Code sessions can run this ceremony via the repo's `pre-push-review` skill ([`.claude/skills/pre-push-review/`](../.claude/skills/pre-push-review/SKILL.md)), which orchestrates the steps and reads this section as its source of truth — the skill carries sequencing, never a second copy of this prose ([ADR-0018](../meta/decisions/ADR-0018-in-repo-discipline-skills.md)).
+
 ### Reviewer prompt
 
 Launch a `general-purpose` or `Explore` subagent with the diff plus this prompt.
@@ -223,7 +225,7 @@ The prompt below covers both review modes from [`REVIEW_CONTEXT.md` §"Verificat
 - Run the review before **every** push, including fix-up pushes on a branch that already has open CI. The token cost is trivial compared to a CI round-trip.
 - If the reviewer surfaces real issues, fix them before pushing. If you disagree with the reviewer, that's a judgment call — note it in the PR description so the human reviewer sees the reasoning.
 - **Exceptions**: one-line typo fixes, formatting-only changes, or pushes that consist entirely of reverts. The ceremony costs more than the signal.
-- Note the outcome briefly in the PR description so the human reviewer knows it ran — e.g. `pre-push review: no findings` or `pre-push review flagged X, fixed in commit abc1234`.
+- Note the outcome in the PR description so the human reviewer knows it ran. The marker shape is **normative and defined here** — the other surfaces that mention it (`CLAUDE.md` §2, the PR template's checklist row, the `pre-push-review` skill) point at this bullet: `pre-push review: no findings` or `pre-push review: flagged X, fixed in <sha>` (capitalisation free at line start). An exempted push records the exemption in the marker's place instead, so a missing marker never has an innocent reading.
 
 ### Why pre-push rather than CI
 
