@@ -14,6 +14,8 @@ Entries are dated by merge into `main`.
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-08-24
+
 ### Added
 
 - `.claude/skills/pre-push-review/` — pilot in-repo Claude Code skill wrapping the `CLAUDE.md` §2 pre-push self-review ceremony: orchestration only (gather the diff, launch the reviewer seeded and pinned to the review tier, act on findings, emit the outcome marker), reading `CONTRIBUTING.md` as the source of truth rather than restating it. `CLAUDE.md` §2 and `CONTRIBUTING.md` §"Pre-push self-review" name the skill at the point the ceremony is required; `docs/STRUCTURE.md` documents the new path. The remaining ceremony skills (review-pr, deferral-sweep, contract-change, release, phase-plan) are deferred with per-ceremony triggers. MINOR (new opt-in convention; Claude-specific accelerator, docs stay primary). ([#60](https://github.com/pdlourenco/disciplined-project-seed/issues/60), [ADR-0018](decisions/ADR-0018-in-repo-discipline-skills.md))
