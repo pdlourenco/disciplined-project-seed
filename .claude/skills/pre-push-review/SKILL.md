@@ -21,11 +21,13 @@ tier, with the right seeding, and leaves its marker.
    marker would go. When in doubt, run it — the token cost is trivial next
    to a CI round-trip.
 
-2. **Gather the exact diff that will be pushed.** Committed-but-unpushed
-   work plus anything you are about to commit: typically
-   `git diff <base>...HEAD` against the PR's base branch, plus `git diff`
-   for uncommitted changes. Review what will land, not what happens to be
-   in the working tree.
+2. **Gather the diff to review.** Default to the whole branch —
+   `git diff <base>...HEAD` against the PR's base, plus `git diff` for
+   uncommitted work — so cross-commit interactions are visible;
+   already-reviewed commits are cheap to re-scan. Narrow to
+   `git diff @{u}..HEAD` only for a large branch where a focused pass over
+   the new commits is the better use of the reviewer. Either way, review
+   what will land, not what happens to be in the working tree.
 
 3. **Launch the reviewer subagent.**
    - **Tier:** pin the subagent's model to the review-role tier — look up

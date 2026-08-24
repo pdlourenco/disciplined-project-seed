@@ -22,11 +22,21 @@ on every occurrence, and the re-derivation is where drift happens. The
 record for this claim is
 [PR #58](https://github.com/pdlourenco/disciplined-project-seed/pull/58):
 its `pre-push review:` checklist line documents the ceremony re-assembled
-per push (three review passes across the branch's pushes), and the posted
-review's findings included ceremony-adjacent drift — a reviewer-pin
-instruction half of which had no mechanism, and prose restating a
-decision's rationale where it should have pointed (see the
+per push, and the drift it names is ceremony-adjacent on both sides of the
+review boundary — the pre-push pass caught prose restating a decision's
+rationale where it should have pointed (enumerated in fix commit
+`2749000`'s message, the durable record of that pass), and the posted
+review caught a reviewer-pin instruction half of which had no mechanism
+(the
 [review thread](https://github.com/pdlourenco/disciplined-project-seed/pull/58#pullrequestreview-4999657636)).
+
+The same PR also shows the ceremony's audit gap: the checklist records
+three passes, but content landed after the last recorded pass (the merged
+head `c7e9184`), with no marker — whether the ceremony ran there and
+went unrecorded, or was skipped, is not recoverable from the trail. That is
+precisely the failure the skill's final step exists to close. To reproduce:
+compare PR #58's `pre-push review:` checklist line against
+`git log --oneline 49860ad..c7e9184`.
 
 Claude Code skills deliver procedural knowledge at task time. Three
 properties fit the seed: repo-scoped skills under `.claude/skills/` travel
@@ -79,6 +89,13 @@ docs is a second copy that drifts — the same failure declined in ADR-0016
   value is pinned sequencing and named invocation, not new content. If the
   pilot's review or first uses show the thin skill still drifting from the
   docs, #60 reverts to `discussion` rather than growing the set.
+- **Point-don't-restate has a precondition the pilot surfaced: a single
+  normative source per pointed-at fact.** A pointer at a fact stated in
+  three places (as the outcome-marker shape was, across `CONTRIBUTING.md`,
+  `CLAUDE.md` §2, and the PR template) moves drift one hop instead of
+  removing it. The fix pattern, applied in the pilot PR itself: promote one
+  location to normative and turn the others into pointers. Each later skill
+  in #60 checks this precondition for every fact it points at.
 - Skill quality iteration (eval loops per the skill-creator methodology) is
   available but deferred: the pilot's stated evaluation is real use — the
   PR-trail `pre-push review:` markers already record every occurrence, so

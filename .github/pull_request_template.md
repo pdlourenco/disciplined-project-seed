@@ -13,7 +13,7 @@
 
 <!-- Delete rows that don't apply to this PR. -->
 
-- [ ] Pre-push review: <!-- "no findings" OR "flagged X, fixed in <sha>" -->
+- [ ] Pre-push review: <!-- "no findings" OR "flagged X, fixed in <sha>" — shape defined in docs/CONTRIBUTING.md §"Pre-push self-review" §"Rules of engagement" -->
 - [ ] Model tier: <!-- tier the authoring session ran at — the plan row's tier, or a rubric pick for unplanned work (docs/CONTRIBUTING.md §"Model tier selection") -->
 - [ ] Local CI: <!-- "green" OR "failed Y, fixed in <sha>" -->
 - [ ] Labels applied per `docs/LABELS.md` (lifecycle / topic / phase as applicable)
