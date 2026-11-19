@@ -2,8 +2,10 @@
 
 ## Status
 
-Proposed — 2026-11-19. Maintainer request (conversation, 2026-11-19): the
-second of three governance ADRs that land before the agent-bindings
+Accepted — 2026-11-19, option (a) as drafted: the four rungs and the Claude
+mapping haiku / sonnet / opus / fable, revisited after one phase of `Model
+tier:` records (maintainer decision, relayed 2026-11-19). Maintainer request
+(conversation, 2026-11-19): the second of three governance ADRs that land before the agent-bindings
 profile; stacked on ADR-0019. Revises the tier **vocabulary** of
 [ADR-0016](ADR-0016-model-tier-selection-plan-level.md) §Decision 2 and
 leaves its mechanics in place. Operationalised in
