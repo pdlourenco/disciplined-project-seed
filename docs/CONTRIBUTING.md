@@ -293,6 +293,26 @@ Sensible defaults cover the common case. Six parameters can be overridden inline
 - `subscribe` is the default because the natural shape of PR review is to follow through: a one-shot review that ignores follow-up pushes and CI changes misses most of the value. Use `once` for fast triage passes where the reviewer should not stay alive — typically paired with `report` output — or when another watcher (an org PR Steward, a separate session) should keep event ownership.
 - **Announce subscription at take-up time.** When `subscribe` is in effect, the reviewer must surface that it has subscribed — and, in environments where the subscription is exclusive, that this displaced any prior watcher. *"I'm now watching PR NN; this took over event ownership from any existing steward"* is the shape; the human should see it alongside the findings rather than discover later that events were silently re-routed.
 
+## Agent roles
+
+Agents work in four roles ([ADR-0021](../meta/decisions/ADR-0021-agent-roles-and-topology.md)). This table is normative; role files in the agent-bindings profile conform to it and point here rather than restating it. Capabilities are neutral: *read* (the repository), *write plans* (files under `docs/plans/` only), *write code* (edit the working tree, commit, push a branch), *run checks* (tests, linters, the local CI suite), *start agents*, and the §"Forge operations".
+
+| Role | Purpose | Reads | Produces | Holds | Default tier |
+|---|---|---|---|---|---|
+| **planner** | Draft a phase plan | `ROADMAP.md`, `DESIGN.md`, `SPEC.md`, ADRs, `plans/PHASE-TEMPLATE.md` | a phase plan: one row per PR, each with a model tier and a gate | read, write plans, start agents | `frontier` |
+| **orchestrator** | Run an approved plan, row by row | the plan, verdicts, CI status, short summaries | ledger updates in the plan file; escalations to a human | read, write plans, start agents, `ci-status`, `get-diff` | `strong` |
+| **author** | Implement one plan row | `CONTRIBUTING.md`, the plan row, the `SPEC.md` rules it touches | a branch, commits, the pre-push review marker, a PR | read, write code, run checks, `open-pr`, `ci-status` | the plan row's |
+| **reviewer** | Review one PR | `REVIEW_CONTEXT.md`, the diff, the plan row, the `SPEC.md` rules and their `Verified by:` | a verdict and findings, posted as a review | read, run checks, `get-diff`, `ci-status`, `post-review` | `strong` |
+
+Invariants:
+
+- **The reviewer holds no write capability**: no file edits, no push, no `merge`. The tool configuration the bindings generate enforces this; the prompt alone is not the boundary.
+- **Reviewer independence**: a reviewer sees the diff, the plan row, and the review context and contracts — never the author's transcript or reasoning.
+- **Only the planner and the orchestrator start agents.** Authors and reviewers do not nest, except that an author starts its own read-only pre-push reviewer (§"Pre-push self-review"), which reports only to that author.
+- **Agents act through a dedicated forge bot account**, never a human's. Humans keep their own accounts and merge rights. No role holds `merge` by default; who may merge is a merge-authority decision. Until one is recorded, §"Two-session authoring / review workflow" governs: the authoring session merges only on the maintainer's explicit word.
+
+The two sessions below are one way to fill these roles by hand: the authoring session is the author (plus the merge verb, on the maintainer's word), the reviewing session is the reviewer, and the maintainer is planner and orchestrator.
+
 ## Two-session authoring / review workflow
 
 For parallel agentic development, the seed's default topology is **two sessions per track**: one authors, one reviews. They never share the three verbs below. See [ADR-0009](../meta/decisions/ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md) for the rationale and rejected alternatives. The open/merge authorization this section assumes is set in [`../CLAUDE.md`](../CLAUDE.md) §5.
@@ -331,7 +351,7 @@ The kickoff collapses to one line: *"you are the authoring / reviewing session f
 
 ### Per-role default model tiers
 
-Model tiers per role (rubric and tier→alias mapping in §"Model tier selection"): the **authoring** session launches at the model tier named by the plan row it implements (`standard` when the work is unplanned); the **reviewing** session launches at `strong`. Review deliberately runs hotter than authoring — the asymmetry [ADR-0009](../meta/decisions/ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md) implied in practice, stated as the default.
+Model tiers per role (rubric and adapter mappings in §"Model tier selection"; the role table in §"Agent roles" lists all four roles): the **authoring** session launches at the model tier named by the plan row it implements (`standard` when the work is unplanned); the **reviewing** session launches at `strong`. Review deliberately runs hotter than routine authoring — the asymmetry [ADR-0009](../meta/decisions/ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md) implied in practice, stated as the default. When an orchestrator runs the loop rather than the maintainer, a PR whose iteration review approves with green CI gets one final review at `frontier` before it is reported ready to merge ([ADR-0021](../meta/decisions/ADR-0021-agent-roles-and-topology.md)); the hand-run two-session flow does not add that pass.
 
 ## Neutral interfaces
 
