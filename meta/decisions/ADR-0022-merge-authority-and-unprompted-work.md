@@ -13,10 +13,11 @@ label is an explicit, per-PR approval given in advance. Operationalised in
 (where the notice rule is recorded), the merge invariant of §"Agent
 roles", and the `agent:auto` label in
 [`docs/LABELS.md`](../../docs/LABELS.md) and `.github/labels.yml`.
-**Not yet:** `CLAUDE.md` §5, which still says "never merge on your own
-initiative". It binds every agent in the repository, so it changes only by
-the maintainer's own hand or direct instruction, not by an agent acting on
-a relayed decision; until it does, §5 is the stricter rule and wins.
+**Not in force for agents yet:** `CLAUDE.md` §5 still says "never merge on
+your own initiative". It binds every agent in the repository, so it changes
+only by the maintainer's own hand or direct instruction, not by an agent
+acting on a relayed decision. Until it does, agents treat every
+`agent:auto` PR as unlabelled; CONTRIBUTING §"Merge authority" says so too.
 
 ## Context
 
@@ -50,7 +51,8 @@ The branch is the gate.
      on a human's explicit decision for that PR: the human merges it, or
      tells the agent to ("merge and proceed", ADR-0009). This is the
      default for every unlabelled PR.
-   - **With the label, the agent may merge** a PR carrying `agent:auto`,
+   - **With the label, the agent may merge** (the orchestrator in the loop,
+     or by hand the authoring session) a PR carrying `agent:auto`,
      applied by a human (the forge's event history shows who applied it; a
      label added by a bot account does not count), when all of these hold
      at the moment of merging:
@@ -65,12 +67,14 @@ The branch is the gate.
      If any condition fails, or the label is removed, the PR falls back to
      a human decision.
    - **Every agent merge is announced** to the maintainer, naming the PR,
-     a one-line summary and the merge commit. The notice goes through the
-     runtime's channel where one exists (for example Signal, through the
-     relayer), and otherwise as a comment on the merged PR that mentions
-     the maintainer, which the forge delivers as a notification. A
-     repository without a runtime uses that forge route. A merge is never
-     silent: an agent that cannot send the notice does not merge.
+     a one-line summary and the merge commit. Before merging, the agent
+     checks it can reach a notice channel: the runtime's chat channel
+     where one exists, otherwise the forge. After merging, it sends the
+     notice there; if the runtime channel fails, it falls back to a comment
+     on the merged PR that mentions the maintainer (which the forge
+     delivers as a notification) and retries until one is delivered. A
+     repository without a runtime uses the forge route. A merge is never
+     silent: with no reachable channel, the agent does not merge.
    - **Bot merge rights are per repository**, recorded with its branch
      protection (for GitHub, `restrictions` in
      `.github/branch-protection.yml`). A repository that does not use

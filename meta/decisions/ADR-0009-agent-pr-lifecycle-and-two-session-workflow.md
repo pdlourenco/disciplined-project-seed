@@ -3,9 +3,10 @@
 ## Status
 
 Accepted — 2026-06-18. **Refined by [ADR-0022](ADR-0022-merge-authority-and-unprompted-work.md)**
-(2026-11-19): the maintainer's explicit approval for a merge may also be
-given in advance, per PR, by the `agent:auto` label, under conditions and
-with a notice for every agent merge.
+(2026-11-19): once `CLAUDE.md` §5 is aligned, the maintainer's explicit
+approval for a merge may also be given in advance, per PR, by the
+`agent:auto` label, under conditions and with a notice for every agent
+merge. Until then this ADR's rule stands unchanged.
 
 Forward-ported from downstream adopter `ppqq-active` (its `ADR-0047`). Surfaced in [#26](https://github.com/pdlourenco/disciplined-project-seed/issues/26).
 
