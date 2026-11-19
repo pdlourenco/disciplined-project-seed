@@ -14,6 +14,10 @@ Entries are dated by merge into `main`.
 
 ## [Unreleased]
 
+### Added
+
+- Root `README.md` §"Three layers" — names the seed's three layers (discipline, agent bindings, runtime), the one-way dependency direction, and the placement rule; agent bindings (today `CLAUDE.md` + `.claude/`) are an optional profile an adopter drops by deleting the files, and runtimes live in their own repositories. Layer: discipline. MINOR (new convention, no file moves). ([ADR-0019](decisions/ADR-0019-three-layers-discipline-bindings-runtime.md))
+
 ## [0.5.0] — 2026-08-24
 
 ### Added
