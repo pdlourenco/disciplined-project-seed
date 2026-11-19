@@ -111,8 +111,11 @@ files need a fixed role set and fixed invariants to conform to.
   how its updates reach the default branch are part of the plan format, so
   they land with the loop's own PRs as a discipline change first.
 - **Hand-run sessions change in one way:** they act through the bot
-  account. Until a repository has one, a session's existing credentials
-  stay in use and the PR description says so.
+  account. The transition rule (existing credentials until a bot account
+  exists, named in each PR description) sits with the invariant in
+  `CONTRIBUTING.md` §"Agent roles". A hand-run session drafting a phase
+  plan launches at the planner's `frontier`, per §"Per-role default model
+  tiers".
 
 ## Alternatives considered
 
