@@ -24,10 +24,10 @@ forge. The discipline's agent-facing interfaces only partly meet that today:
   offers. A provider without that dial cannot express the difference.
 - **Three tiers cannot express the review ladder the maintainer wants for
   agent work** (conversation, 2026-11-19): each iteration reviewed at one
-  tier and a final pass before merge at a higher one. With `planning-and-review` as the top tier, there
-  is no rung above iteration review. Authors also span a wider range than
-  two tiers: from fully specified mechanical edits to tasks with real design
-  freedom.
+  tier and a final pass before merge at a higher one. With `planning-and-
+  review` as the top tier, there is no rung above iteration review. Authors
+  also span a wider range than two tiers: from fully specified mechanical
+  edits to tasks with real design freedom.
 - **Forge operations are GitHub-shaped.** §"Reviewing an open PR" fetches
   diffs "via the GitHub MCP tools"; `docs/decisions/README.md` scans open PRs
   with `gh pr list`; the label, branch-protection and release automation is
@@ -92,8 +92,8 @@ discipline's vocabulary fixed first.
 - **`opusplan` leaves the mapping table.** It paired `opus` planning with
   `sonnet` execution under `planning-and-review`. It splits by mode, not by
   rung, so it maps to no single rung; ADR-0016 already treats mode splits
-  as mechanism. A Claude Code session may still use it where the plan row's
-  rung is the planning half.
+  as mechanism. It plans on `opus`, so a Claude Code session may still use
+  it on a `strong` row.
 - **The final review pass is not defined here.** The rubric places
   planning, ADR work and architecture at `frontier`. Which rung reviews
   each iteration and whether a final pass runs above it are role defaults,

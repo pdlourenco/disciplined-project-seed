@@ -425,7 +425,8 @@ subsection becomes a pointer.
 Aliases per <https://code.claude.com/docs/en/model-config> §"Model aliases"
 (retrieved 2026-11-19 via raw fetch of the page source). Effort is this
 adapter's finer dial. Mode-splitting aliases such as `opusplan` map to no
-single rung; a session may use one where its rung is the planning half.
+single rung; `opusplan` plans on `opus`, so a session may use it on a
+`strong` row.
 
 ## Forge operations
 
