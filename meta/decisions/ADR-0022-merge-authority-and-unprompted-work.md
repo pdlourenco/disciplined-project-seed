@@ -35,13 +35,18 @@ The branch is the gate.
 
 ## Decision
 
-1. **Merge authority: option A.** A PR merges only on a human's explicit
-   decision for that PR: the human merges it, or tells the agent to
-   ("merge and proceed", ADR-0009). Branch protection enforces it per forge
-   by keeping merge rights off the bot account wherever the human merges
-   themselves. Option B stays available for a later ADR, scoped to labelled
-   PRs, once the reviewer's verdicts have a record; it would never apply to
-   unprompted work (§2).
+1. **Recommended: option A** (the maintainer chooses A or B before this
+   ADR is Accepted). A PR merges only on a human's explicit decision for
+   that PR: the human merges it, or tells the agent to ("merge and
+   proceed", ADR-0009). This is the rule ADR-0009 and `CLAUDE.md` §5
+   already state, so choosing A changes nothing in the hand-run flow.
+   Whether the bot account holds merge rights at all is decided per
+   repository and recorded with its branch protection (for GitHub, the
+   `restrictions` setting in `.github/branch-protection.yml`): without
+   them, the maintainer presses merge; with them, protection must still
+   stop an uninstructed merge. Option B stays available for a later ADR,
+   scoped to labelled PRs, once the reviewer's verdicts have a record; it
+   would never apply to unprompted work (§2).
 2. **Unprompted work waits on its own branch.**
    - Work an agent does **because a person asked** follows the repository's
      own commit policy, whatever that is (in this seed: a PR, merged under
@@ -50,7 +55,10 @@ The branch is the gate.
      trigger other than a person's request) goes to its own branch, named
      `auto/<YYYY-MM-DD>-<slug>`, and stops there for a human to merge.
    - The agent never merges its own `auto/` branch. A person telling it to
-     merge one is a direct request, and follows the repository's policy.
+     merge one is a direct request, and follows the repository's policy;
+     in this seed that means opening a PR from the `auto/` branch, with its
+     CI and review, and merging under §1. Pushes to an `auto/` branch get
+     the pre-push self-review like any PR branch, since it becomes one.
    - The agent deletes an `auto/` branch once it is merged or rejected, and
      checks its open `auto/` branches before acting on a trigger, so the
      same trigger is not handled twice.
@@ -65,14 +73,11 @@ The branch is the gate.
 - The `auto/` prefix is a contract the forge can see: a branch-protection
   rule or a periodic sweep can find stale unprompted work by name, and the
   check-before-acting rule needs only a branch listing.
-- **Open: who presses merge under A.** If the bot account has no merge
-  rights at all, "merge and proceed" means the maintainer merges and the
-  authoring session only proceeds. If the bot keeps merge rights, an
-  instructed merge is the agent's, and protection rules must still stop it
-  merging uninstructed. This ADR allows both; each repository picks one
-  and records it with its branch protection. A tracking issue is opened
-  when this ADR is accepted.
-- The escalation-triggers ADR still owns *when* an agent stops and asks
+- **Who presses merge is per repository.** Without bot merge rights,
+  "merge and proceed" means the maintainer merges and the authoring
+  session only proceeds; with them, an instructed merge is the agent's.
+  Either way the decision is the human's, which is what §1 requires.
+- A later escalation-triggers ADR owns *when* an agent stops and asks
   (iteration cap, contract changes, failing CI after a fix); this ADR owns
   only who merges and where unprompted work lands.
 
@@ -80,8 +85,8 @@ The branch is the gate.
 
 - **Option B now.** Rejected for now: no reviewer verdicts have been
   recorded yet to show B's conditions would have caught what a human
-  catches. Revisit after two phases under A on a real repository, as the
-  maintainer's plan recommends.
+  catches. Revisit after two phases under A on a real repository (the
+  maintainer's stated preference, conversation of 2026-11-19).
 - **Unprompted work treated like requested work.** It would follow the
   repository's policy, which in some repositories means committing straight
   to `main`. Rejected: the trigger is the agent's own judgement, so nobody

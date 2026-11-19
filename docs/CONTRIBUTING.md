@@ -317,9 +317,9 @@ The two sessions below are one way to fill these roles by hand: the authoring se
 
 Humans decide every merge ([ADR-0022](../meta/decisions/ADR-0022-merge-authority-and-unprompted-work.md)):
 
-- **A PR merges only on a human's explicit decision for that PR**: the human merges it, or tells the authoring session to (`merge and proceed`, §"Two-session authoring / review workflow"). Each repository records with its branch protection whether the bot account holds merge rights at all.
+- **A PR merges only on a human's explicit decision for that PR**: the human merges it, or tells the authoring session to (`merge and proceed`, §"Two-session authoring / review workflow"). Each repository records with its branch protection whether the bot account holds merge rights at all (on GitHub, `restrictions` in [`.github/branch-protection.yml`](../.github/branch-protection.yml)).
 - **Requested work follows this repository's policy.** Work an agent does because a person asked goes through a PR, merged as above.
-- **Unprompted work waits on its own branch.** Work an agent chose to do (on an alert, a note, a reminder, or any trigger other than a person's request) goes to a branch named `auto/<YYYY-MM-DD>-<slug>` and stops there. The agent never merges its own `auto/` branch; a person telling it to is a direct request. It deletes the branch once merged or rejected, and checks its open `auto/` branches before acting on a trigger so it does not redo work.
+- **Unprompted work waits on its own branch.** Work an agent chose to do (on an alert, a note, a reminder, or any trigger other than a person's request) goes to a branch named `auto/<YYYY-MM-DD>-<slug>` and stops there. The agent never merges its own `auto/` branch. A person telling it to is a direct request: it opens a PR from the branch, merged as above. Pushes to an `auto/` branch get the pre-push self-review, as any PR branch does. It deletes the branch once merged or rejected, and checks its open `auto/` branches before acting on a trigger so it does not redo work.
 
 ## Two-session authoring / review workflow
 
