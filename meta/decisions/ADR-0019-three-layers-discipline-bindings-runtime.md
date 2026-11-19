@@ -2,8 +2,12 @@
 
 ## Status
 
-Proposed — 2026-11-19. Maintainer request (conversation, 2026-11-19): the
-first of three governance ADRs that land before the agent-bindings profile;
+Accepted — 2026-11-19, with the draft's recommendation on each open
+question: one seed tag covers discipline and bindings, and each CHANGELOG
+entry names its layer; the `CLAUDE.md` pointers are turned round in the
+agent-bindings profile PR, not here; the README stays generic (maintainer
+decision, relayed 2026-11-19). Maintainer request (conversation,
+2026-11-19): the first of three governance ADRs that land before the agent-bindings profile;
 ADR-0020 (neutral interfaces) and ADR-0021 (agent roles) follow as stacked
 PRs. Operationalised in the root [`README.md`](../../README.md) §"Three
 layers", a provenance line and a `.claude/` row in
