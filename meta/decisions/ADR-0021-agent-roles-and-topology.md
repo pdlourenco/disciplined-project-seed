@@ -15,7 +15,9 @@ defaults ADR-0020 left open. Operationalised in
 
 ADR-0009 defines two sessions and three verbs: an authoring session authors
 and merges on the maintainer's word; a reviewing session only reviews. The
-maintainer plans the phase, launches each session and relays between them.
+authoring session drafts the phase plan for the maintainer's approval
+(`CONTRIBUTING.md` §"Model tier selection"); the maintainer launches each
+session and relays between them.
 That covers a human-driven loop. It does not name roles a tool can be
 configured with, and it is silent on three points an unattended loop forces:
 
@@ -59,16 +61,24 @@ files need a fixed role set and fixed invariants to conform to.
    or reasoning.
 4. **Only the planner and the orchestrator start agents.** Authors and
    reviewers do not nest, with one exception: an author starts its own
-   pre-push reviewer (`CLAUDE.md` §2), which is read-only and reports only
-   to that author.
+   pre-push reviewer (`CLAUDE.md` §2), which must not edit and reports only
+   to that author. Until the agent-bindings profile generates a reviewer
+   definition with a read-only tool list, "must not edit" is held by
+   instruction where the tool offers no read-only agent type that can read
+   whole files: an accepted residual, named so it is not mistaken for the
+   boundary §Decision 2 requires.
 5. **Agents act through a dedicated forge bot account, never a human's.**
    Humans keep their own accounts and merge rights. Whether the bot account
    may also merge is the merge-authority ADR's decision; until it lands,
    ADR-0009's rule stands (merging only on the maintainer's explicit word).
 6. **Sessions fill roles.** ADR-0009's authoring session is the author role
    (plus the merge verb, on the maintainer's word); its reviewing session is
-   the reviewer role; in the human-driven loop the maintainer is planner
-   and orchestrator. ADR-0009 stays valid; this ADR names its parts.
+   the reviewer role. In the hand-run loop the authoring session also acts
+   as planner when it drafts a plan for approval, and the maintainer is the
+   orchestrator. The single-session autofix model (one session that reviews
+   and pushes fixes, `CONTRIBUTING.md` §"Reviewing an open PR") is an author
+   working without an independent reviewer: its review is not a reviewer
+   verdict. ADR-0009 stays valid; this ADR names its parts.
 7. **Per-role default tiers** (ADR-0020's rungs): planner `frontier`;
    orchestrator `strong`; author the plan row's tier (`standard` when
    unplanned); reviewer `strong` for each iteration. When an orchestrator
@@ -94,9 +104,15 @@ files need a fixed role set and fixed invariants to conform to.
   human-driven two-session flow, where it would add a frontier-tier review
   to every PR. Revisit if the loop's final passes catch issues the
   iteration reviews missed often enough to justify the cost by hand too.
-- The orchestrator holds the plan file as a ledger (status, PR, iteration,
-  last verdict per row). The ledger's format is part of the plan format, so
-  its fields land with the loop's own PRs as a discipline change first.
+- **Plans land by PR; the ledger's commit path is open.** The planner opens
+  a PR for its plan, so approval is a review like any other. The
+  orchestrator keeps the plan file as a ledger (status, PR, iteration, last
+  verdict per row) and writes only those fields. The ledger's format and
+  how its updates reach the default branch are part of the plan format, so
+  they land with the loop's own PRs as a discipline change first.
+- **Hand-run sessions change in one way:** they act through the bot
+  account. Until a repository has one, a session's existing credentials
+  stay in use and the PR description says so.
 
 ## Alternatives considered
 

@@ -189,7 +189,7 @@ Claude Code sessions can run this ceremony via the repo's `pre-push-review` skil
 
 ### Reviewer prompt
 
-Launch a `general-purpose` or `Explore` subagent with the diff plus this prompt.
+Launch a subagent with the diff plus this prompt. It must not edit (§"Agent roles"): use a read-only agent type where the tool has one that reads whole files; otherwise a `general-purpose` subagent instructed not to edit, an accepted residual until the agent-bindings profile generates a read-only reviewer definition ([ADR-0021](../meta/decisions/ADR-0021-agent-roles-and-topology.md) §Decision 4).
 
 The prompt below covers both review modes from [`REVIEW_CONTEXT.md` §"Verification vs validation"](REVIEW_CONTEXT.md) — *verification* (matches contracts / catalogue / named artifacts?) and *validation* (matches principles / scope / intent?). To run a single-mode review for tighter findings at lower token cost, prefix the invocation with *"review in verification mode only"* or *"review in validation mode only"* and skip the bullets that don't apply.
 
@@ -295,23 +295,23 @@ Sensible defaults cover the common case. Six parameters can be overridden inline
 
 ## Agent roles
 
-Agents work in four roles ([ADR-0021](../meta/decisions/ADR-0021-agent-roles-and-topology.md)). This table is normative; role files in the agent-bindings profile conform to it and point here rather than restating it. Capabilities are neutral: *read* (the repository), *write plans* (files under `docs/plans/` only), *write code* (edit the working tree, commit, push a branch), *run checks* (tests, linters, the local CI suite), *start agents*, and the §"Forge operations".
+Agents work in four roles ([ADR-0021](../meta/decisions/ADR-0021-agent-roles-and-topology.md)). This table is normative; role files in the agent-bindings profile conform to it and point here rather than restating it. Capabilities are neutral: *read* (the repository), *write plans* (edit, commit and push files under `docs/plans/` only, on a branch), *write code* (edit the working tree, commit, push a branch), *run checks* (tests, linters, the local CI suite), *start agents*, *follow PR activity* (receive a PR's events: pushes, comments, CI changes), and the §"Forge operations".
 
 | Role | Purpose | Reads | Produces | Holds | Default tier |
 |---|---|---|---|---|---|
-| **planner** | Draft a phase plan | `ROADMAP.md`, `DESIGN.md`, `SPEC.md`, ADRs, `plans/PHASE-TEMPLATE.md` | a phase plan: one row per PR, each with a model tier and a gate | read, write plans, start agents | `frontier` |
-| **orchestrator** | Run an approved plan, row by row | the plan, verdicts, CI status, short summaries | ledger updates in the plan file; escalations to a human | read, write plans, start agents, `ci-status`, `get-diff` | `strong` |
+| **planner** | Draft a phase plan | `ROADMAP.md`, `DESIGN.md`, `SPEC.md`, ADRs, `plans/PHASE-TEMPLATE.md` | a phase plan, opened as a PR: one row per PR, each with a model tier and a gate | read, write plans, start agents, `open-pr` | `frontier` |
+| **orchestrator** | Run an approved plan, row by row | the plan, verdicts, CI status, short summaries | updates to the approved plan's ledger fields only; escalations to a human | read, write plans, start agents, `ci-status`, `get-diff` | `strong` |
 | **author** | Implement one plan row | `CONTRIBUTING.md`, the plan row, the `SPEC.md` rules it touches | a branch, commits, the pre-push review marker, a PR | read, write code, run checks, `open-pr`, `ci-status` | the plan row's |
-| **reviewer** | Review one PR | `REVIEW_CONTEXT.md`, the diff, the plan row, the `SPEC.md` rules and their `Verified by:` | a verdict and findings, posted as a review | read, run checks, `get-diff`, `ci-status`, `post-review` | `strong` |
+| **reviewer** | Review one PR | the inputs §"Reviewing an open PR" names (the diff, the PR description, linked issues, the context-doc set), plus the plan row | a verdict and findings, posted as a review; replies on its threads | read, run checks, follow PR activity, `get-diff`, `ci-status`, `post-review` | `strong` |
 
 Invariants:
 
 - **The reviewer holds no write capability**: no file edits, no push, no `merge`. The tool configuration the bindings generate enforces this; the prompt alone is not the boundary.
-- **Reviewer independence**: a reviewer sees the diff, the plan row, and the review context and contracts — never the author's transcript or reasoning.
-- **Only the planner and the orchestrator start agents.** Authors and reviewers do not nest, except that an author starts its own read-only pre-push reviewer (§"Pre-push self-review"), which reports only to that author.
+- **Reviewer independence**: a reviewer sees what the author published (the diff, the PR description) plus the plan row and the context docs — never the author's transcript or private reasoning.
+- **Only the planner and the orchestrator start agents.** Authors and reviewers do not nest, except that an author starts its own pre-push reviewer (§"Pre-push self-review"), which must not edit and reports only to that author.
 - **Agents act through a dedicated forge bot account**, never a human's. Humans keep their own accounts and merge rights. No role holds `merge` by default; who may merge is a merge-authority decision. Until one is recorded, §"Two-session authoring / review workflow" governs: the authoring session merges only on the maintainer's explicit word.
 
-The two sessions below are one way to fill these roles by hand: the authoring session is the author (plus the merge verb, on the maintainer's word), the reviewing session is the reviewer, and the maintainer is planner and orchestrator.
+The two sessions below are one way to fill these roles by hand: the authoring session is the author (plus the merge verb, on the maintainer's word) and, when it drafts a plan for approval, the planner; the reviewing session is the reviewer; the maintainer is the orchestrator. The single-session autofix model in §"Reviewing an open PR" (one session reviews and pushes fixes) is an author without an independent reviewer: its review is not a reviewer verdict.
 
 ## Two-session authoring / review workflow
 
@@ -385,8 +385,9 @@ for the vocabulary. **Model tiers are unrelated to the CI tiers 1–4 in
 - **The model tier is named per PR row in the phase plan.** Each row of a
   phase plan's §"PR sequence"
   ([`docs/plans/PHASE-TEMPLATE.md`](plans/PHASE-TEMPLATE.md) §3) carries a
-  **Model tier** line. The authoring session proposes it when drafting the
-  plan (recommend-don't-decide, per `CLAUDE.md` §4); plan approval makes it
+  **Model tier** line. The planner (by hand: the authoring session)
+  proposes it when drafting the plan (recommend-don't-decide, per
+  `CLAUDE.md` §4); plan approval makes it
   part of the approved artifact; whoever launches the session for that row
   reads it there.
 - **Tiers are capability rungs, never models.** Plans, PR descriptions, and
