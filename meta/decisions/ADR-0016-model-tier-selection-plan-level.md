@@ -11,6 +11,12 @@ PR template's `Model tier:` checklist row, and `CLAUDE.md` §2's reviewer-tier
 clause. The companion CI gate is deferred with a named trigger (see
 §Consequences).
 
+**Vocabulary revised by [ADR-0020](ADR-0020-provider-and-forge-neutral-interfaces.md)**
+(Proposed — 2026-11-19): §Decision 2's three task-shape names give way to
+four capability rungs (`fast` / `standard` / `strong` / `frontier`), and the
+tier→model mapping moves to each agent-tool adapter. The mechanics in
+§Decision 1 and §Decisions 3–6 stand.
+
 ## Context
 
 Model tier is a standing cost/capability trade-off, and until now it was the

@@ -18,7 +18,12 @@ From ADR-0019 on, each entry names the layer it touches — discipline, agent bi
 
 ### Added
 
+- `docs/CONTRIBUTING.md` §"Neutral interfaces" (where each agent-facing interface lives) and §"Forge operations" (five neutral operations — `open-pr`, `get-diff`, `post-review`, `ci-status`, `merge` — that forge adapters map). Layer: discipline. MINOR (new convention). ([ADR-0020](decisions/ADR-0020-provider-and-forge-neutral-interfaces.md))
 - Root `README.md` §"Three layers" — names the seed's three layers (discipline, agent bindings, runtime), the one-way dependency direction, and the placement rule; agent bindings are an optional agent-bindings profile an adopter drops by deleting the files (today `.claude/`; `CLAUDE.md` once the rules the discipline points at move out of it), and runtimes live in their own repositories. `DISCIPLINE_ADOPTION.md` gains an agent-bindings provenance line and a `.claude/` row; this header gains the layer convention. Layer: discipline. MINOR (new convention, no file moves). ([ADR-0019](decisions/ADR-0019-three-layers-discipline-bindings-runtime.md))
+
+### Changed
+
+- Model-tier vocabulary: `routine` / `complex` / `planning-and-review` become four capability rungs, `fast` / `standard` / `strong` / `frontier`, across `docs/CONTRIBUTING.md` §"Model tier selection" (rubric, plus a separate Claude Code adapter mapping: `haiku` / `sonnet` / `opus` / `fable`), §"Per-role default model tiers" (authoring default `standard`, reviewing `strong`), `docs/plans/PHASE-TEMPLATE.md` §3 and the `pre-push-review` skill. Adopters read existing plan rows as `routine` → `standard`, `complex` → `strong`, `planning-and-review` → `frontier` (planning) or `strong` (iteration review). Layer: discipline (rubric) and agent bindings (mapping). MAJOR for adopters with tiered plans (renamed vocabulary), otherwise MINOR. ([ADR-0020](decisions/ADR-0020-provider-and-forge-neutral-interfaces.md), revising [ADR-0016](decisions/ADR-0016-model-tier-selection-plan-level.md))
 
 ## [0.5.0] — 2026-08-24
 
