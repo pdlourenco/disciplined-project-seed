@@ -14,8 +14,11 @@ clause. The companion CI gate is deferred with a named trigger (see
 **Vocabulary revised by [ADR-0020](ADR-0020-provider-and-forge-neutral-interfaces.md)**
 (Proposed — 2026-11-19): §Decision 2's three task-shape names give way to
 four capability rungs (`fast` / `standard` / `strong` / `frontier`), and the
-tier→model mapping moves to each agent-tool adapter. The mechanics in
-§Decision 1 and §Decisions 3–6 stand.
+tier→model mapping moves to each agent-tool adapter (§Decision 2's
+"exactly one place" becomes one place per adapter). §Decision 3 is restated
+in neutral form (a finer adapter dial before a rung jump); §Decision 4's
+defaults become `standard` (authoring, unplanned) and `strong` (reviewing).
+§Decisions 1, 5 and 6 stand.
 
 ## Context
 

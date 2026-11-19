@@ -405,8 +405,8 @@ Changing the tier *vocabulary* is a major decision (`CLAUDE.md` §4).
 |---|---|
 | `fast` | Fully specified mechanical edits with no choices left: renames, fixture refreshes, applying a listed change across files. |
 | `standard` | Applying an established pattern with small local choices: doc syncs, mirroring an approved convention, routine fixes. The default for unplanned work. |
-| `strong` | Real design freedom inside an approved plan: a new gate, a non-trivial refactor, implementing a contract with open choices. Also the reviewing session's iteration reviews. |
-| `frontier` | Phase-plan drafting, ADR authoring, architecture spikes, and a final review pass before merge. |
+| `strong` | Real design freedom inside an approved plan: a new gate, a non-trivial refactor, implementing a contract with open choices. |
+| `frontier` | Phase-plan drafting, ADR authoring, architecture spikes. |
 
 ### Claude Code adapter mapping
 
@@ -423,8 +423,9 @@ subsection becomes a pointer.
 | `frontier` | `fable` |
 
 Aliases per <https://code.claude.com/docs/en/model-config> §"Model aliases"
-(retrieved 2026-11-19 via a summarizing fetch; check the page before
-relying on the exact resolution). Effort is this adapter's finer dial.
+(retrieved 2026-11-19 via raw fetch of the page source). Effort is this
+adapter's finer dial. Mode-splitting aliases such as `opusplan` map to no
+single rung; a session may use one where its rung is the planning half.
 
 ## Forge operations
 

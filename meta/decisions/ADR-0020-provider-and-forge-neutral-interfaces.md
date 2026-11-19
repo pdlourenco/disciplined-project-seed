@@ -22,17 +22,17 @@ forge. The discipline's agent-facing interfaces only partly meet that today:
   only mapping is to Claude Code aliases, and two of the three tiers map to
   the same alias (`sonnet`), told apart by *effort*, a dial one provider
   offers. A provider without that dial cannot express the difference.
-- **Three tiers cannot express the review ladder the agent plan needs.** The
-  plan reviews each iteration at one tier and runs a final pass before
-  merge at a higher one. With `planning-and-review` as the top tier, there
+- **Three tiers cannot express the review ladder the maintainer wants for
+  agent work** (conversation, 2026-11-19): each iteration reviewed at one
+  tier and a final pass before merge at a higher one. With `planning-and-review` as the top tier, there
   is no rung above iteration review. Authors also span a wider range than
   two tiers: from fully specified mechanical edits to tasks with real design
   freedom.
 - **Forge operations are GitHub-shaped.** §"Reviewing an open PR" fetches
   diffs "via the GitHub MCP tools"; `docs/decisions/README.md` scans open PRs
   with `gh pr list`; the label, branch-protection and release automation is
-  GitHub Actions. The plan's first forge is a self-hosted Gitea, with GitLab
-  and GitHub through adapters.
+  GitHub Actions. The maintainer's first target forge for agent work is a
+  self-hosted Gitea, with GitLab and GitHub through adapters.
 - **Two further interfaces do not exist yet:** the verdict schema and the
   escalation triggers. Each gets its own ADR later. They need a stated home
   and a neutrality rule before they are written, not after.
@@ -85,6 +85,19 @@ discipline's vocabulary fixed first.
   name a retired tier). No phase plan in this repository carries a tier yet,
   so nothing here needs rewriting; adopters with plans read them through
   this table.
+- **Escalation generalises.** ADR-0016's escalation rule covered only a
+  `complex` row, recorded as `complex (escalated)`. With four rungs any row
+  can move up one, recorded as `<planned> (escalated to <ran>)`. The audit
+  signal is the same: the escalation count is the rubric mispredicting.
+- **`opusplan` leaves the mapping table.** It paired `opus` planning with
+  `sonnet` execution under `planning-and-review`. It splits by mode, not by
+  rung, so it maps to no single rung; ADR-0016 already treats mode splits
+  as mechanism. A Claude Code session may still use it where the plan row's
+  rung is the planning half.
+- **The final review pass is not defined here.** The rubric places
+  planning, ADR work and architecture at `frontier`. Which rung reviews
+  each iteration and whether a final pass runs above it are role defaults,
+  decided in ADR-0021.
 - **Cost moves.** Under the proposed Claude mapping, `complex` work moves
   from `sonnet` at high effort to `strong` (`opus`), and planning moves from
   `opus` to `frontier`. That raises plan-usage cost for those rows. The
@@ -93,8 +106,8 @@ discipline's vocabulary fixed first.
   rows over-escalated.
 - The forge-operation names make §"Reviewing an open PR" and the ADR
   number scan visibly GitHub-specific. Rewriting them in neutral terms is
-  left to the CONTRIBUTING update for agent work (the plan's Phase 6
-  item 7), so this PR stays a vocabulary change.
+  left to a later CONTRIBUTING update for agent work, so this PR stays a
+  vocabulary change.
 - The deferred tier CI check (#57) keeps its trigger. When it is wired, it
   checks the new vocabulary, and it lands with a test that shows it failing
   on a row without a tier.

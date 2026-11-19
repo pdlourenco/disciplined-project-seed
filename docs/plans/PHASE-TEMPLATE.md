@@ -115,7 +115,7 @@ After §2 prerequisites land, Phase N implementation decomposes into N PRs. Each
 
 - **Depends on:** §2 prerequisites complete.
 - **Gate:** <!-- what outcome must be demonstrable to merge. Phrase in outcome terms, not task terms. "Clone → build → [thing] appears in [system] → [thing] does [expected]" is better than "code scaffolding complete". -->
-- **Model tier:** <!-- fast / standard / strong / frontier — a recommendation the plan's approval ratifies; rubric in CONTRIBUTING.md §"Model tier selection", model mapping in the agent-tool adapter. Don't put model names here. -->
+- **Model tier:** <!-- fast / standard / strong / frontier — a recommendation the plan's approval ratifies; rubric in CONTRIBUTING.md §"Model tier selection", model mapping in the agent-tool adapter (Claude Code: CONTRIBUTING.md §"Claude Code adapter mapping" until the agent-bindings profile ships). Don't put model names here. -->
 - **Detail:** §N (<!-- which section has the depth -->), §N (<!-- which -->).
 
 **PR Nb — <!-- Core functionality -->.** <!-- ... -->
