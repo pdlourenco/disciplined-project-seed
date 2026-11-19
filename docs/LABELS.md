@@ -19,7 +19,7 @@ Phase labels (`phase-0`, `phase-1`, …) are added on demand and are deliberatel
 
 ## Categories
 
-Three categories: **lifecycle**, **topic**, and **phase**. The catalogue's grouping in [`.github/labels.yml`](../.github/labels.yml) mirrors these categories with header comments.
+Four categories: **lifecycle**, **topic**, **phase**, and **authority**. The catalogue's grouping in [`.github/labels.yml`](../.github/labels.yml) mirrors these categories with header comments.
 
 ### Lifecycle (apply one progression state, and/or `deferred`)
 
@@ -46,6 +46,10 @@ The topic labels — `schema`, `spec`, `design`, `documentation`, `implementatio
 
 Phase labels (`phase-0`, `phase-1`, …) are added on demand. Don't pre-create them: add `phase-N` the first time an issue or PR targets that phase; pre-creating clutters the label picker with phases that don't yet exist. When an issue spans phases (e.g. a decision made in Phase 0 implemented in Phase 1), apply the label of the *deciding* phase, not the implementing one — the issue's purpose is the decision.
 
+### Authority (applied only by a human)
+
+`agent:auto` is a human's advance approval for an agent to merge that PR itself, under the conditions in [`CONTRIBUTING.md`](CONTRIBUTING.md) §"Merge authority" ([ADR-0022](../meta/decisions/ADR-0022-merge-authority-and-unprompted-work.md)). Only a human applies it: an agent never labels its own work, and a label applied by a bot account does not count. Never apply it to a PR opened from an `auto/` branch until a human has asked for that work to be merged.
+
 ## Usage examples
 
 | Issue / PR shape | Lifecycle | Topic | Phase |
@@ -65,7 +69,7 @@ The label taxonomy is load-bearing for issue and PR hygiene. Adding, renaming, r
 A new label should:
 
 - Have a clear definition that doesn't overlap an existing one — or, if it overlaps deliberately, update the disambiguation entry in the same PR.
-- Sit in one of the three existing categories. Proposing a new category is itself a major decision and warrants surfacing the case for why an existing category won't do.
+- Sit in one of the four existing categories. Proposing a new category is itself a major decision and warrants surfacing the case for why an existing category won't do.
 - Keep its `description` at most **100 characters** — GitHub's label API rejects longer values. The `.github/labels.yml` header restates this so the limit is visible at write time.
 
 ## Renaming and removing

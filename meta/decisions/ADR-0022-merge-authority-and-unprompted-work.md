@@ -1,14 +1,22 @@
-# ADR-0022 — Merge authority: humans merge; unprompted agent work waits on its own branch
+# ADR-0022 — Merge authority: agents merge only under a human's label, never silently; unprompted work waits on its own branch
 
 ## Status
 
-Proposed — 2026-11-19. Maintainer request (conversation, 2026-11-19): the
-merge-authority item of the agent-governance set, stacked on ADR-0021. The
-`auto/` branch principle in §Decision 2 is the maintainer's own decision of
-that date; the choice between merge options A and B (§Decision 1) is still
-the maintainer's. Operationalised in
-[`docs/CONTRIBUTING.md`](../../docs/CONTRIBUTING.md) §"Merge authority" and
-the merge invariant of §"Agent roles".
+Accepted — 2026-11-19: the maintainer chose option B, with one added
+condition, that every merge an agent makes is announced to them
+(maintainer decision, relayed by the hub session on 2026-11-19). The
+`auto/` branch principle in §Decision 2 is the maintainer's own decision
+of the same date. Stacked on ADR-0021. Refines
+[ADR-0009](ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md): the
+label is an explicit, per-PR approval given in advance. Operationalised in
+[`docs/CONTRIBUTING.md`](../../docs/CONTRIBUTING.md) §"Merge authority"
+(where the notice rule is recorded), the merge invariant of §"Agent
+roles", and the `agent:auto` label in
+[`docs/LABELS.md`](../../docs/LABELS.md) and `.github/labels.yml`.
+**Not yet:** `CLAUDE.md` §5, which still says "never merge on your own
+initiative". It binds every agent in the repository, so it changes only by
+the maintainer's own hand or direct instruction, not by an agent acting on
+a relayed decision; until it does, §5 is the stricter rule and wins.
 
 ## Context
 
@@ -26,75 +34,105 @@ ADR-0009's: the authoring session merges on the maintainer's explicit
   loop stops at "ready to merge". (B) The agent may merge a PR itself when
   the final review approves, CI is green, the PR changes no contract and
   adds no dependency, and it carries an autonomy label. B saves the
-  maintainer a click per PR; it also moves the last human check off the PR.
+  maintainer a click per PR; it also moves the last human check off the
+  merge itself, which is why the maintainer added a notice for every
+  agent merge.
 
-The maintainer's working practice already has a middle ground for the
+The maintainer's working practice already had a middle ground for the
 first point: a direct request follows the repository's normal commit
 policy, while work the agent chose to do goes to a branch and waits there.
 The branch is the gate.
 
 ## Decision
 
-1. **Recommended: option A** (the maintainer chooses A or B before this
-   ADR is Accepted). A PR merges only on a human's explicit decision for
-   that PR: the human merges it, or tells the agent to ("merge and
-   proceed", ADR-0009). This is the rule ADR-0009 and `CLAUDE.md` §5
-   already state, so choosing A changes nothing in the hand-run flow.
-   Whether the bot account holds merge rights at all is decided per
-   repository and recorded with its branch protection (for GitHub, the
-   `restrictions` setting in `.github/branch-protection.yml`): without
-   them, the maintainer presses merge; with them, protection must still
-   stop an uninstructed merge. Option B stays available for a later ADR,
-   scoped to labelled PRs, once the reviewer's verdicts have a record; it
-   would never apply to unprompted work (§2).
+1. **Merge authority: option B, under a human's label, never silently.**
+   - **Without the label, a human decides (option A).** A PR merges only
+     on a human's explicit decision for that PR: the human merges it, or
+     tells the agent to ("merge and proceed", ADR-0009). This is the
+     default for every unlabelled PR.
+   - **With the label, the agent may merge** a PR carrying `agent:auto`,
+     applied by a human (the forge's event history shows who applied it; a
+     label added by a bot account does not count), when all of these hold
+     at the moment of merging:
+     - the final review approves (ADR-0021: the final `frontier` review
+       where an orchestrator runs the loop; in a hand-run flow, the
+       reviewing session's approving verdict on the current head);
+     - CI is green on the current head;
+     - the PR changes no contract (`docs/SPEC.md` and the
+       machine-shared artifacts it names);
+     - the PR adds no dependency (no new entry in a manifest or lockfile).
+
+     If any condition fails, or the label is removed, the PR falls back to
+     a human decision.
+   - **Every agent merge is announced** to the maintainer, naming the PR,
+     a one-line summary and the merge commit. The notice goes through the
+     runtime's channel where one exists (for example Signal, through the
+     relayer), and otherwise as a comment on the merged PR that mentions
+     the maintainer, which the forge delivers as a notification. A
+     repository without a runtime uses that forge route. A merge is never
+     silent: an agent that cannot send the notice does not merge.
+   - **Bot merge rights are per repository**, recorded with its branch
+     protection (for GitHub, `restrictions` in
+     `.github/branch-protection.yml`). A repository that does not use
+     `agent:auto` can keep merge rights off the bot account entirely.
 2. **Unprompted work waits on its own branch.**
    - Work an agent does **because a person asked** follows the repository's
      own commit policy, whatever that is (in this seed: a PR, merged under
      §1).
    - Work an agent **chose to do** (on an alert, a note, a reminder, or any
      trigger other than a person's request) goes to its own branch, named
-     `auto/<YYYY-MM-DD>-<slug>`, and stops there for a human to merge.
-   - The agent never merges its own `auto/` branch. A person telling it to
-     merge one is a direct request, and follows the repository's policy;
-     in this seed that means opening a PR from the `auto/` branch, with its
-     CI and review, and merging under §1. Pushes to an `auto/` branch get
-     the pre-push self-review like any PR branch, since it becomes one.
+     `auto/<YYYY-MM-DD>-<slug>`, and stops there for a human.
+   - Option B never applies to it: the agent never merges an `auto/`
+     branch, label or not. A person telling it to merge one is a direct
+     request; in this seed that means opening a PR from the `auto/`
+     branch, with its CI and review, which a human then merges or labels
+     under §1. Pushes to an `auto/` branch get the pre-push self-review
+     like any PR branch, since it becomes one.
    - The agent deletes an `auto/` branch once it is merged or rejected, and
      checks its open `auto/` branches before acting on a trigger, so the
      same trigger is not handled twice.
 
 ## Consequences
 
-- "Agents recommend, humans decide" holds for every merge, including work
-  no human started. An unprompted change is visible, as a branch, before
-  anyone has to trust it.
-- One click per PR stays with the maintainer. B is the relief valve, behind
-  its own ADR and evidence.
-- The `auto/` prefix is a contract the forge can see: a branch-protection
-  rule or a periodic sweep can find stale unprompted work by name, and the
-  check-before-acting rule needs only a branch listing.
-- **Who presses merge is per repository.** Without bot merge rights,
-  "merge and proceed" means the maintainer merges and the authoring
-  session only proceeds; with them, an instructed merge is the agent's.
-  Either way the decision is the human's, which is what §1 requires.
+- Every merge still rests on a human decision about that PR: a merge, an
+  instruction, or a label. "Agents recommend, humans decide" holds; the
+  label moves the decision earlier, it does not remove it. Unprompted work
+  never merges without a human looking at it.
+- The maintainer gives up one click per labelled PR and gains a notice
+  stream to read instead. A notice that shows a merge that should not have
+  happened is the signal to stop labelling, which returns that work to A
+  at once.
+- **Enforcement is split.** Branch protection enforces CI and the required
+  review on the forge. The contract and dependency conditions, and who
+  applied the label, are checked by the merging agent. **Deferred: a CI
+  check** that fails an `agent:auto` PR touching `docs/SPEC.md` or a
+  manifest or lockfile. **Trigger:** the first agent merge under B.
+  Like every new check, it lands with a test that shows it can fail.
+- The label taxonomy gains `agent:auto` (a new "authority" category in
+  `docs/LABELS.md` and `.github/labels.yml`, which change together).
 - A later escalation-triggers ADR owns *when* an agent stops and asks
   (iteration cap, contract changes, failing CI after a fix); this ADR owns
-  only who merges and where unprompted work lands.
+  only who merges, how merges are announced, and where unprompted work
+  lands.
 
 ## Alternatives considered
 
-- **Option B now.** Rejected for now: no reviewer verdicts have been
-  recorded yet to show B's conditions would have caught what a human
-  catches. Revisit after two phases under A on a real repository (the
-  maintainer's stated preference, conversation of 2026-11-19).
-- **Unprompted work treated like requested work.** It would follow the
-  repository's policy, which in some repositories means committing straight
-  to `main`. Rejected: the trigger is the agent's own judgement, so nobody
-  has agreed to the change before it lands.
+- **Option A as the rule for every PR.** It was recommended in this ADR's
+  draft. The maintainer chose B instead: under A every PR costs a click
+  even when the review, CI and scope all say it is routine, and the label
+  keeps the decision with a human per PR. A remains the default for every
+  unlabelled PR and the fallback whenever a condition fails.
+- **Option B without notices.** Rejected by the maintainer: an agent merge
+  nobody hears about is the one most likely to go unnoticed when wrong.
+- **Option B for unprompted work.** Rejected: the trigger is the agent's
+  own judgement, so nobody has agreed to the change before it lands; a
+  label would be a human approving something no human asked for.
+- **A label the agent may apply itself.** Rejected: it would turn the
+  advance approval into the agent approving its own work.
 - **Unprompted work as a PR rather than a bare branch.** A PR is a fine way
   to present an `auto/` branch, and nothing here forbids opening one. The
   rule is about the branch: it is what the agent may not merge and must
   clean up, on any forge, with or without PR tooling.
-- **No naming rule.** Rejected: without a fixed prefix the agent cannot
-  cheaply check its own open work before acting, and a person cannot find
-  unprompted work at a glance.
+- **No naming rule for unprompted work.** Rejected: without a fixed prefix
+  the agent cannot cheaply check its own open work before acting, and a
+  person cannot find unprompted work at a glance.

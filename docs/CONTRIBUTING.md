@@ -315,11 +315,14 @@ The two sessions below are one way to fill these roles by hand: the authoring se
 
 ## Merge authority
 
-Humans decide every merge ([ADR-0022](../meta/decisions/ADR-0022-merge-authority-and-unprompted-work.md)):
+Every merge rests on a human decision about that PR ([ADR-0022](../meta/decisions/ADR-0022-merge-authority-and-unprompted-work.md)):
 
-- **A PR merges only on a human's explicit decision for that PR**: the human merges it, or tells the authoring session to (`merge and proceed`, §"Two-session authoring / review workflow"). Each repository records with its branch protection whether the bot account holds merge rights at all (on GitHub, `restrictions` in [`.github/branch-protection.yml`](../.github/branch-protection.yml)).
+- **Unlabelled PRs: a human decides.** A PR merges only on a human's explicit decision for it: the human merges it, or tells the authoring session to (`merge and proceed`, §"Two-session authoring / review workflow").
+- **`agent:auto` PRs: the agent may merge**, if a human applied the label (the forge's event history shows who; a bot account's label does not count) and, when it merges: the final review approves (§"Agent roles"), CI is green on the current head, the PR changes no contract (`docs/SPEC.md` and the machine-shared artifacts it names) and adds no dependency (no new manifest or lockfile entry). If any of these fails, or the label is removed, the PR goes back to a human decision.
+- **Every agent merge is announced, never silent.** The agent sends the maintainer a notice naming the PR, a one-line summary and the merge commit: through the runtime's channel where one exists (Signal, for example), and otherwise as a comment on the merged PR that mentions the maintainer, which the forge delivers as a notification. A repository without a runtime uses the forge route. An agent that cannot send the notice does not merge.
+- **Bot merge rights** are recorded per repository with its branch protection (on GitHub, `restrictions` in [`.github/branch-protection.yml`](../.github/branch-protection.yml)). A repository that never uses `agent:auto` can keep merge rights off the bot account.
 - **Requested work follows this repository's policy.** Work an agent does because a person asked goes through a PR, merged as above.
-- **Unprompted work waits on its own branch.** Work an agent chose to do (on an alert, a note, a reminder, or any trigger other than a person's request) goes to a branch named `auto/<YYYY-MM-DD>-<slug>` and stops there. The agent never merges its own `auto/` branch. A person telling it to is a direct request: it opens a PR from the branch, merged as above. Pushes to an `auto/` branch get the pre-push self-review, as any PR branch does. It deletes the branch once merged or rejected, and checks its open `auto/` branches before acting on a trigger so it does not redo work.
+- **Unprompted work waits on its own branch.** Work an agent chose to do (on an alert, a note, a reminder, or any trigger other than a person's request) goes to a branch named `auto/<YYYY-MM-DD>-<slug>` and stops there. The agent never merges an `auto/` branch, label or not. A person telling it to is a direct request: it opens a PR from the branch, which a human merges or labels as above. Pushes to an `auto/` branch get the pre-push self-review, as any PR branch does. The agent deletes the branch once merged or rejected, and checks its open `auto/` branches before acting on a trigger so it does not redo work.
 
 ## Two-session authoring / review workflow
 

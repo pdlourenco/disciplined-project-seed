@@ -86,3 +86,9 @@
 - name: security
   color: "B60205"
   description: "Security-relevant: auth, encryption, isolation, PII"
+
+# Authority (applied only by a human; docs/LABELS.md §"Authority")
+
+- name: agent:auto
+  color: "FBCA04"
+  description: "A human's advance approval for an agent to merge this PR (CONTRIBUTING Merge authority)"
