@@ -24,8 +24,9 @@ forge. The discipline's agent-facing interfaces only partly meet that today:
   offers. A provider without that dial cannot express the difference.
 - **Three tiers cannot express the review ladder the maintainer wants for
   agent work** (conversation, 2026-11-19): each iteration reviewed at one
-  tier and a final pass before merge at a higher one. With `planning-and-
-  review` as the top tier, there is no rung above iteration review. Authors
+  tier and a final pass before merge at a higher one. With
+  `planning-and-review` as the top tier, there is no rung above iteration
+  review. Authors
   also span a wider range than two tiers: from fully specified mechanical
   edits to tasks with real design freedom.
 - **Forge operations are GitHub-shaped.** §"Reviewing an open PR" fetches
