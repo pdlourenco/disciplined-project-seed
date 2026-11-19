@@ -309,9 +309,17 @@ Invariants:
 - **The reviewer holds no write capability**: no file edits, no push, no `merge`. The tool configuration the bindings generate enforces this; the prompt alone is not the boundary.
 - **Reviewer independence**: a reviewer sees what the author published (the diff, the PR description) plus the plan row and the context docs — never the author's transcript or private reasoning.
 - **Only the planner and the orchestrator start agents.** Authors and reviewers do not nest, except that an author starts its own pre-push reviewer (§"Pre-push self-review"), which must not edit and reports only to that author.
-- **Agents act through a dedicated forge bot account**, never a human's. Humans keep their own accounts and merge rights. Until a repository has a bot account, sessions keep the credentials they were launched with, and each PR description says which account acted. No role holds `merge` by default; who may merge is a merge-authority decision. Until one is recorded, §"Two-session authoring / review workflow" governs: the authoring session merges only on the maintainer's explicit word.
+- **Agents act through a dedicated forge bot account**, never a human's. Humans keep their own accounts and merge rights. Until a repository has a bot account, sessions keep the credentials they were launched with, and each PR description says which account acted. No role holds `merge` by default; who may merge is set in §"Merge authority" below.
 
 The two sessions below are one way to fill these roles by hand: the authoring session is the author (plus the merge verb, on the maintainer's word) and, when it drafts a plan for approval, the planner; the reviewing session is the reviewer; the maintainer is the orchestrator. The single-session autofix model in §"Reviewing an open PR" (one session reviews and pushes fixes) is an author without an independent reviewer: its review is not a reviewer verdict.
+
+## Merge authority
+
+Humans decide every merge ([ADR-0022](../meta/decisions/ADR-0022-merge-authority-and-unprompted-work.md)):
+
+- **A PR merges only on a human's explicit decision for that PR**: the human merges it, or tells the authoring session to (`merge and proceed`, §"Two-session authoring / review workflow"). Each repository records with its branch protection whether the bot account holds merge rights at all.
+- **Requested work follows this repository's policy.** Work an agent does because a person asked goes through a PR, merged as above.
+- **Unprompted work waits on its own branch.** Work an agent chose to do (on an alert, a note, a reminder, or any trigger other than a person's request) goes to a branch named `auto/<YYYY-MM-DD>-<slug>` and stops there. The agent never merges its own `auto/` branch; a person telling it to is a direct request. It deletes the branch once merged or rejected, and checks its open `auto/` branches before acting on a trigger so it does not redo work.
 
 ## Two-session authoring / review workflow
 
