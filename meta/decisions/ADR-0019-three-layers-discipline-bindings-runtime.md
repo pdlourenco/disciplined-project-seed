@@ -2,10 +2,13 @@
 
 ## Status
 
-Proposed — 2026-11-19. Phase 6 item 1 of the maintainer's agent
-implementation plan (first of three governance ADRs that must land before
-the agentic profile; ADR-0020 and ADR-0021 follow as stacked PRs).
-Operationalised in the root [`README.md`](../../README.md) §"Three layers".
+Proposed — 2026-11-19. Maintainer request (conversation, 2026-11-19): the
+first of three governance ADRs that land before the agent-bindings profile;
+ADR-0020 (neutral interfaces) and ADR-0021 (agent roles) follow as stacked
+PRs. Operationalised in the root [`README.md`](../../README.md) §"Three
+layers", a provenance line and a `.claude/` row in
+[`DISCIPLINE_ADOPTION.md`](../../DISCIPLINE_ADOPTION.md), and the layer
+convention in the [`meta/CHANGELOG.md`](../CHANGELOG.md) header.
 
 ## Context
 
@@ -24,7 +27,7 @@ The seed already holds two kinds of artifact without naming the difference:
 
 Two upcoming pieces of work make the implicit split load-bearing:
 
-- **An agentic profile.** Neutral role definitions, a generator that emits
+- **An agent-bindings profile.** Neutral role definitions, a generator that emits
   per-tool agent files, forge mappings and a verdict parser. That is five or
   more new tool- or forge-specific artifacts. Without a rule, each PR
   re-decides what they may restate and whether a non-agent adopter must
@@ -46,10 +49,11 @@ optional, and which way dependencies may point.
    - **Discipline** — the binding conventions and contracts, neutral about
      agent tool and forge, and complete on its own: following it by hand is
      fully compliant.
-   - **Agent bindings** — an optional profile inside the seed that carries
-     the discipline into specific agent tools and forges. Today:
-     `CLAUDE.md` and `.claude/`. An adopter opts out by deleting the files
-     and loses nothing binding.
+   - **Agent bindings** — an optional *agent-bindings profile* inside the
+     seed that carries the discipline into specific agent tools and forges.
+     An adopter opts out by deleting the files and loses nothing binding.
+     Today that holds for `.claude/`. It does not yet hold for `CLAUDE.md`
+     (see §Consequences).
    - **Runtime** — outside the seed, in its own repository. It pins a seed
      version, reads seed files, and never modifies them. The seed never
      names a runtime as a requirement.
@@ -67,7 +71,7 @@ optional, and which way dependencies may point.
 
 ## Consequences
 
-- The agentic profile has a home and a rule before its first file lands.
+- The agent-bindings profile has a home and a rule before its first file lands.
   Opting out is deletion, which matches the README's scaling rule.
 - Runtime churn (agent binary versions, channel protocols, hosts) never
   forces a seed release, and a seed release never forces a runtime change
@@ -75,11 +79,17 @@ optional, and which way dependencies may point.
 - Point-don't-restate (ADR-0018 §Decision 2) now covers every binding, not
   only skills. A role file or generated agent file that copies discipline
   prose is the drift bug ADR-0016 §Decision 5 avoided.
-- `CLAUDE.md` straddles the line today: a Claude-specific file that carries
-  agent operating rules (§1–§5) which every agent should follow. The
-  agentic profile resolves this by moving those rules into a tool-neutral
-  `AGENTS.md` and leaving `CLAUDE.md` as a thin import. Until then
-  `CLAUDE.md` stays as it is.
+- **Known wrong-way references.** `CLAUDE.md` is a Claude-specific file,
+  but it is the only home of rules the discipline depends on:
+  `docs/CONTRIBUTING.md` points at `CLAUDE.md` §4 for the major-decision and
+  recommend-don't-decide rules and at §5 for the open/merge gate, and
+  ADR-0018 §Decision 3 names it beside CONTRIBUTING as a home of binding
+  conventions. Deleting it today loses binding rules, so `CLAUDE.md` is not
+  yet part of the opt-out set. The fix belongs to the agent-bindings
+  profile: move the rules those pointers need into CONTRIBUTING, turn the
+  pointers round, and leave `CLAUDE.md` (and a tool-neutral `AGENTS.md`) as
+  thin files that point at the discipline. Until then `CLAUDE.md` stays as
+  it is.
 - One tag for two layers means an adopter cannot take a bindings change
   without the discipline changes released alongside it. Accepted for now:
   the profile is small, and a second tag stream doubles the release
@@ -88,9 +98,10 @@ optional, and which way dependencies may point.
 - **Deferred: a layering check.** A tier-3 gate that fails when a
   discipline-layer file references a runtime repository or a binding path
   as a requirement. Not wired now: there is no profile yet for it to
-  police. **Trigger:** the first agentic-profile PR, or the first review
+  police. **Trigger:** the first agent-bindings-profile PR, or the first review
   finding of a wrong-direction reference, whichever comes first. Like every
-  new check, it lands with a test that shows it can fail.
+  new check, it lands with a test that shows it can fail. A tracking issue
+  (`deferred + decided`, as for #57) is opened when this ADR is accepted.
 
 ## Alternatives considered
 

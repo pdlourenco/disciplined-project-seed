@@ -17,6 +17,7 @@
 - **Adopted at:** <!-- vX.Y.Z (sha) — pin both; flow-down reads the seed's meta/CHANGELOG.md between two pinned versions -->
 - **Adoption date:** <!-- YYYY-MM-DD -->
 - **Profile:** <!-- full spine | minimal | fork + catch-up sync | governance retrofit — per the seed README §"Adopting at small scale — choosing a profile" -->
+- **Agent-bindings profile:** <!-- adopted | dropped — the optional agent-bindings layer per the seed README §"Three layers"; independent of the adoption profile above -->
 
 ## Per-artifact adoption table
 
@@ -38,6 +39,7 @@
 | `docs/decisions/` | <!-- status --> | |
 | `docs/analyses/` | <!-- status --> | |
 | `CLAUDE.md` | <!-- status --> | |
+| `.claude/` (settings, hooks, skills) | <!-- status --> | <!-- agent-bindings profile; deletable without losing anything binding --> |
 | CI workflow (`.github/workflows/ci.yml`) | <!-- status --> | |
 | `DISCIPLINE_ADOPTION.md` (this file) | adopted | |
 

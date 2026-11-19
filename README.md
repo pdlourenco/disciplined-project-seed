@@ -98,7 +98,7 @@ The seed's artifacts fall into three layers. Dependencies point one way only: ru
 | Layer | Lives in | Holds today | Changes when |
 |---|---|---|---|
 | **Discipline** | this seed | `docs/`, the templates, the CI gates, the ADRs | the process changes |
-| **Agent bindings** | this seed, optional: delete the files to opt out | `CLAUDE.md`, `.claude/` | an agent tool's or forge's format changes |
+| **Agent bindings** | this seed, as the optional agent-bindings profile: delete the files to opt out | `.claude/`; `CLAUDE.md` too, once the rules the discipline points at move out of it | an agent tool's or forge's format changes |
 | **Runtime** | a separate repository that pins a seed version | nothing here, by design | the agent binary, channels or host change |
 
 The discipline is complete on its own: a person following it by hand is fully compliant. A rule that must hold whoever does the work goes into the discipline; how one tool or forge carries it goes into the bindings, pointing at the discipline rather than restating it.
