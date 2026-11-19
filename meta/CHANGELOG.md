@@ -12,7 +12,7 @@ For a seed / template repo, the version semantics are about **what an adopter ha
 
 Entries are dated by merge into `main`.
 
-Each entry names the layer it touches — discipline, agent bindings, or both — per the seed README §"Three layers" ([ADR-0019](decisions/ADR-0019-three-layers-discipline-bindings-runtime.md)).
+From ADR-0019 on, each entry names the layer it touches — discipline, agent bindings, or both — per the seed README §"Three layers" ([ADR-0019](decisions/ADR-0019-three-layers-discipline-bindings-runtime.md)).
 
 ## [Unreleased]
 

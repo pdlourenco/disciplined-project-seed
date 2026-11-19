@@ -81,13 +81,14 @@ optional, and which way dependencies may point.
   prose is the drift bug ADR-0016 §Decision 5 avoided.
 - **Known wrong-way references.** `CLAUDE.md` is a Claude-specific file,
   but it is the only home of rules the discipline depends on:
-  `docs/CONTRIBUTING.md` points at `CLAUDE.md` §4 for the major-decision and
-  recommend-don't-decide rules and at §5 for the open/merge gate, and
+  `docs/CONTRIBUTING.md`, `docs/LABELS.md` and `docs/RISKS.md` point at
+  `CLAUDE.md` §4 for the major-decision and recommend-don't-decide rules,
+  CONTRIBUTING also points at §5 for the open/merge gate, and
   ADR-0018 §Decision 3 names it beside CONTRIBUTING as a home of binding
   conventions. Deleting it today loses binding rules, so `CLAUDE.md` is not
   yet part of the opt-out set. The fix belongs to the agent-bindings
-  profile: move the rules those pointers need into CONTRIBUTING, turn the
-  pointers round, and leave `CLAUDE.md` (and a tool-neutral `AGENTS.md`) as
+  profile: move the rules those pointers need into CONTRIBUTING, turn every
+  `docs/` pointer round, and leave `CLAUDE.md` (and a tool-neutral `AGENTS.md`) as
   thin files that point at the discipline. Until then `CLAUDE.md` stays as
   it is.
 - One tag for two layers means an adopter cannot take a bindings change
