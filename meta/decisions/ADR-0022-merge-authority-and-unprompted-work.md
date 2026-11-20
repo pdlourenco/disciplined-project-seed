@@ -17,12 +17,11 @@ label is an explicit, per-PR approval given in advance. Operationalised in
 (where the notice rule is recorded), the merge invariant of §"Agent
 roles", and the `agent:auto` label in
 [`docs/LABELS.md`](../../docs/LABELS.md) and `.github/labels.yml`.
-**Not in force for agents yet:** `CLAUDE.md` §5 still says "never merge on
-your own initiative". It binds every agent in the repository, so it changes
-only by the maintainer's own hand or direct instruction to change it;
-accepting this ADR is not that instruction. Until it does, agents treat
-every `agent:auto` PR as unlabelled; CONTRIBUTING §"Merge authority" says
-so too.
+**In force for agents since 2026-11-20**, when `CLAUDE.md` §5 was aligned
+with it on the maintainer's direct instruction. (Until then §5 said "never
+merge on your own initiative", and agents treated every `agent:auto` PR as
+unlabelled: accepting this ADR was not, on its own, an instruction to
+change the file that binds every agent.)
 
 ## Context
 

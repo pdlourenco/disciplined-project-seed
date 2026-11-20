@@ -9,8 +9,8 @@ read-only definition, and reports only to its author); the final
 `frontier` review is loop-only; what the orchestrator may write is decided
 with the plan-format change for the loop; the capability vocabulary stays
 neutral. Who may merge is settled in ADR-0022 (PR #66): agent merges only
-under a human's `agent:auto` label, each one announced, and not in force
-for agents until `CLAUDE.md` §5 is aligned with it (maintainer decisions,
+under a human's `agent:auto` label, each one announced, in force since
+`CLAUDE.md` §5 was aligned with it on 2026-11-20 (maintainer decisions,
 relayed 2026-11-19). Maintainer request
 (conversation, 2026-11-19): the third of three governance ADRs that land before the agent-bindings
 profile; stacked on ADR-0020. Extends
@@ -79,10 +79,10 @@ files need a fixed role set and fixed invariants to conform to.
 5. **Agents act through a dedicated forge bot account, never a human's.**
    Humans keep their own accounts and merge rights. Whether the bot account
    may also merge is the merge-authority ADR's decision (ADR-0022: only a
-   PR a human has labelled `agent:auto`, and never silently); until that
-   decision is in force (it has landed and `CLAUDE.md` §5 is aligned with
-   it), ADR-0009's rule stands (merging only on the maintainer's explicit
-   word).
+   PR a human has labelled `agent:auto`, and never silently); before that
+   decision came into force (2026-11-20, with `CLAUDE.md` §5 aligned),
+   ADR-0009's rule alone applied (merging only on the maintainer's explicit
+   word), and it still applies to every unlabelled PR.
 6. **Sessions fill roles.** ADR-0009's authoring session is the author role
    (plus the merge verb, on the maintainer's word); its reviewing session is
    the reviewer role. In the hand-run loop the authoring session also acts
