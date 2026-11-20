@@ -12,7 +12,13 @@ For a seed / template repo, the version semantics are about **what an adopter ha
 
 Entries are dated by merge into `main`.
 
+From ADR-0019 on, each entry names the layer it touches — discipline, agent bindings, or both — per the seed README §"Three layers" ([ADR-0019](decisions/ADR-0019-three-layers-discipline-bindings-runtime.md)).
+
 ## [Unreleased]
+
+### Added
+
+- Root `README.md` §"Three layers" — names the seed's three layers (discipline, agent bindings, runtime), the one-way dependency direction, and the placement rule; agent bindings are an optional agent-bindings profile an adopter drops by deleting the files (today `.claude/`; `CLAUDE.md` once the rules the discipline points at move out of it), and runtimes live in their own repositories. `DISCIPLINE_ADOPTION.md` gains an agent-bindings provenance line and a `.claude/` row; this header gains the layer convention. Layer: discipline. MINOR (new convention, no file moves). ([ADR-0019](decisions/ADR-0019-three-layers-discipline-bindings-runtime.md))
 
 ## [0.5.0] — 2026-08-24
 

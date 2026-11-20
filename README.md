@@ -91,6 +91,18 @@ If the plan isn't roughly an order of magnitude longer than its roadmap entry, o
 
 **A recurring pattern across every document in this set: *deferred-with-conditions* lists.** They appear as "Deferred (not yet wired)" in CI, "Deferred to post-Phase-N" in `SPEC.md`, "Future Extensions" in `DESIGN.md`, "Future Phases" in `ROADMAP.md`, and "Follow-ups" in each phase plan. The discipline is the same at every layer: what's deferred, why it's deferred, what would bring it back. This prevents "later" from becoming "never" by accident.
 
+## Three layers
+
+The seed's artifacts fall into three layers. Dependencies point one way only: runtime → agent bindings → discipline. See [ADR-0019](meta/decisions/ADR-0019-three-layers-discipline-bindings-runtime.md) for the rationale.
+
+| Layer | Lives in | Holds today | Changes when |
+|---|---|---|---|
+| **Discipline** | this seed | `docs/`, the templates, the CI gates, the ADRs | the process changes |
+| **Agent bindings** | this seed, as the optional agent-bindings profile: delete the files to opt out | `.claude/`; `CLAUDE.md` too, once the rules the discipline points at move out of it | an agent tool's or forge's format changes |
+| **Runtime** | a separate repository that pins a seed version | nothing here, by design | the agent binary, channels or host change |
+
+The discipline is complete on its own: a person following it by hand is fully compliant. A rule that must hold whoever does the work goes into the discipline; how one tool or forge carries it goes into the bindings, pointing at the discipline rather than restating it.
+
 ## How the seed evolves
 
 The seed is a living artifact. When a downstream adopter discovers a convention that should belong here, it gets back-ported as a refinement; when scaffolding stops earning its keep, it's removed.
