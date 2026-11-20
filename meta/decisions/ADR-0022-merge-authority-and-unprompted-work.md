@@ -4,7 +4,9 @@
 
 Accepted — 2026-11-19: the maintainer chose option B, with one added
 condition, that every merge an agent makes is announced to them
-(maintainer decision, relayed by the hub session on 2026-11-19). The
+(maintainer decision, relayed by the hub session on 2026-11-19, and
+confirmed by the maintainer on PR #66 on 2026-11-20, choosing there that
+the label never covers a change to an agent's own authority). The
 `auto/` branch principle in §Decision 2 is the maintainer's own decision
 of the same date. Stacked on ADR-0021. Refines
 [ADR-0009](ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md): the
@@ -62,7 +64,12 @@ The branch is the gate.
      - CI is green on the current head;
      - the PR changes no contract (`docs/SPEC.md` and the
        machine-shared artifacts it names);
-     - the PR adds no dependency (no new entry in a manifest or lockfile).
+     - the PR adds no dependency (no new entry in a manifest or lockfile);
+     - the PR changes nothing that sets an agent's own authority:
+       `CLAUDE.md`, CONTRIBUTING §"Merge authority", the branch-protection
+       config, the label catalogue (`docs/LABELS.md`, `.github/labels.yml`)
+       or anything under `.claude/`. Otherwise one labelled PR could widen
+       what the next labelled PR may do.
 
      If any condition fails, or the label is removed, the PR falls back to
      a human decision.
@@ -109,8 +116,8 @@ The branch is the gate.
 - **Enforcement is split.** Branch protection enforces CI and the required
   review on the forge. The contract and dependency conditions, and who
   applied the label, are checked by the merging agent. **Deferred: a CI
-  check** that fails an `agent:auto` PR touching `docs/SPEC.md` or a
-  manifest or lockfile. **Trigger:** the first agent merge under B.
+  check** that fails an `agent:auto` PR touching `docs/SPEC.md`, a
+  manifest or lockfile, or one of the authority paths. **Trigger:** the first agent merge under B.
   Like every new check, it lands with a test that shows it can fail.
 - The label taxonomy gains `agent:auto` (a new "authority" category in
   `docs/LABELS.md` and `.github/labels.yml`, which change together).
@@ -133,6 +140,10 @@ The branch is the gate.
   label would be a human approving something no human asked for.
 - **A label the agent may apply itself.** Rejected: it would turn the
   advance approval into the agent approving its own work.
+- **The label on any PR, authority changes included.** Rejected by the
+  maintainer: a labelled change to the merge rules, the label catalogue or
+  the agent's own configuration could widen what the next labelled PR may
+  do, with no human decision on the widening itself.
 - **Unprompted work as a PR rather than a bare branch.** A PR is a fine way
   to present an `auto/` branch, and nothing here forbids opening one. The
   rule is about the branch: it is what the agent may not merge and must
