@@ -4,9 +4,10 @@
 
 Accepted — 2026-11-19: the maintainer chose option B, with one added
 condition, that every merge an agent makes is announced to them
-(maintainer decision, relayed by the hub session on 2026-11-19, and
-confirmed by the maintainer on PR #66 on 2026-11-20, choosing there that
-the label never covers a change to an agent's own authority). The
+(maintainer decision, relayed by the hub session on 2026-11-19). On
+PR #66 on 2026-11-20 the maintainer concurred with option B as described
+there, notices included, and chose that the label never covers a change
+to an agent's own authority. The
 `auto/` branch principle in §Decision 2 is the maintainer's own decision
 of the same date. Stacked on ADR-0021. Refines
 [ADR-0009](ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md): the
@@ -17,9 +18,10 @@ roles", and the `agent:auto` label in
 [`docs/LABELS.md`](../../docs/LABELS.md) and `.github/labels.yml`.
 **Not in force for agents yet:** `CLAUDE.md` §5 still says "never merge on
 your own initiative". It binds every agent in the repository, so it changes
-only by the maintainer's own hand or direct instruction, not by an agent
-acting on a relayed decision. Until it does, agents treat every
-`agent:auto` PR as unlabelled; CONTRIBUTING §"Merge authority" says so too.
+only by the maintainer's own hand or direct instruction to change it;
+accepting this ADR is not that instruction. Until it does, agents treat
+every `agent:auto` PR as unlabelled; CONTRIBUTING §"Merge authority" says
+so too.
 
 ## Context
 
@@ -114,11 +116,12 @@ The branch is the gate.
   happened is the signal to stop labelling, which returns that work to A
   at once.
 - **Enforcement is split.** Branch protection enforces CI and the required
-  review on the forge. The contract and dependency conditions, and who
-  applied the label, are checked by the merging agent. **Deferred: a CI
-  check** that fails an `agent:auto` PR touching `docs/SPEC.md`, a
-  manifest or lockfile, or one of the authority paths. **Trigger:** the first agent merge under B.
-  Like every new check, it lands with a test that shows it can fail.
+  review on the forge. The contract, dependency and authority conditions,
+  and who applied the label, are checked by the merging agent. **Deferred:
+  a CI check** that fails an `agent:auto` PR touching `docs/SPEC.md`, a
+  manifest or lockfile, or one of the authority paths. **Trigger:** the
+  first agent merge under B. Like every new check, it lands with a test
+  that shows it can fail.
 - The label taxonomy gains `agent:auto` (a new "authority" category in
   `docs/LABELS.md` and `.github/labels.yml`, which change together).
 - A later escalation-triggers ADR owns *when* an agent stops and asks
