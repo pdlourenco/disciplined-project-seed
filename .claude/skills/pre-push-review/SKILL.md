@@ -30,10 +30,10 @@ tier, with the right seeding, and leaves its marker.
    what will land, not what happens to be in the working tree.
 
 3. **Launch the reviewer subagent.**
-   - **Tier:** pin the subagent's model to the review-role tier — look up
-     the current alias in `docs/CONTRIBUTING.md` §"Model tier selection"
-     (the `planning-and-review` row). Never let it inherit this session's
-     model.
+   - **Tier:** pin the subagent's model to the review-role tier — read
+     the reviewing tier in `docs/CONTRIBUTING.md` §"Per-role default model
+     tiers", then its alias in §"Model tier selection" §"Claude Code adapter
+     mapping". Never let it inherit this session's model.
    - **Seeding:** tell it to read `docs/REVIEW_CONTEXT.md`,
      `docs/DESIGN.md`, `docs/SPEC.md`, and `docs/ROADMAP.md` before
      reviewing, so it reviews against what the project cares about.

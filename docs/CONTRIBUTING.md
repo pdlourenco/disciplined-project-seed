@@ -331,7 +331,19 @@ The kickoff collapses to one line: *"you are the authoring / reviewing session f
 
 ### Per-role default model tiers
 
-Model tiers per role (rubric and tier→alias mapping in §"Model tier selection"): the **authoring** session launches at the model tier named by the plan row it implements (`routine` when the work is unplanned); the **reviewing** session launches at `planning-and-review`. Review deliberately runs hotter than authoring — the asymmetry [ADR-0009](../meta/decisions/ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md) implied in practice, stated as the default.
+Model tiers per role (rubric and tier→alias mapping in §"Model tier selection"): the **authoring** session launches at the model tier named by the plan row it implements (`standard` when the work is unplanned); the **reviewing** session launches at `strong`. Review deliberately runs hotter than authoring — the asymmetry [ADR-0009](../meta/decisions/ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md) implied in practice, stated as the default.
+
+## Neutral interfaces
+
+The interfaces agents and humans follow are plain files in the discipline and name no agent tool, model provider or forge ([ADR-0020](../meta/decisions/ADR-0020-provider-and-forge-neutral-interfaces.md)). A person can follow each by hand; an adapter in the agent-bindings profile carries each into one tool or forge (README §"Three layers").
+
+| Interface | Lives in |
+|---|---|
+| Plan format, with a model tier per PR row | [`plans/PHASE-TEMPLATE.md`](plans/PHASE-TEMPLATE.md) |
+| Model-tier vocabulary and rubric | §"Model tier selection" below |
+| Forge operations | §"Forge operations" below |
+| Verdict schema | not yet written; lands with its own ADR |
+| Escalation triggers | not yet written; lands with its own ADR |
 
 ## Model tier selection
 
@@ -345,9 +357,10 @@ retrieved 2026-08-22 via raw fetch of the page source). So the tier is
 decided *before* the work starts, which makes it a plan-level concern, not a
 session-level one. See
 [ADR-0016](../meta/decisions/ADR-0016-model-tier-selection-plan-level.md) for
-the rationale and rejected alternatives. **Model tiers are unrelated to the
-CI tiers 1–4 in §"CI strategy"** — where both are in play, say "model tier".
-The convention:
+the mechanics and
+[ADR-0020](../meta/decisions/ADR-0020-provider-and-forge-neutral-interfaces.md)
+for the vocabulary. **Model tiers are unrelated to the CI tiers 1–4 in
+§"CI strategy"** — where both are in play, say "model tier". The convention:
 
 - **The model tier is named per PR row in the phase plan.** Each row of a
   phase plan's §"PR sequence"
@@ -356,45 +369,76 @@ The convention:
   plan (recommend-don't-decide, per `CLAUDE.md` §4); plan approval makes it
   part of the approved artifact; whoever launches the session for that row
   reads it there.
-- **Tiers are named by task shape, never by model.** Plans, PR descriptions,
-  and conversations carry the tier names below; the tier→alias mapping lives
-  in this section's table and **only** here, so alias churn never rots a plan.
-- **Effort before tier.** Effort levels are a finer and cheaper dial than a
-  tier jump. A task that is fiddly rather than architecturally hard wants
-  higher effort at the current tier, not the next tier up; escalate tier when
-  the difficulty is design freedom, not fiddliness.
-  - **Escalating a `complex` row.** `complex` launches at its single mapped
-    alias below. Escalate that row's session to the next alias up the
-    table — and record it in the PR's `Model tier:` line as
-    `complex (escalated)`, so the row's task shape and the alias it actually
-    ran on stay separable — when a first pass produced design churn rather
-    than fiddliness. The recorded escalation is the audit signal the tier row
-    exists to collect: the `complex (escalated)` count is directly the rubric
-    mispredicting (ADR-0016's revisit trigger).
+- **Tiers are capability rungs, never models.** Plans, PR descriptions, and
+  conversations carry the four rung names below. Each agent-tool adapter
+  maps rungs to its provider's models in one table, so alias churn never
+  rots a plan.
+- **Dial before rung.** If an adapter offers a finer dial than the rung
+  (Claude Code's effort level, for example), it is cheaper than moving up a
+  rung. A task that is fiddly rather than architecturally hard wants more of
+  that dial at the current rung; move up a rung when the difficulty is
+  design freedom, not fiddliness.
+  - **Escalating a row.** Escalate a row's session one rung up when a first
+    pass produced design churn rather than fiddliness, and record it in the
+    PR's `Model tier:` line as `<planned> (escalated to <ran>)`, e.g.
+    `standard (escalated to strong)`, so the planned rung and the rung it
+    actually ran on stay separable. The escalation count is directly the
+    rubric mispredicting (ADR-0016's revisit trigger).
 - **Record the tier.** The PR description carries a `Model tier:` checklist
   row beside the pre-push review marker, so tier is auditable against review
   outcomes after the fact.
-- **The pre-push reviewer runs at the review tier.** When launching the
-  §"Pre-push self-review" subagent, pin its **model** explicitly at launch
-  rather than letting it inherit the authoring session's. Effort is not
-  pinnable at launch without a named subagent definition, so it inherits —
-  an accepted residual, since the tier jump is the coarser, higher-value
-  dial (see the "Effort before tier" bullet above). Projects that keep named subagent
-  definitions can pin both via `model` / `effort` frontmatter. (No subagent
-  definition file ships for this; ADR-0016 §Decision 5 has the why and the
-  escape hatch.)
+- **The pre-push reviewer runs at the reviewing tier** (`strong`, per
+  §"Per-role default model tiers"). When launching the §"Pre-push
+  self-review" subagent, pin its **model** explicitly at launch rather than
+  letting it inherit the authoring session's. A finer dial such as effort is
+  not pinnable at launch without a named subagent definition, so it
+  inherits — an accepted residual, since the rung is the coarser,
+  higher-value choice. Projects that keep named subagent definitions can pin
+  both via `model` / `effort` frontmatter. (No subagent definition file
+  ships for this; ADR-0016 §Decision 5 has the why and the escape hatch.)
 
-### Tier rubric and mapping
+### Tier rubric
 
-The alias column is the **single source of truth** for what each tier runs as;
-update it here (one-line PR) when aliases move. Changing the tier *vocabulary*
-is a major decision (`CLAUDE.md` §4).
+Changing the tier *vocabulary* is a major decision (`CLAUDE.md` §4).
 
-| Model tier | Task shape | Alias (maintained here only) |
-|---|---|---|
-| `routine` | Mechanical application of an established pattern: renames, doc syncs, fixture refreshes, mirroring an approved convention across files. | `sonnet` |
-| `complex` | Real design freedom inside an approved plan: a new gate, a non-trivial refactor, implementing a contract with open choices. | `sonnet` (high effort) |
-| `planning-and-review` | Phase-plan drafting, ADR authoring, architecture spikes, and all reviewing-session work. | `opus` (or `opusplan` for plan-then-execute sessions) |
+| Model tier | Task shape |
+|---|---|
+| `fast` | Fully specified mechanical edits with no choices left: renames, fixture refreshes, applying a listed change across files. |
+| `standard` | Applying an established pattern with small local choices: doc syncs, mirroring an approved convention, routine fixes. The default for unplanned work. |
+| `strong` | Real design freedom inside an approved plan: a new gate, a non-trivial refactor, implementing a contract with open choices. |
+| `frontier` | Phase-plan drafting, ADR authoring, architecture spikes. |
+
+### Claude Code adapter mapping
+
+The **single source of truth** for what each rung runs as in Claude Code.
+Update it here (one-line PR) when aliases move. When the agent-bindings
+profile ships the Claude Code adapter, this table moves into it and this
+subsection becomes a pointer.
+
+| Model tier | Claude Code alias |
+|---|---|
+| `fast` | `haiku` |
+| `standard` | `sonnet` |
+| `strong` | `opus` |
+| `frontier` | `fable` |
+
+Aliases per <https://code.claude.com/docs/en/model-config> §"Model aliases"
+(retrieved 2026-11-19 via raw fetch of the page source). Effort is this
+adapter's finer dial. Mode-splitting aliases such as `opusplan` map to no
+single rung; `opusplan` plans on `opus`, so a session may use it on a
+`strong` row.
+
+## Forge operations
+
+The discipline names five forge operations; each forge adapter in the agent-bindings profile maps them to commands in one mapping file ([ADR-0020](../meta/decisions/ADR-0020-provider-and-forge-neutral-interfaces.md)). "PR" means a GitLab merge request too. A new operation joins this list before any adapter maps it.
+
+| Operation | Must do |
+|---|---|
+| `open-pr` | Open a PR from a pushed branch, with the body filled from the PR template. |
+| `get-diff` | Return the PR's diff against its base. |
+| `post-review` | Post a verdict and findings on the PR as a review or note from the acting account, so the decision is attributable on the forge. |
+| `ci-status` | Report each required check on the PR head as passed, failed or pending. |
+| `merge` | Merge the PR by the project's merge method. Who may call it is a merge-authority decision, not an adapter's. |
 
 ## Pre-push CI run (once CI exists)
 
