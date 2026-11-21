@@ -107,8 +107,9 @@ The branch is the gate.
      branch itself, label or not. A person asking for that work to land is
      a direct request; in this seed that means opening a PR from the
      `auto/` branch, with its CI and review. That PR is requested work and
-     merges under §1: by a human, or by the agent under a human's label. Pushes to an `auto/` branch get the pre-push self-review
-     like any PR branch, since it becomes one.
+     merges under §1: by a human, or by the agent under a human's label.
+     Pushes to an `auto/` branch get the pre-push self-review like any PR
+     branch, since it becomes one.
    - The agent deletes an `auto/` branch once it is merged or rejected, and
      checks its open `auto/` branches before acting on a trigger, so the
      same trigger is not handled twice.
