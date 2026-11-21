@@ -295,19 +295,19 @@ Sensible defaults cover the common case. Six parameters can be overridden inline
 
 ## Agent roles
 
-Agents work in four roles ([ADR-0021](../meta/decisions/ADR-0021-agent-roles-and-topology.md)). This table is normative; role files in the agent-bindings profile conform to it and point here rather than restating it. Capabilities are neutral: *read* (the repository), *write plans* (edit, commit and push files under `docs/plans/` only, on a branch), *write code* (edit the working tree, commit, push a branch), *run checks* (tests, linters, the local CI suite), *start agents*, *follow PR activity* (receive a PR's events: pushes, comments, CI changes), and the §"Forge operations".
+Agents work in four roles ([ADR-0021](../meta/decisions/ADR-0021-agent-roles-and-topology.md)). This table is normative; role files in the agent-bindings profile conform to it and point here rather than restating it. Capabilities are neutral: *read* (the repository), *write plans* (edit, commit and push files under `docs/plans/` only, on a branch), *write code* (edit the working tree, commit, push a branch), *run checks* (tests, linters, the local CI suite), *start agents*, *follow PR activity* (receive a PR's events: pushes, comments, CI changes), the §"Forge operations" and the plan operations of §"Plan carriers".
 
 | Role | Purpose | Reads | Produces | Holds | Default tier |
 |---|---|---|---|---|---|
-| **planner** | Draft a phase plan | `ROADMAP.md`, `DESIGN.md`, `SPEC.md`, ADRs, `plans/PHASE-TEMPLATE.md` | a phase plan, opened as a PR: one row per PR, each with a model tier and a gate | read, write plans, start agents, `open-pr` | `frontier` |
-| **orchestrator** | Run an approved plan, row by row | the plan, verdicts, CI status, short summaries | updates to the approved plan's ledger fields only; escalations to a human | read, write plans, start agents, `ci-status`, `get-diff`; `merge` only as §"Merge authority" allows | `strong` |
-| **author** | Implement one plan row | `CONTRIBUTING.md`, the plan row, the `SPEC.md` rules it touches | a branch, commits, the pre-push review marker, a PR | read, write code, run checks, `open-pr`, `ci-status` | the plan row's |
-| **reviewer** | Review one PR | the inputs §"Reviewing an open PR" names (the diff, the PR description, linked issues, the context-doc set), plus the plan row | a verdict and findings, posted as a review; replies on its threads | read, run checks, follow PR activity, `get-diff`, `ci-status`, `post-review` | `strong` |
+| **planner** | Draft a plan | `ROADMAP.md`, `DESIGN.md`, `SPEC.md`, ADRs, `plans/PHASE-TEMPLATE.md` (for ad-hoc work, its goal and context) | a plan in its carrier (§"Plan carriers"): a plan file opened as a PR, or unscheduled issues for a milestone; one item per PR, each with a model tier and a gate | read, write plans, start agents, `open-pr`, `add-item` | `frontier` |
+| **orchestrator** | Run a plan's scheduled items, item by item | the plan, verdicts, CI status, short summaries | updates to the ledger fields only; escalations to a human | read, start agents, `list-items`, `update-item`, `ci-status`, `get-diff`; `merge` only as §"Merge authority" allows | `strong` |
+| **author** | Implement one plan item | `CONTRIBUTING.md`, the plan item, the `SPEC.md` rules it touches | a branch, commits, the pre-push review marker, a PR | read, write code, run checks, `open-pr`, `ci-status` | the plan item's |
+| **reviewer** | Review one PR | the inputs §"Reviewing an open PR" names (the diff, the PR description, linked issues, the context-doc set), plus the plan item | a verdict and findings, posted as a review; replies on its threads | read, run checks, follow PR activity, `get-diff`, `ci-status`, `post-review` | `strong` |
 
 Invariants:
 
 - **The reviewer holds no write capability**: no file edits, no push, no `merge`. The tool configuration the bindings generate enforces this; the prompt alone is not the boundary.
-- **Reviewer independence**: a reviewer sees what the author published (the diff, the PR description) plus the plan row and the context docs — never the author's transcript or private reasoning.
+- **Reviewer independence**: a reviewer sees what the author published (the diff, the PR description) plus the plan item and the context docs — never the author's transcript or private reasoning.
 - **Only the planner and the orchestrator start agents.** Authors and reviewers do not nest, except that an author starts its own pre-push reviewer (§"Pre-push self-review"), which must not edit and reports only to that author.
 - **Agents act through a dedicated forge bot account**, never a human's. Humans keep their own accounts and merge rights. Until a repository has a bot account, sessions keep the credentials they were launched with, and each PR description says which account acted. No role holds `merge` by default; §"Merge authority" below says when the orchestrator (or, by hand, the authoring session) may use it.
 
@@ -370,11 +370,39 @@ The interfaces agents and humans follow are plain files in the discipline and na
 
 | Interface | Lives in |
 |---|---|
-| Plan format, with a model tier per PR row | [`plans/PHASE-TEMPLATE.md`](plans/PHASE-TEMPLATE.md) |
+| Plan model, its two carriers and the plan operations, with a model tier per item | §"Plan carriers" below; [`plans/PHASE-TEMPLATE.md`](plans/PHASE-TEMPLATE.md) for the markdown long form |
 | Model-tier vocabulary and rubric | §"Model tier selection" below |
 | Forge operations | §"Forge operations" below |
 | Verdict schema | not yet written; lands with its own ADR |
 | Escalation triggers | not yet written; lands with its own ADR |
+
+## Plan carriers
+
+A plan has one model and two carriers ([ADR-0023](../meta/decisions/ADR-0023-two-plan-carriers.md)).
+
+**The model.** A plan is a goal with success criteria, a scope and non-goals, a set of **items**, and the open **decisions** it depends on. Each item has a title, a model tier (§"Model tier selection"), a gate, its dependencies ("blocked by"), a **status** (`open`, `taken`, `in review`, `done`, `dropped`) and, once work starts, its PR. The **ledger** is each item's status, PR, iteration count and last verdict: the orchestrator writes those fields and nothing else.
+
+| Carrier | For | Items | Ledger | Scheduled when |
+|---|---|---|---|---|
+| **Markdown** | ad-hoc work; repository work where the forge lacks milestones or dependencies, or by the maintainer's choice | rows of a table in one plan file ([`plans/PHASE-TEMPLATE.md`](plans/PHASE-TEMPLATE.md) is the long form for a repository phase) | columns of that table | the plan is approved: its PR merged, or, with no repository, the maintainer's approval recorded in the file (who, when) |
+| **Forge** | repository work on a forge with milestones and issue dependencies | one issue per item, one milestone per phase; tier as an issue field, dependencies as "blocked by" | the issues' own state | a human puts the issue in an open milestone |
+
+The forge carrier's detailed shape (close-out duties, phase-plan length, how dependencies are recorded) is deferred in [#71](https://github.com/pdlourenco/disciplined-project-seed/issues/71).
+
+**Plan operations.** The orchestrator and planner touch a plan only through these; each carrier's adapter in the agent-bindings profile maps them, as for §"Forge operations".
+
+| Operation | Must do |
+|---|---|
+| `list-items` | Return the plan's items with their status, tier, dependencies and PR. |
+| `add-item` | Add an item, unscheduled until a human schedules it. |
+| `update-item` | Change an item's ledger fields, and only those. |
+
+**Rules.**
+
+- **Scheduling is a human act.** Agents may add, label and propose items, but never approve their own plan, never create or close a milestone, and never set, change or clear an issue's milestone.
+- **One carrier per body of work, declared at its start**: in the plan file's header, or, for a repository on the forge carrier, in `DISCIPLINE_ADOPTION.md`. Never split one body of work across carriers.
+- **Promotion is one-way.** Ad-hoc work that becomes long-lived moves to the forge carrier: its open items become issues in a milestone, and the plan file records where they went and stops changing.
+- **Ad-hoc work's minimal grounding** is a markdown plan with a goal, scope and non-goals, items and decisions. `ROADMAP.md`, `SPEC.md` and the phase template are for repository work.
 
 ## Model tier selection
 
