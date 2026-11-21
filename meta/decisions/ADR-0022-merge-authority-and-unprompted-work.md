@@ -2,6 +2,10 @@
 
 ## Status
 
+**Amended by [ADR-0023](ADR-0023-two-plan-carriers.md)** (Accepted — 2026-11-21):
+plan files under `docs/plans/` and the plan-carrier declaration join the
+agent-authority paths, since merging a plan schedules its items.
+
 Accepted — 2026-11-19: the maintainer chose option B, with one added
 condition, that every merge an agent makes is announced to them
 (maintainer decision, relayed by the hub session on 2026-11-19). On
@@ -79,7 +83,10 @@ The branch is the gate.
        `scripts/normalize-branch-protection.jq`,
        `.github/scripts/check-bp-contexts.py`, which write and check the
        protection settings), the label catalogue (`docs/LABELS.md`,
-       `.github/labels.yml`) or anything under `.claude/`. Otherwise one
+       `.github/labels.yml`), anything under `.claude/`, and (added by
+       ADR-0023) plan files under `docs/plans/` and the plan-carrier
+       row of `DISCIPLINE_ADOPTION.md` (only that row), since merging a plan
+       schedules its items. Otherwise one
        labelled PR could widen what the next labelled PR may do;
      - no `CLAUDE.md` §4 major decision surfaced during the work is still
        waiting for the maintainer's go-ahead: the label approves routine

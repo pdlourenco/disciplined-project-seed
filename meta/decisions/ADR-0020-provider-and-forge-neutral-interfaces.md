@@ -2,6 +2,10 @@
 
 ## Status
 
+**Amended by [ADR-0023](ADR-0023-two-plan-carriers.md)** (Accepted — 2026-11-21):
+the plan format becomes one plan model held by two carriers, with three plan
+operations beside the five forge operations.
+
 Accepted — 2026-11-19, option (a) as drafted: the four rungs and the Claude
 mapping haiku / sonnet / opus / fable, revisited after one phase of `Model
 tier:` records (maintainer decision, relayed 2026-11-19). Maintainer request
