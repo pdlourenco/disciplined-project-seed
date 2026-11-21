@@ -2,7 +2,7 @@
 
 ## Status
 
-**Amended by [ADR-0023](ADR-0023-two-plan-carriers.md)** (Proposed — 2026-11-21):
+**Amended by [ADR-0023](ADR-0023-two-plan-carriers.md)** (Accepted — 2026-11-21):
 plan files under `docs/plans/` and the plan-carrier declaration join the
 agent-authority paths, since merging a plan schedules its items.
 
@@ -85,7 +85,7 @@ The branch is the gate.
        protection settings), the label catalogue (`docs/LABELS.md`,
        `.github/labels.yml`), anything under `.claude/`, and (added by
        ADR-0023) plan files under `docs/plans/` and the plan-carrier
-       declaration in `DISCIPLINE_ADOPTION.md`, since merging a plan
+       row of `DISCIPLINE_ADOPTION.md` (only that row), since merging a plan
        schedules its items. Otherwise one
        labelled PR could widen what the next labelled PR may do;
      - no `CLAUDE.md` §4 major decision surfaced during the work is still

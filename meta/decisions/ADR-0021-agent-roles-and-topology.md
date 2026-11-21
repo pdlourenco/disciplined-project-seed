@@ -2,7 +2,7 @@
 
 ## Status
 
-**Amended by [ADR-0023](ADR-0023-two-plan-carriers.md)** (Proposed — 2026-11-21):
+**Amended by [ADR-0023](ADR-0023-two-plan-carriers.md)** (Accepted — 2026-11-21):
 the planner produces a plan in its carrier, the orchestrator runs plan items
 through the plan operations, and the ledger lives per carrier.
 

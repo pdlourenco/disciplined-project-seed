@@ -2,7 +2,7 @@
 
 ## Status
 
-**Amended by [ADR-0023](ADR-0023-two-plan-carriers.md)** (Proposed — 2026-11-21):
+**Amended by [ADR-0023](ADR-0023-two-plan-carriers.md)** (Accepted — 2026-11-21):
 the plan format becomes one plan model held by two carriers, with three plan
 operations beside the five forge operations.
 

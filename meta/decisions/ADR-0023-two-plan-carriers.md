@@ -2,7 +2,8 @@
 
 ## Status
 
-Proposed — 2026-11-21. Maintainer direction (conversation, 2026-11-21):
+Accepted — 2026-11-21, with the maintainer's review of PR #72 applied.
+Maintainer direction (conversation, 2026-11-21):
 the agent machinery serves two kinds of work, and each should be planned in
 the carrier that suits it. Ad-hoc work must stay grounded, but it may have
 no infrastructure, so what it creates must be light; markdown plans
@@ -11,12 +12,12 @@ bugs, and it is where agents and humans interact most; a forge's
 capabilities simplify that. Three points settled by the maintainer on the
 draft (2026-11-21): plan files join the agent-authority paths; the forge
 carrier is the default for repository work where the forge supports it;
-only a human marks an item `dropped`. One reading is the author's, for the
-maintainer to confirm: the forge default takes effect when the forge
-carrier's details land, meaning the CONTRIBUTING change that resolves #71;
-markdown until then. From that release on, a repository that never declared
-a carrier plans new phases on the forge carrier, a behaviour change that
-release's CHANGELOG must call out. Takes the direction of
+only a human marks an item `dropped`. On PR #72 (2026-11-21) the
+maintainer confirmed the forge default takes effect from the release that
+resolves #71, markdown until then, and that no repository switches
+silently: the sync to that release asks the adopter to fill in the
+plan-carrier row, and an unfilled row means markdown. The same review
+closed the no-repository approval route (§Decision 4). Takes the direction of
 [#71](https://github.com/pdlourenco/disciplined-project-seed/issues/71)
 for repository work and leaves its forge-side details deferred there.
 Amends [ADR-0016](ADR-0016-model-tier-selection-plan-level.md) and
@@ -91,10 +92,13 @@ shape. The collisions #71 raises with ADR-0016, ADR-0020, ADR-0021 and
      there closes its first milestone under it.
    - **Which carrier, by default:** ad-hoc work uses the markdown carrier.
      Repository work on a forge with milestones and issue dependencies uses
-     the forge carrier, from the moment its detailed shape lands (#71);
-     until then, and on any forge without those features, the markdown
-     carrier. A phase already planned in a file stays on the markdown
-     carrier until it closes.
+     the forge carrier from the release that resolves #71 (the CONTRIBUTING
+     change that settles the forge carrier's details); until then, and on
+     any forge without those features, the markdown carrier. No repository
+     switches silently: syncing to that release asks the adopter to fill in
+     the plan-carrier row of `DISCIPLINE_ADOPTION.md`, and until it is
+     filled the repository stays on markdown. A phase already planned in a
+     file stays on the markdown carrier until it closes.
 3. **Three neutral plan operations**, beside ADR-0020's five forge
    operations: `list-items` (the items with their status, tier and
    dependencies), `add-item` (a new item, unscheduled until the maintainer
@@ -105,17 +109,22 @@ shape. The collisions #71 raises with ADR-0016, ADR-0020, ADR-0021 and
    either carrier; the discipline relies on nothing else a forge offers.
 4. **Scheduling is the maintainer's act on either carrier.** On the
    markdown carrier an item is scheduled when its plan is approved: the
-   plan PR is merged by the maintainer, or, with no repository, the maintainer's
-   approval is recorded in the plan file with who and when. An item added
-   to an approved plan is scheduled only when that amendment is approved
-   the same way. On the forge carrier an item is scheduled when the
+   plan PR is merged by the maintainer, or, with no repository, the
+   maintainer's approval is recorded in the plan file with who and when.
+   Only the maintainer writes that approval record. Where that cannot be
+   enforced (no repository, so no protected path), the approval is the
+   maintainer's own words in the conversation that started the work: an
+   agent may copy them into the file, quoted and attributed, but never
+   writes an approval in its own words. An item added to an approved plan
+   is scheduled only when that amendment is approved the same way. On the forge carrier an item is scheduled when the
    maintainer puts its issue in an open milestone. Agents may add, label
    and propose items, but never approve a plan, never create or close a
    milestone, never set, change or clear an issue's milestone, and never
    mark an item `dropped` (taking it out of scope); they may propose it.
    Plan files kept in a repository live under `docs/plans/`; they and the
-   carrier declaration therefore join ADR-0022's agent-authority paths: a PR changing them always needs a human merge,
-   label or not. `CLAUDE.md` §5's "planned work" becomes "an item the
+   carrier declaration (the plan-carrier row of `DISCIPLINE_ADOPTION.md`,
+   not the rest of that file) therefore join ADR-0022's agent-authority
+   paths: a PR changing them always needs a human merge, label or not. `CLAUDE.md` §5's "planned work" becomes "an item the
    maintainer has scheduled", on either carrier.
 5. **One carrier per body of work, declared at its start.** A plan file
    says so in its header; a repository records its carrier for repository
@@ -138,7 +147,11 @@ shape. The collisions #71 raises with ADR-0016, ADR-0020, ADR-0021 and
   markdown ledger updates reach a protected default branch is still open,
   as ADR-0021 left it, and is decided with the orchestrator loop's own PRs.
   Since plan files are now an agent-authority path, those updates need a
-  human merge unless that decision carves out ledger-only changes.
+  human merge unless that decision carves out ledger-only changes. **This
+  is the cost accepted until then:** on repository work, markdown is the
+  only carrier today, so the orchestrator cannot record `taken` or `in
+  review` without a PR the maintainer merges, and the loop on repository
+  work stays hand-merged.
 - **The model tier is a field on the item** in both carriers: a column in
   the markdown table, an issue field on the forge. The deferred tier check
   ([#57](https://github.com/pdlourenco/disciplined-project-seed/issues/57))
