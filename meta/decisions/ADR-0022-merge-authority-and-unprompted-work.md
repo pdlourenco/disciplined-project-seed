@@ -18,7 +18,11 @@ label is an explicit, per-PR approval given in advance. Operationalised in
 roles", and the `agent:auto` label in
 [`docs/LABELS.md`](../../docs/LABELS.md) and `.github/labels.yml`.
 **In force for agents since 2026-11-20**, when `CLAUDE.md` §5 was aligned
-with it on the maintainer's direct instruction. (Until then §5 said "never
+with it on the maintainer's direct instruction. With that change the
+maintainer also settled two points (2026-11-21): a PR opened from an
+`auto/` branch at a person's request is requested work, which the label
+may cover; and a PR carrying a surfaced §4 major decision waits for the
+maintainer's go-ahead, label or not. (Until then §5 said "never
 merge on your own initiative", and agents treated every `agent:auto` PR as
 unlabelled: accepting this ADR was not, on its own, an instruction to
 change the file that binds every agent.)
@@ -72,7 +76,10 @@ The branch is the gate.
        config, the CI workflows under `.github/workflows/` (they decide
        what "CI is green" means), the label catalogue (`docs/LABELS.md`,
        `.github/labels.yml`) or anything under `.claude/`. Otherwise one
-       labelled PR could widen what the next labelled PR may do.
+       labelled PR could widen what the next labelled PR may do;
+     - no `CLAUDE.md` §4 major decision surfaced during the work is still
+       waiting for the maintainer's go-ahead: the label approves routine
+       work in advance, not a decision the maintainer has not yet seen.
 
      If any condition fails, or the label is removed, the PR falls back to
      a human decision.
@@ -97,10 +104,10 @@ The branch is the gate.
      trigger other than a person's request) goes to its own branch, named
      `auto/<YYYY-MM-DD>-<slug>`, and stops there for a human.
    - Option B never applies to it: the agent never merges an `auto/`
-     branch, label or not. A person telling it to merge one is a direct
-     request; in this seed that means opening a PR from the `auto/`
-     branch, with its CI and review, which a human then merges or labels
-     under §1. Pushes to an `auto/` branch get the pre-push self-review
+     branch itself, label or not. A person asking for that work to land is
+     a direct request; in this seed that means opening a PR from the
+     `auto/` branch, with its CI and review. That PR is requested work and
+     merges under §1: by a human, or by the agent under a human's label. Pushes to an `auto/` branch get the pre-push self-review
      like any PR branch, since it becomes one.
    - The agent deletes an `auto/` branch once it is merged or rejected, and
      checks its open `auto/` branches before acting on a trigger, so the

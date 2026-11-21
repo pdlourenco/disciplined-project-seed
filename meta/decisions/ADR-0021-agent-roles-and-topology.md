@@ -8,10 +8,10 @@ question: the pre-push reviewer is a named exception to the start rule
 read-only definition, and reports only to its author); the final
 `frontier` review is loop-only; what the orchestrator may write is decided
 with the plan-format change for the loop; the capability vocabulary stays
-neutral. Who may merge is settled in ADR-0022 (PR #66): agent merges only
-under a human's `agent:auto` label, each one announced, in force since
-`CLAUDE.md` §5 was aligned with it on 2026-11-20 (maintainer decisions,
-relayed 2026-11-19). Maintainer request
+neutral (maintainer decisions, relayed 2026-11-19). Who may merge is
+settled in ADR-0022 (PR #66): agent merges only under a human's
+`agent:auto` label, each one announced, in force since `CLAUDE.md` §5 was
+aligned with it on 2026-11-20. Maintainer request
 (conversation, 2026-11-19): the third of three governance ADRs that land before the agent-bindings
 profile; stacked on ADR-0020. Extends
 [ADR-0009](ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md) (whose

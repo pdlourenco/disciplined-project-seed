@@ -318,11 +318,11 @@ The two sessions below are one way to fill these roles by hand: the authoring se
 Every merge rests on a human decision about that PR ([ADR-0022](../meta/decisions/ADR-0022-merge-authority-and-unprompted-work.md)).
 
 - **Unlabelled PRs: a human decides.** A PR merges only on a human's explicit decision for it: the human merges it, or tells the authoring session to (`merge and proceed`, §"Two-session authoring / review workflow").
-- **`agent:auto` PRs: the agent may merge** (the orchestrator in the loop, or by hand the authoring session), if a human applied the label (the forge's event history shows who; a bot account's label does not count) and, when it merges: the final review approves (in the loop, the final `frontier` review of §"Per-role default model tiers"; by hand, the reviewing session's approving verdict on the current head), CI is green on the current head, the PR changes no contract (`docs/SPEC.md` and the machine-shared artifacts it names), adds no dependency (no new manifest or lockfile entry), and changes nothing that sets an agent's own authority: [`CLAUDE.md`](../CLAUDE.md), this §"Merge authority", [`.github/branch-protection.yml`](../.github/branch-protection.yml), the CI workflows under `.github/workflows/` (they decide what "CI is green" means), the label catalogue ([`docs/LABELS.md`](LABELS.md) and [`.github/labels.yml`](../.github/labels.yml)), or anything under `.claude/`. If any of these fails, or the label is removed, the PR goes back to a human decision.
+- **`agent:auto` PRs: the agent may merge** (the orchestrator in the loop, or by hand the authoring session), if a human applied the label (the forge's event history shows who; a bot account's label does not count) and, when it merges: the final review approves (in the loop, the final `frontier` review of §"Per-role default model tiers"; by hand, the reviewing session's approving verdict on the current head), CI is green on the current head, the PR changes no contract (`docs/SPEC.md` and the machine-shared artifacts it names), adds no dependency (no new manifest or lockfile entry), and changes nothing that sets an agent's own authority: [`CLAUDE.md`](../CLAUDE.md), this §"Merge authority", [`.github/branch-protection.yml`](../.github/branch-protection.yml), the CI workflows under `.github/workflows/` (they decide what "CI is green" means), the label catalogue ([`docs/LABELS.md`](LABELS.md) and [`.github/labels.yml`](../.github/labels.yml)), or anything under `.claude/`; and no `CLAUDE.md` §4 major decision surfaced during the work is still waiting for the maintainer's go-ahead. If any of these fails, or the label is removed, the PR goes back to a human decision.
 - **Every agent merge is announced, never silent.** Before merging, the agent checks it can reach a notice channel: the runtime's chat channel where one exists, otherwise the forge. After merging, it sends the maintainer a notice naming the PR, a one-line summary and the merge commit; if the runtime channel fails, it falls back to a comment on the merged PR mentioning the maintainer (the forge delivers that as a notification) and keeps retrying until one is delivered. A repository without a runtime uses the forge route. If no channel is reachable before the merge, the agent does not merge.
 - **Bot merge rights** are recorded per repository with its branch protection (on GitHub, `restrictions` in [`.github/branch-protection.yml`](../.github/branch-protection.yml)). A repository that never uses `agent:auto` can keep merge rights off the bot account.
 - **Requested work follows this repository's policy.** Work an agent does because a person asked goes through a PR, merged as above.
-- **Unprompted work waits on its own branch.** Work an agent chose to do (on an alert, a note, a reminder, or any trigger other than a person's request) goes to a branch named `auto/<YYYY-MM-DD>-<slug>` and stops there. The agent never merges an `auto/` branch, label or not. A person telling it to is a direct request: it opens a PR from the branch, which a human merges or labels as above. Pushes to an `auto/` branch get the pre-push self-review, as any PR branch does. The agent deletes the branch once merged or rejected, and checks its open `auto/` branches before acting on a trigger so it does not redo work.
+- **Unprompted work waits on its own branch.** Work an agent chose to do (on an alert, a note, a reminder, or any trigger other than a person's request) goes to a branch named `auto/<YYYY-MM-DD>-<slug>` and stops there. The agent never merges an `auto/` branch itself, label or not. A person asking for that work to land is a direct request: the agent opens a PR from the branch, and that PR is requested work, merged as above (by a human, or by the agent under a human's label). Pushes to an `auto/` branch get the pre-push self-review, as any PR branch does. The agent deletes the branch once merged or rejected, and checks its open `auto/` branches before acting on a trigger so it does not redo work.
 
 ## Two-session authoring / review workflow
 
@@ -330,14 +330,14 @@ For parallel agentic development, the seed's default topology is **two sessions 
 
 ### Roles
 
-- **Authoring session** — implements an item from the active phase plan's PR sequence, opens the PR, pushes fixes, and **merges on the maintainer's *"merge and proceed."*** Owns the code. It does **not** perform the open-PR review (that is the reviewing session's job); its only review duty is the **pre-push self-review of its own diff** (§"Pre-push self-review"), which is *not* the same as reviewing a PR.
+- **Authoring session** — implements an item from the active phase plan's PR sequence, opens the PR, pushes fixes, and **merges on the maintainer's *"merge and proceed"*** (or under a human's `agent:auto` label, per §"Merge authority"). Owns the code. It does **not** perform the open-PR review (that is the reviewing session's job); its only review duty is the **pre-push self-review of its own diff** (§"Pre-push self-review"), which is *not* the same as reviewing a PR.
 - **Reviewing session** — **only reviews** (on *"review PR X"*, per §"Reviewing an open PR") and subscribes / follows through. It never edits or pushes code, and **never merges** — not even a clean, approved PR; the authoring session merges, on the maintainer's say-so.
 
 At a glance — the three verbs, per session:
 
 | Session | Authors / edits code | Reviews open PRs | Merges |
 |---|---|---|---|
-| **Authoring** | yes | no — only the pre-push self-review of its *own* diff | yes, on `merge and proceed` |
+| **Authoring** | yes | no — only the pre-push self-review of its *own* diff | yes, on `merge and proceed`, or under `agent:auto` per §"Merge authority" |
 | **Reviewing** | no | yes | no |
 
 ### The loop
@@ -346,7 +346,7 @@ At a glance — the three verbs, per session:
 2. **Reviewing** reviews on the maintainer's *"review PR X"*, per §"Reviewing an open PR". Never touches code.
 3. Maintainer tells authoring *"reviews posted"*; it analyses the comments and pushes any fixes.
 4. Repeat 2–3 until the review is clean.
-5. Maintainer tells authoring *"merge and proceed"*; it merges (squash / rebase for linear history) and starts the next plan item.
+5. Maintainer tells authoring *"merge and proceed"* (or has labelled the PR `agent:auto`, per §"Merge authority"); it merges (squash / rebase for linear history) and starts the next plan item.
 
 ### Command vocabulary
 
