@@ -8,21 +8,24 @@ condition, that every merge an agent makes is announced to them
 PR #66 on 2026-11-20 the maintainer concurred with option B as described
 there, notices included, and chose that the label never covers a change
 to an agent's own authority; on 2026-11-20 the maintainer also put the CI
-workflows on that list. The
-`auto/` branch principle in §Decision 2 is the maintainer's own decision
-of the same date. Stacked on ADR-0021. Refines
+workflows on that list, and on PR #69 on 2026-11-21 the branch-protection
+scripts. The `auto/` branch principle in §Decision 2 is the maintainer's
+own decision of 2026-11-19. Stacked on ADR-0021. Refines
 [ADR-0009](ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md): the
 label is an explicit, per-PR approval given in advance. Operationalised in
 [`docs/CONTRIBUTING.md`](../../docs/CONTRIBUTING.md) §"Merge authority"
 (where the notice rule is recorded), the merge invariant of §"Agent
 roles", and the `agent:auto` label in
 [`docs/LABELS.md`](../../docs/LABELS.md) and `.github/labels.yml`.
-**Not in force for agents yet:** `CLAUDE.md` §5 still says "never merge on
-your own initiative". It binds every agent in the repository, so it changes
-only by the maintainer's own hand or direct instruction to change it;
-accepting this ADR is not that instruction. Until it does, agents treat
-every `agent:auto` PR as unlabelled; CONTRIBUTING §"Merge authority" says
-so too.
+**In force for agents since 2026-11-20**, when `CLAUDE.md` §5 was aligned
+with it on the maintainer's direct instruction. With that change the
+maintainer also settled two points (2026-11-21): a PR opened from an
+`auto/` branch at a person's request is requested work, which the label
+may cover; and a PR carrying a surfaced §4 major decision waits for the
+maintainer's go-ahead, label or not. (Until then §5 said "never
+merge on your own initiative", and agents treated every `agent:auto` PR as
+unlabelled: accepting this ADR was not, on its own, an instruction to
+change the file that binds every agent.)
 
 ## Context
 
@@ -71,9 +74,16 @@ The branch is the gate.
      - the PR changes nothing that sets an agent's own authority:
        `CLAUDE.md`, CONTRIBUTING §"Merge authority", the branch-protection
        config, the CI workflows under `.github/workflows/` (they decide
-       what "CI is green" means), the label catalogue (`docs/LABELS.md`,
+       what "CI is green" means), the branch-protection scripts
+       (`scripts/setup-branch-protection.sh`,
+       `scripts/normalize-branch-protection.jq`,
+       `.github/scripts/check-bp-contexts.py`, which write and check the
+       protection settings), the label catalogue (`docs/LABELS.md`,
        `.github/labels.yml`) or anything under `.claude/`. Otherwise one
-       labelled PR could widen what the next labelled PR may do.
+       labelled PR could widen what the next labelled PR may do;
+     - no `CLAUDE.md` §4 major decision surfaced during the work is still
+       waiting for the maintainer's go-ahead: the label approves routine
+       work in advance, not a decision the maintainer has not yet seen.
 
      If any condition fails, or the label is removed, the PR falls back to
      a human decision.
@@ -98,11 +108,12 @@ The branch is the gate.
      trigger other than a person's request) goes to its own branch, named
      `auto/<YYYY-MM-DD>-<slug>`, and stops there for a human.
    - Option B never applies to it: the agent never merges an `auto/`
-     branch, label or not. A person telling it to merge one is a direct
-     request; in this seed that means opening a PR from the `auto/`
-     branch, with its CI and review, which a human then merges or labels
-     under §1. Pushes to an `auto/` branch get the pre-push self-review
-     like any PR branch, since it becomes one.
+     branch itself, label or not. A person asking for that work to land is
+     a direct request; in this seed that means opening a PR from the
+     `auto/` branch, with its CI and review. That PR is requested work and
+     merges under §1: by a human, or by the agent under a human's label.
+     Pushes to an `auto/` branch get the pre-push self-review like any PR
+     branch, since it becomes one.
    - The agent deletes an `auto/` branch once it is merged or rejected, and
      checks its open `auto/` branches before acting on a trigger, so the
      same trigger is not handled twice.
@@ -147,9 +158,10 @@ The branch is the gate.
   advance approval into the agent approving its own work.
 - **The label on any PR, authority changes included.** Rejected by the
   maintainer: a labelled change to the merge rules, the CI workflows, the
-  label catalogue or the agent's own configuration could widen what the
-  next labelled PR may do, with no human decision on the widening itself.
-  A labelled PR that weakened a workflow could merge on its own green CI.
+  branch-protection scripts, the label catalogue or the agent's own
+  configuration could widen what the next labelled PR may do, with no
+  human decision on the widening itself. A labelled PR that weakened a
+  workflow or a protection script could merge on its own green CI.
 - **Unprompted work as a PR rather than a bare branch.** A PR is a fine way
   to present an `auto/` branch, and nothing here forbids opening one. The
   rule is about the branch: it is what the agent may not merge and must
