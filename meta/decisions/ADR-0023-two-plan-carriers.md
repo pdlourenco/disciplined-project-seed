@@ -116,20 +116,24 @@ shape. The collisions #71 raises with ADR-0016, ADR-0020, ADR-0021 and
    maintainer's own words in the conversation that started the work: an
    agent may copy them into the file, quoted and attributed, but never
    writes an approval in its own words. An item added to an approved plan
-   is scheduled only when that amendment is approved the same way. On the forge carrier an item is scheduled when the
-   maintainer puts its issue in an open milestone. Agents may add, label
+   is scheduled only when that amendment is approved the same way. On the
+   forge carrier an item is scheduled when the maintainer puts its issue in
+   an open milestone. Agents may add, label
    and propose items, but never approve a plan, never create or close a
    milestone, never set, change or clear an issue's milestone, and never
    mark an item `dropped` (taking it out of scope); they may propose it.
    Plan files kept in a repository live under `docs/plans/`; they and the
    carrier declaration (the plan-carrier row of `DISCIPLINE_ADOPTION.md`,
    not the rest of that file) therefore join ADR-0022's agent-authority
-   paths: a PR changing them always needs a human merge, label or not. `CLAUDE.md` §5's "planned work" becomes "an item the
-   maintainer has scheduled", on either carrier.
+   paths: a PR changing them always needs a human merge, label or not.
+   `CLAUDE.md` §5's "planned work" becomes "an item the maintainer has
+   scheduled", on either carrier.
 5. **One carrier per body of work, declared at its start.** A plan file
    says so in its header; a repository records its carrier for repository
-   work in `DISCIPLINE_ADOPTION.md`. Without a declaration, the default in
-   §Decision 2 applies. No body of work is split across carriers:
+   work in `DISCIPLINE_ADOPTION.md`. Without a declaration, the body of
+   work is on the markdown carrier: the forge default in §Decision 2 takes
+   effect only through a filled-in plan-carrier row. No body of work is
+   split across carriers:
    two sources of truth for the same items drift.
 6. **Promotion is one-way.** Ad-hoc work that becomes long-lived moves to
    the forge carrier: its open items become issues in a milestone, the plan
