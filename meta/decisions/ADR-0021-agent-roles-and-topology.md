@@ -2,6 +2,10 @@
 
 ## Status
 
+**Amended by [ADR-0023](ADR-0023-two-plan-carriers.md)** (Proposed — 2026-11-21):
+the planner produces a plan in its carrier, the orchestrator runs plan items
+through the plan operations, and the ledger lives per carrier.
+
 Accepted — 2026-11-19, with the draft's recommendation on each open
 question: the pre-push reviewer is a named exception to the start rule
 (it must not edit, held by instruction until the bindings generate a

@@ -79,7 +79,10 @@ The branch is the gate.
        `scripts/normalize-branch-protection.jq`,
        `.github/scripts/check-bp-contexts.py`, which write and check the
        protection settings), the label catalogue (`docs/LABELS.md`,
-       `.github/labels.yml`) or anything under `.claude/`. Otherwise one
+       `.github/labels.yml`), anything under `.claude/`, and (added by
+       ADR-0023) plan files under `docs/plans/` and the plan-carrier
+       declaration in `DISCIPLINE_ADOPTION.md`, since merging a plan
+       schedules its items. Otherwise one
        labelled PR could widen what the next labelled PR may do;
      - no `CLAUDE.md` §4 major decision surfaced during the work is still
        waiting for the maintainer's go-ahead: the label approves routine

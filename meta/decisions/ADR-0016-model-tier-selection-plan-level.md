@@ -20,6 +20,10 @@ in neutral form (a finer adapter dial before a rung jump); §Decision 4's
 defaults become `standard` (authoring, unplanned) and `strong` (reviewing).
 §Decisions 1, 5 and 6 stand.
 
+**Amended by [ADR-0023](ADR-0023-two-plan-carriers.md)** (Proposed — 2026-11-21):
+the tier is a field of each plan item, a §"PR sequence" row on the markdown
+carrier or an issue field on the forge carrier.
+
 ## Context
 
 Model tier is a standing cost/capability trade-off, and until now it was the

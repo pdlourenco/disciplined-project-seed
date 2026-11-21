@@ -36,6 +36,7 @@
 | `docs/LABELS.md` + `.github/labels.yml` | <!-- status --> | |
 | `.github/branch-protection.yml` + apply script | <!-- status --> | |
 | `docs/plans/` | <!-- status --> | |
+| Plan carrier (CONTRIBUTING §"Plan carriers") | <!-- markdown / forge --> | <!-- the declared carrier for repository work; agents never change this row --> |
 | `docs/decisions/` | <!-- status --> | |
 | `docs/analyses/` | <!-- status --> | |
 | `CLAUDE.md` | <!-- status --> | |

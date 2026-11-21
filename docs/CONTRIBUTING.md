@@ -295,11 +295,11 @@ Sensible defaults cover the common case. Six parameters can be overridden inline
 
 ## Agent roles
 
-Agents work in four roles ([ADR-0021](../meta/decisions/ADR-0021-agent-roles-and-topology.md)). This table is normative; role files in the agent-bindings profile conform to it and point here rather than restating it. Capabilities are neutral: *read* (the repository), *write plans* (edit, commit and push files under `docs/plans/` only, on a branch), *write code* (edit the working tree, commit, push a branch), *run checks* (tests, linters, the local CI suite), *start agents*, *follow PR activity* (receive a PR's events: pushes, comments, CI changes), the §"Forge operations" and the plan operations of §"Plan carriers".
+Agents work in four roles ([ADR-0021](../meta/decisions/ADR-0021-agent-roles-and-topology.md)). This table is normative; role files in the agent-bindings profile conform to it and point here rather than restating it. Capabilities are neutral: *read* (the repository), *write plans* (edit, commit and push files under `docs/plans/` only, on a branch), *write code* (edit the working tree, commit, push a branch), *run checks* (tests, linters, the local CI suite), *start agents*, *follow PR activity* (receive a PR's events: pushes, comments, CI changes), the §"Forge operations" and the plan operations of §"Plan carriers". On the markdown carrier, `update-item` means editing only the ledger fields of the plan file, committing and pushing on a branch; it grants no other write.
 
 | Role | Purpose | Reads | Produces | Holds | Default tier |
 |---|---|---|---|---|---|
-| **planner** | Draft a plan | `ROADMAP.md`, `DESIGN.md`, `SPEC.md`, ADRs, `plans/PHASE-TEMPLATE.md` (for ad-hoc work, its goal and context) | a plan in its carrier (§"Plan carriers"): a plan file opened as a PR, or unscheduled issues for a milestone; one item per PR, each with a model tier and a gate | read, write plans, start agents, `open-pr`, `add-item` | `frontier` |
+| **planner** | Draft a plan | for repository work: `ROADMAP.md`, `DESIGN.md`, `SPEC.md`, ADRs, `plans/PHASE-TEMPLATE.md`; for ad-hoc work: its goal and context | a plan in its carrier (§"Plan carriers"): a plan file opened as a PR (with no repository, a plan file for the maintainer to approve in place), or unscheduled issues for a milestone; one item per PR, each with a model tier and a gate | read, write plans, start agents, `open-pr`, `add-item` | `frontier` |
 | **orchestrator** | Run a plan's scheduled items, item by item | the plan, verdicts, CI status, short summaries | updates to the ledger fields only; escalations to a human | read, start agents, `list-items`, `update-item`, `ci-status`, `get-diff`; `merge` only as §"Merge authority" allows | `strong` |
 | **author** | Implement one plan item | `CONTRIBUTING.md`, the plan item, the `SPEC.md` rules it touches | a branch, commits, the pre-push review marker, a PR | read, write code, run checks, `open-pr`, `ci-status` | the plan item's |
 | **reviewer** | Review one PR | the inputs §"Reviewing an open PR" names (the diff, the PR description, linked issues, the context-doc set), plus the plan item | a verdict and findings, posted as a review; replies on its threads | read, run checks, follow PR activity, `get-diff`, `ci-status`, `post-review` | `strong` |
@@ -318,7 +318,7 @@ The two sessions below are one way to fill these roles by hand: the authoring se
 Every merge rests on a human decision about that PR ([ADR-0022](../meta/decisions/ADR-0022-merge-authority-and-unprompted-work.md)).
 
 - **Unlabelled PRs: a human decides.** A PR merges only on a human's explicit decision for it: the human merges it, or tells the merging agent (the authoring session, or the orchestrator in the loop) to (`merge and proceed`, §"Two-session authoring / review workflow").
-- **`agent:auto` PRs: the agent may merge** (the orchestrator in the loop, or by hand the authoring session), if a human applied the label (the forge's event history shows who; a bot account's label does not count) and, when it merges: the final review approves (in the loop, the final `frontier` review of §"Per-role default model tiers"; by hand, the reviewing session's approving verdict on the current head), CI is green on the current head, the PR changes no contract (`docs/SPEC.md` and the machine-shared artifacts it names), adds no dependency (no new manifest or lockfile entry), and changes nothing that sets an agent's own authority: [`CLAUDE.md`](../CLAUDE.md), this §"Merge authority", [`.github/branch-protection.yml`](../.github/branch-protection.yml), the CI workflows under `.github/workflows/` (they decide what "CI is green" means), the branch-protection scripts ([`scripts/setup-branch-protection.sh`](../scripts/setup-branch-protection.sh), [`scripts/normalize-branch-protection.jq`](../scripts/normalize-branch-protection.jq), [`.github/scripts/check-bp-contexts.py`](../.github/scripts/check-bp-contexts.py), which write and check the protection settings), the label catalogue ([`docs/LABELS.md`](LABELS.md) and [`.github/labels.yml`](../.github/labels.yml)), or anything under `.claude/`; and no `CLAUDE.md` §4 major decision surfaced during the work is still waiting for the maintainer's go-ahead. If any of these fails, or the label is removed, the PR goes back to a human decision.
+- **`agent:auto` PRs: the agent may merge** (the orchestrator in the loop, or by hand the authoring session), if a human applied the label (the forge's event history shows who; a bot account's label does not count) and, when it merges: the final review approves (in the loop, the final `frontier` review of §"Per-role default model tiers"; by hand, the reviewing session's approving verdict on the current head), CI is green on the current head, the PR changes no contract (`docs/SPEC.md` and the machine-shared artifacts it names), adds no dependency (no new manifest or lockfile entry), and changes nothing that sets an agent's own authority: [`CLAUDE.md`](../CLAUDE.md), this §"Merge authority", [`.github/branch-protection.yml`](../.github/branch-protection.yml), the CI workflows under `.github/workflows/` (they decide what "CI is green" means), the branch-protection scripts ([`scripts/setup-branch-protection.sh`](../scripts/setup-branch-protection.sh), [`scripts/normalize-branch-protection.jq`](../scripts/normalize-branch-protection.jq), [`.github/scripts/check-bp-contexts.py`](../.github/scripts/check-bp-contexts.py), which write and check the protection settings), the label catalogue ([`docs/LABELS.md`](LABELS.md) and [`.github/labels.yml`](../.github/labels.yml)), anything under `.claude/`, plan files under `docs/plans/`, or the plan-carrier declaration in `DISCIPLINE_ADOPTION.md` (merging a plan schedules its items: §"Plan carriers"); and no `CLAUDE.md` §4 major decision surfaced during the work is still waiting for the maintainer's go-ahead. If any of these fails, or the label is removed, the PR goes back to a human decision.
 - **Every agent merge is announced, never silent.** Before merging, the agent checks it can reach a notice channel: the runtime's chat channel where one exists, otherwise the forge. After merging, it sends the maintainer a notice naming the PR, a one-line summary and the merge commit; if the runtime channel fails, it falls back to a comment on the merged PR mentioning the maintainer (the forge delivers that as a notification) and keeps retrying until one is delivered. A repository without a runtime uses the forge route. If no channel is reachable before the merge, the agent does not merge.
 - **Bot merge rights** are recorded per repository with its branch protection (on GitHub, `restrictions` in [`.github/branch-protection.yml`](../.github/branch-protection.yml)). A repository that never uses `agent:auto` can keep merge rights off the bot account.
 - **Requested work follows this repository's policy.** Work an agent does because a person asked goes through a PR, merged as above.
@@ -330,7 +330,7 @@ For parallel agentic development, the seed's default topology is **two sessions 
 
 ### Roles
 
-- **Authoring session** — implements an item from the active phase plan's PR sequence, opens the PR, pushes fixes, and **merges on the maintainer's *"merge and proceed"*** (or under a human's `agent:auto` label, per §"Merge authority"). Owns the code. It does **not** perform the open-PR review (that is the reviewing session's job); its only review duty is the **pre-push self-review of its own diff** (§"Pre-push self-review"), which is *not* the same as reviewing a PR.
+- **Authoring session** — implements a scheduled plan item (§"Plan carriers"), opens the PR, pushes fixes, and **merges on the maintainer's *"merge and proceed"*** (or under a human's `agent:auto` label, per §"Merge authority"). Owns the code. It does **not** perform the open-PR review (that is the reviewing session's job); its only review duty is the **pre-push self-review of its own diff** (§"Pre-push self-review"), which is *not* the same as reviewing a PR.
 - **Reviewing session** — **only reviews** (on *"review PR X"*, per §"Reviewing an open PR") and subscribes / follows through. It never edits or pushes code, and **never merges** — not even a clean, approved PR; the authoring session merges, on the maintainer's say-so or under `agent:auto`.
 
 At a glance — the three verbs, per session:
@@ -362,7 +362,7 @@ The kickoff collapses to one line: *"you are the authoring / reviewing session f
 
 ### Per-role default model tiers
 
-Model tiers per role (rubric and adapter mappings in §"Model tier selection"; the role table in §"Agent roles" lists all four roles): the **authoring** session launches at the model tier named by the plan row it implements (`standard` when the work is unplanned, `frontier` when it is drafting a phase plan, the planner's tier); the **reviewing** session launches at `strong`. Review deliberately runs hotter than routine authoring — the asymmetry [ADR-0009](../meta/decisions/ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md) implied in practice, stated as the default. When an orchestrator runs the loop rather than the maintainer, a PR whose iteration review approves with green CI gets one final review at `frontier` before it is reported ready to merge, or, where §"Merge authority" allows, merged ([ADR-0021](../meta/decisions/ADR-0021-agent-roles-and-topology.md)); the hand-run two-session flow does not add that pass.
+Model tiers per role (rubric and adapter mappings in §"Model tier selection"; the role table in §"Agent roles" lists all four roles): the **authoring** session launches at the model tier named by the plan item it implements (`standard` when the work is unplanned, `frontier` when it is drafting a phase plan, the planner's tier); the **reviewing** session launches at `strong`. Review deliberately runs hotter than routine authoring — the asymmetry [ADR-0009](../meta/decisions/ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md) implied in practice, stated as the default. When an orchestrator runs the loop rather than the maintainer, a PR whose iteration review approves with green CI gets one final review at `frontier` before it is reported ready to merge, or, where §"Merge authority" allows, merged ([ADR-0021](../meta/decisions/ADR-0021-agent-roles-and-topology.md)); the hand-run two-session flow does not add that pass.
 
 ## Neutral interfaces
 
@@ -384,22 +384,24 @@ A plan has one model and two carriers ([ADR-0023](../meta/decisions/ADR-0023-two
 
 | Carrier | For | Items | Ledger | Scheduled when |
 |---|---|---|---|---|
-| **Markdown** | ad-hoc work; repository work where the forge lacks milestones or dependencies, or by the maintainer's choice | rows of a table in one plan file ([`plans/PHASE-TEMPLATE.md`](plans/PHASE-TEMPLATE.md) is the long form for a repository phase) | columns of that table | the plan is approved: its PR merged, or, with no repository, the maintainer's approval recorded in the file (who, when) |
-| **Forge** | repository work on a forge with milestones and issue dependencies | one issue per item, one milestone per phase; tier as an issue field, dependencies as "blocked by" | the issues' own state | a human puts the issue in an open milestone |
+| **Markdown** | ad-hoc work; repository work where the forge lacks milestones or issue dependencies, or by the maintainer's choice | items in one plan file, as a table or the §"PR sequence" of [`plans/PHASE-TEMPLATE.md`](plans/PHASE-TEMPLATE.md) (the long form for a repository phase) | the ledger fields of each item | the plan, or an amendment adding items, is approved: its PR merged by a human, or, with no repository, the maintainer's approval recorded in the file (who, when) |
+| **Forge** | repository work on a forge with milestones and issue dependencies | one issue per item, one milestone per phase; tier as an issue field, dependencies as "blocked by"; an optional short narrative file per phase (scope, non-goals, decisions), never holding items | the issues' state, plus each issue's iteration count and last verdict recorded on it | the maintainer puts the issue in an open milestone |
 
-The forge carrier's detailed shape (close-out duties, phase-plan length, how dependencies are recorded) is deferred in [#71](https://github.com/pdlourenco/disciplined-project-seed/issues/71).
+The forge carrier's detailed shape (close-out duties, phase-plan length, how dependencies are recorded, where iteration and verdict are kept) is deferred in [#71](https://github.com/pdlourenco/disciplined-project-seed/issues/71).
 
-**Plan operations.** The orchestrator and planner touch a plan only through these; each carrier's adapter in the agent-bindings profile maps them, as for §"Forge operations".
+**Default carrier.** Ad-hoc work: markdown. Repository work on a forge with milestones and issue dependencies: the forge carrier, once its detailed shape lands; until then, and on a forge without those features, markdown. A phase already planned in a file stays markdown until it closes.
+
+**Plan operations.** The orchestrator and planner touch a plan only through these; each carrier's adapter in the agent-bindings profile maps them, as for §"Forge operations". A new operation joins this list before any adapter maps it.
 
 | Operation | Must do |
 |---|---|
 | `list-items` | Return the plan's items with their status, tier, dependencies and PR. |
-| `add-item` | Add an item, unscheduled until a human schedules it. |
-| `update-item` | Change an item's ledger fields, and only those. |
+| `add-item` | Add an item, unscheduled until the maintainer schedules it. |
+| `update-item` | Change an item's ledger fields, and only those; never set `dropped`. |
 
 **Rules.**
 
-- **Scheduling is a human act.** Agents may add, label and propose items, but never approve their own plan, never create or close a milestone, and never set, change or clear an issue's milestone.
+- **Scheduling is the maintainer's act.** Agents may add, label and propose items, but never approve a plan, never create or close a milestone, never set, change or clear an issue's milestone, and never mark an item `dropped` (they may propose it). Plan files and the carrier declaration are agent-authority paths (§"Merge authority"): a PR changing them needs a human merge.
 - **One carrier per body of work, declared at its start**: in the plan file's header, or, for a repository on the forge carrier, in `DISCIPLINE_ADOPTION.md`. Never split one body of work across carriers.
 - **Promotion is one-way.** Ad-hoc work that becomes long-lived moves to the forge carrier: its open items become issues in a milestone, and the plan file records where they went and stops changing.
 - **Ad-hoc work's minimal grounding** is a markdown plan with a goal, scope and non-goals, items and decisions. `ROADMAP.md`, `SPEC.md` and the phase template are for repository work.
@@ -421,13 +423,13 @@ the mechanics and
 for the vocabulary. **Model tiers are unrelated to the CI tiers 1–4 in
 §"CI strategy"** — where both are in play, say "model tier". The convention:
 
-- **The model tier is named per PR row in the phase plan.** Each row of a
-  phase plan's §"PR sequence"
+- **The model tier is named per plan item** (§"Plan carriers"). On the
+  markdown carrier each row of a phase plan's §"PR sequence"
   ([`docs/plans/PHASE-TEMPLATE.md`](plans/PHASE-TEMPLATE.md) §3) carries a
-  **Model tier** line. The planner (by hand: the authoring session)
+  **Model tier** line; on the forge carrier it is an issue field. The planner (by hand: the authoring session)
   proposes it when drafting the plan (recommend-don't-decide, per
   `CLAUDE.md` §4); plan approval makes it
-  part of the approved artifact; whoever launches the session for that row
+  part of the approved artifact; whoever launches the session for that item
   reads it there.
 - **Tiers are capability rungs, never models.** Plans, PR descriptions, and
   conversations carry the four rung names below. Each agent-tool adapter
@@ -438,7 +440,7 @@ for the vocabulary. **Model tiers are unrelated to the CI tiers 1–4 in
   rung. A task that is fiddly rather than architecturally hard wants more of
   that dial at the current rung; move up a rung when the difficulty is
   design freedom, not fiddliness.
-  - **Escalating a row.** Escalate a row's session one rung up when a first
+  - **Escalating an item.** Escalate an item's session one rung up when a first
     pass produced design churn rather than fiddliness, and record it in the
     PR's `Model tier:` line as `<planned> (escalated to <ran>)`, e.g.
     `standard (escalated to strong)`, so the planned rung and the rung it

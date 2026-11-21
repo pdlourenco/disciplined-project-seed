@@ -48,7 +48,7 @@ Phase labels (`phase-0`, `phase-1`, …) are added on demand. Don't pre-create t
 
 ### Authority (applied only by a human)
 
-`agent:auto` is a human's advance approval for an agent to merge that PR itself, under the conditions in [`CONTRIBUTING.md`](CONTRIBUTING.md) §"Merge authority" ([ADR-0022](../meta/decisions/ADR-0022-merge-authority-and-unprompted-work.md)). Only a human applies it: an agent never labels its own work, and a label applied by a bot account does not count. Never apply it to a PR opened from an `auto/` branch until a human has asked for that work to be merged. It never covers a PR that changes an agent's own authority (`CLAUDE.md`, CONTRIBUTING §"Merge authority", branch protection and its scripts, the CI workflows, this label catalogue and `.github/labels.yml`, `.claude/`): such a PR always waits for a human merge.
+`agent:auto` is a human's advance approval for an agent to merge that PR itself, under the conditions in [`CONTRIBUTING.md`](CONTRIBUTING.md) §"Merge authority" ([ADR-0022](../meta/decisions/ADR-0022-merge-authority-and-unprompted-work.md)). Only a human applies it: an agent never labels its own work, and a label applied by a bot account does not count. Never apply it to a PR opened from an `auto/` branch until a human has asked for that work to be merged. It never covers a PR that changes an agent's own authority (`CLAUDE.md`, CONTRIBUTING §"Merge authority", branch protection and its scripts, the CI workflows, this label catalogue and `.github/labels.yml`, `.claude/`, plan files and the plan-carrier declaration): such a PR always waits for a human merge.
 
 ## Usage examples
 
