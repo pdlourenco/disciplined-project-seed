@@ -54,10 +54,10 @@ For any of the above:
 2. **If the decision is accepted and non-obvious, write an ADR** in `docs/decisions/` following the convention in `docs/decisions/README.md`. Link the ADR from the PR description.
 3. **Tactical and mechanical choices do not need this** — formatter settings, import ordering, internal naming, obvious refactors. When in doubt, ask; the cost of a question is lower than the cost of an unwanted commit.
 
-## 5. Opening a PR is free for planned work; merging needs approval
+## 5. Opening a PR is free for planned work; merging needs a human decision
 
 Opening a PR for work that implements an already-approved item in a phase / subphase plan (`docs/plans/PHASE-*.md` §"PR sequence") does **not** need separate approval — open it once the work is ready and the §2 pre-push self-review (plus the local CI run, once CI exists) pass. Work that is **not** part of an approved plan follows §4 — surface it and wait for the go-ahead before opening the PR.
 
-**Merging always requires explicit maintainer approval.** Never merge on your own initiative, not even a green PR. A §4 major decision discovered *mid-implementation* is still surfaced, even though opening the PR itself was pre-authorized.
+**Merging needs a human decision about that PR.** Merge only when a human tells you to ("merge and proceed"), or when a human applied `agent:auto` and every condition in `docs/CONTRIBUTING.md` §"Merge authority" holds, the notice to the maintainer included. Only the orchestrator, or by hand the authoring session, merges; a reviewer never does. Otherwise never merge on your own initiative, not even a green PR. Never merge an `auto/` branch itself: only a PR opened from it at a person's request can merge, under these same rules. Never merge under the label a PR that changes agent authority (§"Merge authority" lists the paths). A §4 major decision discovered *mid-implementation* is still surfaced, even though opening the PR itself was pre-authorized, and that PR then waits for the maintainer's go-ahead, label or not.
 
 The full loop lives in `docs/CONTRIBUTING.md` §"Two-session authoring / review workflow". Note this is repo *policy*: the binding per-session authorization still comes from how the session is launched, so the standing grant must be given there too — the repo doc does not override a session instruction.
