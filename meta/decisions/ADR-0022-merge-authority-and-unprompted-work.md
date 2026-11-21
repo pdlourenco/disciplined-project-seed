@@ -8,9 +8,9 @@ condition, that every merge an agent makes is announced to them
 PR #66 on 2026-11-20 the maintainer concurred with option B as described
 there, notices included, and chose that the label never covers a change
 to an agent's own authority; on 2026-11-20 the maintainer also put the CI
-workflows on that list, and on 2026-11-21 the branch-protection scripts. The
-`auto/` branch principle in §Decision 2 is the maintainer's own decision
-of the same date. Stacked on ADR-0021. Refines
+workflows on that list, and on PR #69 on 2026-11-21 the branch-protection
+scripts. The `auto/` branch principle in §Decision 2 is the maintainer's
+own decision of 2026-11-19. Stacked on ADR-0021. Refines
 [ADR-0009](ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md): the
 label is an explicit, per-PR approval given in advance. Operationalised in
 [`docs/CONTRIBUTING.md`](../../docs/CONTRIBUTING.md) §"Merge authority"
