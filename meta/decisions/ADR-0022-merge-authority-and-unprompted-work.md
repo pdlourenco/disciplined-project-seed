@@ -2,6 +2,10 @@
 
 ## Status
 
+**Amended by [ADR-0023](ADR-0023-two-plan-carriers.md)** (Proposed — 2026-11-21):
+plan files under `docs/plans/` and the plan-carrier declaration join the
+agent-authority paths, since merging a plan schedules its items.
+
 Accepted — 2026-11-19: the maintainer chose option B, with one added
 condition, that every merge an agent makes is announced to them
 (maintainer decision, relayed by the hub session on 2026-11-19). On

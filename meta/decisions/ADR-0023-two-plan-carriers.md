@@ -11,14 +11,21 @@ bugs, and it is where agents and humans interact most; a forge's
 capabilities simplify that. Three points settled by the maintainer on the
 draft (2026-11-21): plan files join the agent-authority paths; the forge
 carrier is the default for repository work where the forge supports it;
-only a human marks an item `dropped`. Takes the direction of
+only a human marks an item `dropped`. One reading is the author's, for the
+maintainer to confirm: the forge default takes effect when the forge
+carrier's details land, meaning the CONTRIBUTING change that resolves #71;
+markdown until then. From that release on, a repository that never declared
+a carrier plans new phases on the forge carrier, a behaviour change that
+release's CHANGELOG must call out. Takes the direction of
 [#71](https://github.com/pdlourenco/disciplined-project-seed/issues/71)
 for repository work and leaves its forge-side details deferred there.
 Amends [ADR-0016](ADR-0016-model-tier-selection-plan-level.md) and
 [ADR-0020](ADR-0020-provider-and-forge-neutral-interfaces.md) (where the
 model tier and the plan format live) and
 [ADR-0021](ADR-0021-agent-roles-and-topology.md) (what the planner
-produces and where the orchestrator's ledger lives). Operationalised in
+produces and where the orchestrator's ledger lives) and
+[ADR-0022](ADR-0022-merge-authority-and-unprompted-work.md) (its
+agent-authority paths gain plan files and the carrier declaration). Operationalised in
 [`docs/CONTRIBUTING.md`](../../docs/CONTRIBUTING.md) §"Plan carriers",
 §"Neutral interfaces" and §"Agent roles", and in `CLAUDE.md` §5's
 definition of planned work.
@@ -98,7 +105,7 @@ shape. The collisions #71 raises with ADR-0016, ADR-0020, ADR-0021 and
    either carrier; the discipline relies on nothing else a forge offers.
 4. **Scheduling is the maintainer's act on either carrier.** On the
    markdown carrier an item is scheduled when its plan is approved: the
-   plan PR is merged by a human, or, with no repository, the maintainer's
+   plan PR is merged by the maintainer, or, with no repository, the maintainer's
    approval is recorded in the plan file with who and when. An item added
    to an approved plan is scheduled only when that amendment is approved
    the same way. On the forge carrier an item is scheduled when the
@@ -106,8 +113,8 @@ shape. The collisions #71 raises with ADR-0016, ADR-0020, ADR-0021 and
    and propose items, but never approve a plan, never create or close a
    milestone, never set, change or clear an issue's milestone, and never
    mark an item `dropped` (taking it out of scope); they may propose it.
-   Plan files and the carrier declaration therefore join ADR-0022's
-   agent-authority paths: a PR changing them always needs a human merge,
+   Plan files kept in a repository live under `docs/plans/`; they and the
+   carrier declaration therefore join ADR-0022's agent-authority paths: a PR changing them always needs a human merge,
    label or not. `CLAUDE.md` §5's "planned work" becomes "an item the
    maintainer has scheduled", on either carrier.
 5. **One carrier per body of work, declared at its start.** A plan file
@@ -156,8 +163,8 @@ shape. The collisions #71 raises with ADR-0016, ADR-0020, ADR-0021 and
   status, PR, iteration and verdict fields with the orchestrator loop's
   PRs, before the loop runs on it. Trimming it, as #71 proposes, comes with
   the forge carrier's details.
-- **Amended ADRs carry a note.** ADR-0016, ADR-0020 and ADR-0021 say in
-  their Status that this ADR amends them.
+- **Amended ADRs carry a note.** ADR-0016, ADR-0020, ADR-0021 and ADR-0022
+  say in their Status that this ADR amends them.
 
 ## Alternatives considered
 

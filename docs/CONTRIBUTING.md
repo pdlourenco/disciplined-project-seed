@@ -384,7 +384,7 @@ A plan has one model and two carriers ([ADR-0023](../meta/decisions/ADR-0023-two
 
 | Carrier | For | Items | Ledger | Scheduled when |
 |---|---|---|---|---|
-| **Markdown** | ad-hoc work; repository work where the forge lacks milestones or issue dependencies, or by the maintainer's choice | items in one plan file, as a table or the §"PR sequence" of [`plans/PHASE-TEMPLATE.md`](plans/PHASE-TEMPLATE.md) (the long form for a repository phase) | the ledger fields of each item | the plan, or an amendment adding items, is approved: its PR merged by a human, or, with no repository, the maintainer's approval recorded in the file (who, when) |
+| **Markdown** | ad-hoc work; repository work where the forge lacks milestones or issue dependencies, or by the maintainer's choice | items in one plan file, as a table or the §"PR sequence" of [`plans/PHASE-TEMPLATE.md`](plans/PHASE-TEMPLATE.md) (the long form for a repository phase) | the ledger fields of each item | the plan, or an amendment adding items, is approved by the maintainer: its PR merged, or, with no repository, the maintainer's approval recorded in the file (who, when) |
 | **Forge** | repository work on a forge with milestones and issue dependencies | one issue per item, one milestone per phase; tier as an issue field, dependencies as "blocked by"; an optional short narrative file per phase (scope, non-goals, decisions), never holding items | the issues' state, plus each issue's iteration count and last verdict recorded on it | the maintainer puts the issue in an open milestone |
 
 The forge carrier's detailed shape (close-out duties, phase-plan length, how dependencies are recorded, where iteration and verdict are kept) is deferred in [#71](https://github.com/pdlourenco/disciplined-project-seed/issues/71).
@@ -401,8 +401,8 @@ The forge carrier's detailed shape (close-out duties, phase-plan length, how dep
 
 **Rules.**
 
-- **Scheduling is the maintainer's act.** Agents may add, label and propose items, but never approve a plan, never create or close a milestone, never set, change or clear an issue's milestone, and never mark an item `dropped` (they may propose it). Plan files and the carrier declaration are agent-authority paths (§"Merge authority"): a PR changing them needs a human merge.
-- **One carrier per body of work, declared at its start**: in the plan file's header, or, for a repository on the forge carrier, in `DISCIPLINE_ADOPTION.md`. Never split one body of work across carriers.
+- **Scheduling is the maintainer's act.** Agents may add, label and propose items, but never approve a plan, never create or close a milestone, never set, change or clear an issue's milestone, and never mark an item `dropped` (they may propose it). Plan files kept in a repository live under `docs/plans/`; they and the carrier declaration are agent-authority paths (§"Merge authority"): a PR changing them needs a human merge.
+- **One carrier per body of work, declared at its start**: in the plan file's header; a repository records its carrier for repository work in `DISCIPLINE_ADOPTION.md`, whichever it is. Without a declaration, the default above applies. Never split one body of work across carriers.
 - **Promotion is one-way.** Ad-hoc work that becomes long-lived moves to the forge carrier: its open items become issues in a milestone, and the plan file records where they went and stops changing.
 - **Ad-hoc work's minimal grounding** is a markdown plan with a goal, scope and non-goals, items and decisions. `ROADMAP.md`, `SPEC.md` and the phase template are for repository work.
 
