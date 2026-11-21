@@ -8,7 +8,7 @@ condition, that every merge an agent makes is announced to them
 PR #66 on 2026-11-20 the maintainer concurred with option B as described
 there, notices included, and chose that the label never covers a change
 to an agent's own authority; on 2026-11-20 the maintainer also put the CI
-workflows on that list. The
+workflows on that list, and on 2026-11-21 the branch-protection scripts. The
 `auto/` branch principle in §Decision 2 is the maintainer's own decision
 of the same date. Stacked on ADR-0021. Refines
 [ADR-0009](ADR-0009-agent-pr-lifecycle-and-two-session-workflow.md): the
@@ -74,7 +74,11 @@ The branch is the gate.
      - the PR changes nothing that sets an agent's own authority:
        `CLAUDE.md`, CONTRIBUTING §"Merge authority", the branch-protection
        config, the CI workflows under `.github/workflows/` (they decide
-       what "CI is green" means), the label catalogue (`docs/LABELS.md`,
+       what "CI is green" means), the branch-protection scripts
+       (`scripts/setup-branch-protection.sh`,
+       `scripts/normalize-branch-protection.jq`,
+       `.github/scripts/check-bp-contexts.py`, which write and check the
+       protection settings), the label catalogue (`docs/LABELS.md`,
        `.github/labels.yml`) or anything under `.claude/`. Otherwise one
        labelled PR could widen what the next labelled PR may do;
      - no `CLAUDE.md` §4 major decision surfaced during the work is still
@@ -154,9 +158,10 @@ The branch is the gate.
   advance approval into the agent approving its own work.
 - **The label on any PR, authority changes included.** Rejected by the
   maintainer: a labelled change to the merge rules, the CI workflows, the
-  label catalogue or the agent's own configuration could widen what the
-  next labelled PR may do, with no human decision on the widening itself.
-  A labelled PR that weakened a workflow could merge on its own green CI.
+  branch-protection scripts, the label catalogue or the agent's own
+  configuration could widen what the next labelled PR may do, with no
+  human decision on the widening itself. A labelled PR that weakened a
+  workflow or a protection script could merge on its own green CI.
 - **Unprompted work as a PR rather than a bare branch.** A PR is a fine way
   to present an `auto/` branch, and nothing here forbids opening one. The
   rule is about the branch: it is what the agent may not merge and must
