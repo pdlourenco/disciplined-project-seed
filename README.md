@@ -27,6 +27,21 @@ The discipline pays off most when contributors — human and agent — edit inde
 
 CI and packaging examples assume GitHub Actions and common tooling; adapt to your platform.
 
+### On a forge other than GitHub
+
+The discipline names no forge ([`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) §"Neutral interfaces"), but some of the scaffolding is GitHub's. The table lists those files and sections, with the fallback one adopter on Gitea chose for each ([#70](https://github.com/pdlourenco/disciplined-project-seed/issues/70) item 3). Other forges (Forgejo, GitLab) raise the same questions; check each answer against your forge's own documentation, since directory names and workflow syntax differ (GitLab CI, for one, uses a different file and syntax altogether). Record each choice in `DISCIPLINE_ADOPTION.md`, adding a row where its table has none.
+
+| GitHub-specific artifact | The Gitea adopter's fallback |
+|---|---|
+| `.github/ISSUE_TEMPLATE/`, the PR template, `.github/workflows/` | Moved to the forge's own directory (`.gitea/`); the workflow syntax mostly carried over. |
+| `.github/scripts/` (`audit-placeholders.py`, `release_changelog.py`, `check-bp-contexts.py`) | Moved with the workflows that call them; `check-bp-contexts.py` dropped with branch protection as code (next row). |
+| `.github/branch-protection.yml`, `scripts/setup-branch-protection.sh`, `scripts/normalize-branch-protection.jq`, `check-branch-protection.yml`, the contexts job in `ci.yml` | Dropped, as the forge has no branch-protection API they speak; branch protection is described in CONTRIBUTING as forge configuration. |
+| `sync-labels.yml` with `.github/labels.yml`, and the paths and "Actions → Sync labels" steps in [`docs/LABELS.md`](docs/LABELS.md) | The catalogue kept as a file (`docs/labels.yml`) and reconciled by hand in the PR that changes it; LABELS.md updated to match. |
+| `release.yml` | Reduced to the gate (tag matches CHANGELOG, notes extracted); the release created by hand. |
+| CONTRIBUTING §"Required status checks", §"Workflow permissions", §"`gh` CLI in workflows", and the GitHub MCP tools named in §"Reviewing an open PR" | Rewritten for the forge's CLI, permissions model and check names, or dropped. |
+
+CONTRIBUTING §"Merge authority" names its agent-authority paths by role (the directories the forge runs workflows from, the branch-protection settings and the scripts that write or check them, the label catalogue); this table shows where one adopter put them on Gitea.
+
 ## Adopting at small scale — choosing a profile
 
 Four adoption profiles. The shared scaling rule: the seed scales down by **dropping files, not by diluting rules** — don't weaken ADRs, pre-push review, contracts-with-teeth, or recommend-don't-decide.
