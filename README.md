@@ -27,6 +27,20 @@ The discipline pays off most when contributors — human and agent — edit inde
 
 CI and packaging examples assume GitHub Actions and common tooling; adapt to your platform.
 
+### On a forge other than GitHub
+
+The discipline names no forge ([`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) §"Neutral interfaces"), but some of the scaffolding is GitHub's. On another forge (Gitea, Forgejo, GitLab), these are the files to adapt or drop, and the fallback each has. Record each choice in `DISCIPLINE_ADOPTION.md`, as for any other artifact.
+
+| GitHub-specific artifact | Fallback on another forge |
+|---|---|
+| `.github/ISSUE_TEMPLATE/`, the PR template, `.github/workflows/` | Move them to the forge's own directory (for Gitea, `.gitea/`). Gitea and Forgejo Actions run most GitHub workflow syntax unchanged. |
+| `.github/branch-protection.yml`, `scripts/setup-branch-protection.sh`, `check-branch-protection.yml`, `.github/scripts/check-bp-contexts.py`, the contexts job in `ci.yml` | Drop them where the forge has no branch-protection API they speak, and describe branch protection in CONTRIBUTING as forge configuration instead. |
+| `sync-labels.yml` with `.github/labels.yml` | Keep the catalogue as a file (for example `docs/labels.yml`) and reconcile it by hand in the PR that changes it. |
+| `release.yml` | Keep the gate (tag matches CHANGELOG, notes extracted); create the release by hand if the forge has no action for it. |
+| CONTRIBUTING §"Required status checks" and §"`gh` CLI in workflows" | Rewrite for the forge's CLI and check names, or drop. |
+
+Where CONTRIBUTING names one of these paths as an agent-authority path (§"Merge authority"), the forge's equivalent takes its place.
+
 ## Adopting at small scale — choosing a profile
 
 Four adoption profiles. The shared scaling rule: the seed scales down by **dropping files, not by diluting rules** — don't weaken ADRs, pre-push review, contracts-with-teeth, or recommend-don't-decide.
