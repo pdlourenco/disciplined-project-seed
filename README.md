@@ -29,15 +29,16 @@ CI and packaging examples assume GitHub Actions and common tooling; adapt to you
 
 ### On a forge other than GitHub
 
-The discipline names no forge ([`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) §"Neutral interfaces"), but some of the scaffolding is GitHub's. On another forge (Gitea, Forgejo, GitLab), these are the files to adapt or drop, and the fallback each has. Record each choice in `DISCIPLINE_ADOPTION.md`, as for any other artifact.
+The discipline names no forge ([`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) §"Neutral interfaces"), but some of the scaffolding is GitHub's. The table lists those files and sections, with the fallback one adopter on Gitea chose for each ([#70](https://github.com/pdlourenco/disciplined-project-seed/issues/70) item 3). Other forges (Forgejo, GitLab) raise the same questions; check each answer against your forge's own documentation, since directory names and workflow syntax differ (GitLab CI, for one, uses a different file and syntax altogether). Record each choice in `DISCIPLINE_ADOPTION.md`, adding a row where its table has none.
 
-| GitHub-specific artifact | Fallback on another forge |
+| GitHub-specific artifact | The Gitea adopter's fallback |
 |---|---|
-| `.github/ISSUE_TEMPLATE/`, the PR template, `.github/workflows/` | Move them to the forge's own directory (for Gitea, `.gitea/`). Gitea and Forgejo Actions run most GitHub workflow syntax unchanged. |
-| `.github/branch-protection.yml`, `scripts/setup-branch-protection.sh`, `check-branch-protection.yml`, `.github/scripts/check-bp-contexts.py`, the contexts job in `ci.yml` | Drop them where the forge has no branch-protection API they speak, and describe branch protection in CONTRIBUTING as forge configuration instead. |
-| `sync-labels.yml` with `.github/labels.yml` | Keep the catalogue as a file (for example `docs/labels.yml`) and reconcile it by hand in the PR that changes it. |
-| `release.yml` | Keep the gate (tag matches CHANGELOG, notes extracted); create the release by hand if the forge has no action for it. |
-| CONTRIBUTING §"Required status checks" and §"`gh` CLI in workflows" | Rewrite for the forge's CLI and check names, or drop. |
+| `.github/ISSUE_TEMPLATE/`, the PR template, `.github/workflows/` | Moved to the forge's own directory (`.gitea/`); the workflow syntax mostly carried over. |
+| `.github/scripts/` (`audit-placeholders.py`, `release_changelog.py`, `check-bp-contexts.py`) | Moved with the workflows that call them; `check-bp-contexts.py` dropped with branch protection as code (next row). |
+| `.github/branch-protection.yml`, `scripts/setup-branch-protection.sh`, `scripts/normalize-branch-protection.jq`, `check-branch-protection.yml`, the contexts job in `ci.yml` | Dropped, as the forge has no branch-protection API they speak; branch protection is described in CONTRIBUTING as forge configuration. |
+| `sync-labels.yml` with `.github/labels.yml`, and the paths and "Actions → Sync labels" steps in [`docs/LABELS.md`](docs/LABELS.md) | The catalogue kept as a file (`docs/labels.yml`) and reconciled by hand in the PR that changes it; LABELS.md updated to match. |
+| `release.yml` | Reduced to the gate (tag matches CHANGELOG, notes extracted); the release created by hand. |
+| CONTRIBUTING §"Required status checks", §"Workflow permissions", §"`gh` CLI in workflows", and the GitHub MCP tools named in §"Reviewing an open PR" | Rewritten for the forge's CLI, permissions model and check names, or dropped. |
 
 Where CONTRIBUTING names one of these paths as an agent-authority path (§"Merge authority"), the forge's equivalent takes its place.
 
