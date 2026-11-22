@@ -40,7 +40,7 @@ The discipline names no forge ([`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) §
 | `release.yml` | Reduced to the gate (tag matches CHANGELOG, notes extracted); the release created by hand. |
 | CONTRIBUTING §"Required status checks", §"Workflow permissions", §"`gh` CLI in workflows", and the GitHub MCP tools named in §"Reviewing an open PR" | Rewritten for the forge's CLI, permissions model and check names, or dropped. |
 
-Where CONTRIBUTING names one of these paths as an agent-authority path (§"Merge authority"), the forge's equivalent takes its place.
+CONTRIBUTING §"Merge authority" names its agent-authority paths by role (the directories the forge runs workflows from, the branch-protection settings and the scripts that write or check them, the label catalogue); this table shows where one adopter put them on Gitea.
 
 ## Adopting at small scale — choosing a profile
 

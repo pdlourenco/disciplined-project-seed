@@ -2,6 +2,13 @@
 
 ## Status
 
+**Amended 2026-11-22** (maintainer review of PR #75): the agent-authority
+list names roles (the directories the forge runs workflows from, the
+branch-protection settings and the scripts that write or check them, the
+label catalogue wherever the forge keeps it); the GitHub paths in
+§Decision 1 are this seed's realisation of them, and on another forge its
+own realisation counts. Operationalised in CONTRIBUTING §"Merge authority".
+
 **Amended by [ADR-0023](ADR-0023-two-plan-carriers.md)** (Accepted — 2026-11-21):
 plan files under `docs/plans/` and the plan-carrier declaration join the
 agent-authority paths, since merging a plan schedules its items.
