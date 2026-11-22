@@ -38,8 +38,9 @@ exclusion lists, the label catalogue) is not seed-only.
   to every release's notes: text about the seed's own template archive,
   wrong on an adopter's releases.
 - `release.yml` sets `ARCHIVE_EXCLUDES: meta`. This one is harmless as
-  shipped: on an adopter's repository there is no `meta/` to remove, and
-  template users want it out anyway.
+  shipped, unless an adopter keeps a `meta/` of their own: on an adopter's
+  repository there is usually no `meta/` to remove, and template users want
+  the seed's out anyway.
 - Comments in `branch-protection.yml`, `labels.yml`, `sync-labels.yml` and
   `setup-branch-protection.sh` cite `meta/decisions/ADR-*` by repo-relative
   path, which breaks once an adopter strips `meta/`;
@@ -77,11 +78,15 @@ few broken comment links: configuration and wording, not files.
    so an adopter can see how far it trails `.github/`. The seed lints what
    it can: YAML everywhere, and `actionlint` on `forges/*/workflows/` where
    the syntax is GitHub-compatible, added to the lint job's paths. The
-   README's forge table points at a set when one exists.
+   README's forge table points at a set when one exists. A set mirrors
+   the forge's own layout under `forges/<forge>/` (for Gitea,
+   `forges/gitea/workflows/` for what runs from `.gitea/workflows/`), and
+   the adopter moves it into place, as a template user strips `meta/` by
+   hand today.
 
 ## Open questions for the maintainer
 
-1. **Who merges a change to `forges/`?** In the seed, `forges/` runs
+1. **Who merges a change to `forges/`?** (#76's question 5) In the seed, `forges/` runs
    nothing, so it sets no agent's authority, which is CONTRIBUTING
    §"Merge authority"'s criterion. The concern is different: a change there
    alters what every adopter on that forge will run.
@@ -118,11 +123,14 @@ few broken comment links: configuration and wording, not files.
   `.github/` working, plus `forges/`, which they can delete or use.
 - **`forges/<forge>/` is untested by the seed** (#76's question 3), and says
   so where it lives.
-- **The seed-only list** (#76's question 4) is the Context's list, kept in
-  CONTRIBUTING beside §"Required status checks", plus any future
-  `seed-*.yml`.
+- **The seed-only list** (#76's question 4) is the Context's list, plus any
+  future `seed-*.yml`. It is kept with the seed's own record in `meta/`
+  (for example `meta/README.md`), not in CONTRIBUTING, which adopters
+  receive.
 - **Implementation follows acceptance**, in its own PR: the two variables
-  and the hardcoded exclusion in `release.yml`, the absolute comment links,
+  and the hardcoded exclusion in `release.yml` (and its comments, which
+  tell adopters to flip or adapt those settings), `release_changelog.py`'s
+  docstring that names `meta/CHANGELOG.md`, the absolute comment links,
   CONTRIBUTING and README updates, the lint paths, the answer to the open
   questions, and a `forges/README.md` explaining the convention. A Gitea
   set arrives when an adopter contributes one.
@@ -141,7 +149,7 @@ few broken comment links: configuration and wording, not files.
   Not recommended: every adopter has to find and flip `CHANGELOG_PATH`, and
   a missed flip points their release gate at the seed's history; and every
   adopter's releases carry the seed's footer until someone notices.
-- **C. A hidden `.forge/` directory for other forges.** Matches the forges'
+- **C. A hidden `.forge/` directory for other forges** (#76's question 6). Matches the forges'
   own dot-directories. Not recommended, for the reason ADR-0006 gave for
   `meta/`: adopters who want these files should not have to discover a
   hidden directory.
