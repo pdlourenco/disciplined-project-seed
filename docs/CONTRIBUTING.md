@@ -310,6 +310,7 @@ Invariants:
 - **Reviewer independence**: a reviewer sees what the author published (the diff, the PR description) plus the plan item and the context docs — never the author's transcript or private reasoning.
 - **Only the planner and the orchestrator start agents.** Authors and reviewers do not nest, except that an author starts its own pre-push reviewer (§"Pre-push self-review"), which must not edit and reports only to that author.
 - **Agents act through a dedicated forge bot account**, never a human's. Humans keep their own accounts and merge rights. Until a repository has a bot account, sessions keep the credentials they were launched with, and each PR description says which account acted. No role holds `merge` by default; §"Merge authority" below says when the orchestrator (or, by hand, the authoring session) may use it.
+- **Agents say what they wrote.** Every PR, comment and review an agent posts on the forge ends with a line naming the tool that produced it (for example `*Posted with <tool>*`, or the tool's own default footer), and every commit an agent makes carries a co-author trailer naming the tool. A reader must never have to guess whether a human or an agent wrote what they are reading. This holds with a bot account too: the account says who acted, the line says what wrote it. Where agents post under a human's account, the line is what tells them apart.
 
 The two sessions below are one way to fill these roles by hand: the authoring session is the author (plus the merge verb, on the maintainer's word) and, when it drafts a plan for approval, the planner; the reviewing session is the reviewer; the maintainer is the orchestrator. The single-session autofix model in §"Reviewing an open PR" (one session reviews and pushes fixes) is an author without an independent reviewer: its review is not a reviewer verdict.
 
@@ -498,7 +499,7 @@ The discipline names five forge operations; each forge adapter in the agent-bind
 |---|---|
 | `open-pr` | Open a PR from a pushed branch, with the body filled from the PR template. |
 | `get-diff` | Return the PR's diff against its base. |
-| `post-review` | Post a verdict and findings on the PR as a review or note from the acting account, so the decision is attributable on the forge. |
+| `post-review` | Post a verdict and findings on the PR as a review or note from the acting account, so the decision is attributable on the forge (and, per §"Agent roles", ending with the line naming the tool). |
 | `ci-status` | Report each required check on the PR head as passed, failed or pending. |
 | `merge` | Merge the PR by the project's merge method. Who may call it is a merge-authority decision, not an adapter's. |
 
