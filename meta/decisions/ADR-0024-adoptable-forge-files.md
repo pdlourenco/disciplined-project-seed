@@ -1,4 +1,4 @@
-# ADR-0024 — Adoptable forge files: `.github/` stays the adopters' copy, seed-only behaviour moves to settings, other forges get `forges/<forge>/`
+# ADR-0024 — Adoptable forge files: `.github/` stays the adopters' copy, seed-only behaviour keyed to the seed's repository, other forges get `forges/<forge>/`
 
 ## Status
 
@@ -7,7 +7,9 @@ Proposed — 2026-11-22. Raised by the maintainer in
 which proposes separating the forge files adopters receive from the ones
 the seed runs. This ADR recommends a lighter shape than #76's `.forge/`
 copy; the choice between them, and two open questions below, are the
-maintainer's. Builds on
+maintainer's. Revised after the maintainer's review on PR #77 (2026-11-23):
+seed-only values stay in the workflow, keyed to the seed's repository,
+instead of in repository settings. Builds on
 [ADR-0006](ADR-0006-meta-folder-for-seed-history.md) (`meta/` for the
 seed's own history), [ADR-0015](ADR-0015-release-as-code.md) (release
 workflow and template archive) and
@@ -48,7 +50,10 @@ exclusion lists, the label catalogue) is not seed-only.
   which survives.
 
 So the seed-only part is one value, one block of release-note text and a
-few broken comment links: configuration and wording, not files.
+few broken comment links: configuration and wording, not files. (Relative
+links into `meta/` from the docs adopters keep break the same way;
+CONTRIBUTING alone has eighteen. They are outside the forge files and
+tracked in [#79](https://github.com/pdlourenco/disciplined-project-seed/issues/79).)
 
 ## Decision
 
@@ -56,17 +61,19 @@ few broken comment links: configuration and wording, not files.
    files adopters receive, so the seed's CI keeps testing them, and "Use
    this template" keeps giving a GitHub adopter working CI with no
    placement step.
-2. **Seed-only behaviour moves out of the files and into repository
-   settings.** A workflow reads a seed-only value from an Actions
-   repository variable with an adopter's default:
-   - `CHANGELOG_PATH`: `${{ vars.CHANGELOG_PATH || 'CHANGELOG.md' }}`; the
-     seed sets `meta/CHANGELOG.md`;
-   - the release-notes footer: `vars.RELEASE_NOTES_FOOTER`, empty by
-     default; the seed sets its "Adopting?" text.
+2. **Seed-only behaviour is keyed to the seed's repository, in the file.**
+   A seed-only value depends on the repository the workflow runs in, so it
+   stays versioned and reviewed like any other change, while a template
+   copy or fork, which has another name, gets the adopter's default with
+   nothing to set:
+   - `CHANGELOG_PATH: ${{ github.repository ==
+     'pdlourenco/disciplined-project-seed' && 'meta/CHANGELOG.md' ||
+     'CHANGELOG.md' }}`;
+   - the release-notes footer is a step guarded by the same condition, its
+     text kept in the file.
 
    `ARCHIVE_EXCLUDES` stays hardcoded as `meta`, harmless for adopters as
-   above, so a missing variable can never ship `meta/` in the seed's
-   archive. The comment links in the Context become absolute URLs to the
+   above. The comment links in the Context become absolute URLs to the
    seed repository. A seed-only step that cannot be a value would live in a
    workflow named `seed-*.yml`, which the template archive strips and the
    README tells template users to delete; today there is none.
@@ -89,15 +96,19 @@ few broken comment links: configuration and wording, not files.
 1. **Who merges a change to `forges/`?** (#76's question 5) In the seed, `forges/` runs
    nothing, so it sets no agent's authority, which is CONTRIBUTING
    §"Merge authority"'s criterion. The concern is different: a change there
-   alters what every adopter on that forge will run.
-   - **(a) Recommended:** a seed-only rule in `meta/` (for example in
-     `meta/README.md`) that a PR changing `forges/` needs the maintainer's
-     merge. *Why:* it keeps §"Merge authority"'s criterion clean, and keeps
-     seed-specific wording out of CONTRIBUTING, which adopters receive; the
-     coupling this ADR removes.
-   - **(b)** Add "the forge files adopters receive" as a role in
-     §"Merge authority": one list, but a mixed criterion, and wording that
-     only makes sense in the seed.
+   alters what every adopter on that forge will run. Whatever rule is
+   chosen has to sit where an agent deciding an `agent:auto` merge reads
+   it, or be enforced by the forge; a rule nothing reads binds nobody.
+   - **(a) Recommended:** a role in §"Merge authority" worded so it holds
+     in any repository: "files this repository distributes for others to
+     run as their CI (here `forges/`)". *Why:* agents read it when they
+     decide a merge, it is enforced like the rest of the list, and in an
+     adopter's repository it simply matches nothing.
+   - **(b)** A seed-only rule in `meta/` (for example `meta/README.md`).
+     It keeps CONTRIBUTING free of the case, but no agent reads `meta/`
+     when deciding a merge, so it would need a pointer from §"Merge
+     authority" (seed-specific wording again) or forge enforcement such as
+     a required code-owner review on `forges/**`.
 2. **Widen §"Merge authority" to all of `.github/`?** Its roles cover the
    workflow directory, branch protection and its scripts, and the label
    catalogue, but not the PR and issue templates, `release_changelog.py`,
@@ -113,12 +124,15 @@ few broken comment links: configuration and wording, not files.
   files, and the seed's CI runs it. For `forges/<forge>/`, drift is
   expected and visible instead: each set records the seed version it
   matches.
-- **The seed's release depends on two repository variables.** If
-  `CHANGELOG_PATH` is unset, the gate reads the root `CHANGELOG.md`, which
-  has no version heading, so `release_changelog.py validate` fails and the
-  release stops: loud. If `RELEASE_NOTES_FOOTER` is unset, the seed's
-  release ships without the footer: quiet, and cosmetic. The implementing
-  PR sets both before it merges.
+- **Nothing to set, and nothing unversioned.** The seed's release
+  behaviour is all in its files, as ADR-0015 intends; nothing waits in
+  Settings to be forgotten before the implementing PR merges.
+- **Adopters' files name the seed's repository** in two expressions. That
+  is harmless where it never matches. If the seed repository is renamed or
+  moved, the expressions must change with it, or the seed's release falls
+  back to the adopter defaults: the gate then reads the root
+  `CHANGELOG.md`, which has no version heading, so `release_changelog.py
+  validate` fails and the release stops. That failure is loud.
 - **Template users keep today's behaviour** (#76's question 1): they get
   `.github/` working, plus `forges/`, which they can delete or use.
 - **`forges/<forge>/` is untested by the seed** (#76's question 3), and says
@@ -127,7 +141,7 @@ few broken comment links: configuration and wording, not files.
   future `seed-*.yml`. It is kept with the seed's own record in `meta/`
   (for example `meta/README.md`), not in CONTRIBUTING, which adopters
   receive.
-- **Implementation follows acceptance**, in its own PR: the two variables
+- **Implementation follows acceptance**, in its own PR: the two repository-keyed values
   and the hardcoded exclusion in `release.yml` (and its comments, which
   tell adopters to flip or adapt those settings), `release_changelog.py`'s
   docstring that names `meta/CHANGELOG.md`, the absolute comment links,
@@ -156,3 +170,11 @@ few broken comment links: configuration and wording, not files.
 - **D. Seed-only parts marked by comments inside shared files.** No new
   mechanism. Not recommended: a comment does not stop an adopter's copy
   from running seed behaviour; a setting with a default does.
+- **E. Actions repository variables with adopter defaults**
+  (`vars.CHANGELOG_PATH || 'CHANGELOG.md'`, and the footer text as a
+  variable). This ADR's first draft. Keeps the seed's name out of
+  adopters' files. Not recommended: it puts the seed's release behaviour
+  in settings nobody reviews or diffs, the gap ADR-0005 closed for branch
+  protection ("the prose claim and the live config are independent;
+  nothing enforces that they match"), and an unset footer variable would
+  fail quietly.
