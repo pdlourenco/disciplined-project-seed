@@ -102,7 +102,7 @@ tracked in [#79](https://github.com/pdlourenco/disciplined-project-seed/issues/7
    - **(a) Recommended:** a role in §"Merge authority" worded so it holds
      in any repository: "files this repository distributes for others to
      run as their CI (here `forges/`)". *Why:* agents read it when they
-     decide a merge, it is enforced like the rest of the list, and in an
+     decide a merge, agents apply it like the rest of the list, and in an
      adopter's repository it simply matches nothing.
    - **(b)** A seed-only rule in `meta/` (for example `meta/README.md`).
      It keeps CONTRIBUTING free of the case, but no agent reads `meta/`
@@ -143,7 +143,7 @@ tracked in [#79](https://github.com/pdlourenco/disciplined-project-seed/issues/7
   receive.
 - **Implementation follows acceptance**, in its own PR: the two repository-keyed values
   and the hardcoded exclusion in `release.yml` (and its comments, which
-  tell adopters to flip or adapt those settings), `release_changelog.py`'s
+  tell adopters to flip or adapt those values), `release_changelog.py`'s
   docstring that names `meta/CHANGELOG.md`, the absolute comment links,
   CONTRIBUTING and README updates, the lint paths, the answer to the open
   questions, and a `forges/README.md` explaining the convention. A Gitea
@@ -157,8 +157,8 @@ tracked in [#79](https://github.com/pdlourenco/disciplined-project-seed/issues/7
   template users would cost about what they already pay, since they strip
   `meta/` by hand. Not recommended: it duplicates every GitHub file and
   needs a CI check to keep the two copies identical, for a coupling that
-  comes down to one value and one block of text, which settings handle
-  without a copy.
+  comes down to one value and one block of text, which repository-keyed
+  values handle without a copy.
 - **B. Status quo: adopters edit the seed-only parts themselves.** No work.
   Not recommended: every adopter has to find and flip `CHANGELOG_PATH`, and
   a missed flip points their release gate at the seed's history; and every
@@ -169,7 +169,7 @@ tracked in [#79](https://github.com/pdlourenco/disciplined-project-seed/issues/7
   hidden directory.
 - **D. Seed-only parts marked by comments inside shared files.** No new
   mechanism. Not recommended: a comment does not stop an adopter's copy
-  from running seed behaviour; a setting with a default does.
+  from running seed behaviour; a repository-keyed condition does.
 - **E. Actions repository variables with adopter defaults**
   (`vars.CHANGELOG_PATH || 'CHANGELOG.md'`, and the footer text as a
   variable). This ADR's first draft. Keeps the seed's name out of
