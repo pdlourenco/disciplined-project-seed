@@ -18,7 +18,7 @@ From ADR-0019 on, each entry names the layer it touches — discipline, agent bi
 
 ### Added
 
-- `docs/VERDICT.md` — the verdict schema, a neutral interface: one record, the readable review plus a fenced `yaml verdict` block in the same review body; `kind`, `head`, `previous_head`, `decision` (`approve` / `request-changes` / `needs-human`), `verification`, findings with persistent ids and two severities, `decisions_for_human`; unreadable verdicts fail closed. Layer: discipline. MINOR. ([ADR-0025](decisions/ADR-0025-verdict-schema.md))
+- `docs/VERDICT.md` — the verdict schema, a neutral interface: one record, the readable review plus a fenced `yaml verdict` block in the same review body; `kind`, `iteration`, `head`, `decision` (`approve` / `request-changes` / `needs-human`), `verification`, findings with persistent ids and two severities, `decisions_for_human`; unreadable verdicts fail closed. Layer: discipline. MINOR. ([ADR-0025](decisions/ADR-0025-verdict-schema.md))
 
 - `README.md` §"On a forge other than GitHub" — which of the seed's files are GitHub-specific and the fallback for each on another forge (Gitea, Forgejo, GitLab); `docs/CONTRIBUTING.md` §"Merge authority" and `docs/LABELS.md` §"Authority" name the agent-authority paths by role, with this repository's paths as the example, so they hold on any forge (ADR-0022 amended). Backported from a closed-source adopter on Gitea ([#70](https://github.com/pdlourenco/disciplined-project-seed/issues/70) item 3). Layer: discipline. MINOR.
 

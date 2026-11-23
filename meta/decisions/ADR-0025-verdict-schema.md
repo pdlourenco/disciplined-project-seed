@@ -52,7 +52,7 @@ says nothing about what the reviewer actually checked.
    block at the end of the same review body carries the same record. The
    schema is written in `docs/VERDICT.md` (proposed, (ii) below); its
    fields are `schema`, `kind` (`iteration` / `final` / `pre-push`),
-   `head`, `previous_head` (proposed, (iii) below), `decision`,
+   `iteration` (proposed, (iii) below), `head`, `decision`,
    `verification`, `findings` and `decisions_for_human`.
 2. **Three decisions** (decided): `approve`, `request-changes`,
    `needs-human`. "Approve with changes" is not a machine value: its
@@ -104,9 +104,21 @@ says nothing about what the reviewer actually checked.
   parser in the agent-bindings profile tests against it, and CONTRIBUTING
   is already the longest file in the seed; a section there would mix a
   machine contract into process prose.
-- **(iii) How a re-review refers to an earlier verdict.** By its head:
-  `previous_head`. *Why:* a review id is forge-specific; a commit SHA is
-  the same on every forge and is what the staleness rule already uses.
+- **(iii) How a re-review refers to an earlier verdict.** By number:
+  `iteration`, 1 on a first review, and the highest on the PR plus one on
+  a re-review, which supersedes that verdict and carries its findings
+  forward (rule 3). Two verdicts with the same number on one PR fail
+  closed. *Why:* two verdicts can review the same head (a reviewer run
+  again without a push, or two reviewers at once), so a commit SHA cannot
+  say which one a re-review continues; a number can, is the same on every
+  forge, can be written by hand, and counts the iterations the escalation
+  triggers need. `head` still carries the commit for the staleness and
+  merge checks. Revised in review on PR #80, which first proposed
+  `previous_head` (the head of the superseded verdict) and was shown the
+  same-head case. Considered: a `supersedes` field (always `iteration`
+  minus one, since rule 3 makes the chain linear, so left out); a
+  generated verdict id, as the review suggested (unambiguous, but harder
+  to write by hand and no count); a forge review id (forge-specific).
 - **(iv) When the hand-run flow starts writing the block.** From day one,
   as #78 recommends, so people test the format before a machine depends on
   it. The pre-push outcome marker in the PR description keeps its shape and
