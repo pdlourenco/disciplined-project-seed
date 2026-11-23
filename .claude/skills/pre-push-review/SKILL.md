@@ -43,6 +43,8 @@ tier, with the right seeding, and leaves its marker.
      currency on linked issues. Pass the section reference and the diff;
      do not paste a from-memory copy of the prompt.
    - State the PR's declared purpose so scope drift is checkable.
+   - Have it end with a `kind: pre-push` verdict block per
+     `docs/VERDICT.md`; it counts toward no merge.
 
 4. **Act on the findings before pushing.** Fix what is right; where you
    disagree with a finding, that is a judgment call — note it in the PR
@@ -57,6 +59,6 @@ tier, with the right seeding, and leaves its marker.
 6. **Push, then record the outcome marker** in the PR description (or the
    commit message summary if no PR exists yet), in the exact shape
    documented in §"Rules of engagement" of the same `CONTRIBUTING.md`
-   section. An exempted push records the exemption instead. The marker is
+   section; it summarises the reviewer's `pre-push` verdict. An exempted push records the exemption instead. The marker is
    what makes the ceremony auditable after the fact — a run that leaves no
    marker is indistinguishable from a run that never happened.

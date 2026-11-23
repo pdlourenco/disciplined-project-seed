@@ -18,6 +18,8 @@ From ADR-0019 on, each entry names the layer it touches — discipline, agent bi
 
 ### Added
 
+- `docs/VERDICT.md` — the verdict schema, a neutral interface: one record, the readable review plus a fenced `yaml verdict` block in the same review body; `kind`, `head`, `previous_head`, `decision` (`approve` / `request-changes` / `needs-human`), `verification`, findings with persistent ids and two severities, `decisions_for_human`; unreadable verdicts fail closed. `REVIEW_CONTEXT.md` §"Review output format", CONTRIBUTING's review, roles, merge-authority (an agent's approval is never a human approval), interfaces and forge-operation sections, the README and the `pre-push-review` skill now use it. Layer: discipline, and agent bindings (the skill). MINOR. ([ADR-0025](decisions/ADR-0025-verdict-schema.md))
+
 - `README.md` §"On a forge other than GitHub" — which of the seed's files are GitHub-specific and the fallback for each on another forge (Gitea, Forgejo, GitLab); `docs/CONTRIBUTING.md` §"Merge authority" and `docs/LABELS.md` §"Authority" name the agent-authority paths by role, with this repository's paths as the example, so they hold on any forge (ADR-0022 amended). Backported from a closed-source adopter on Gitea ([#70](https://github.com/pdlourenco/disciplined-project-seed/issues/70) item 3). Layer: discipline. MINOR.
 
 - `docs/CONTRIBUTING.md` §"Agent roles" — agents say what they wrote: every PR, comment and review an agent posts ends with a line naming the tool, and its commits carry the tool's co-author trailer, so a reader never has to guess whether a human or an agent wrote something. Backported from a closed-source adopter ([#70](https://github.com/pdlourenco/disciplined-project-seed/issues/70) item 2). Layer: discipline. MINOR.
