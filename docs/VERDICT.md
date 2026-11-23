@@ -8,7 +8,7 @@ A review has two renderings of one record: the readable review of [`REVIEW_CONTE
 
 The verdict is a fenced code block whose info string is `yaml verdict`, at the end of the body the reviewer posts with `post-review` (§"Forge operations"). A reader takes the **last** such block in the body. A pre-push review (`kind: pre-push`) returns the same block to its author instead of posting it.
 
-The forge's native review state (Approve / Request changes / Comment, or approvals) is **not** the verdict: it has no `needs-human`, no verification and no finding ids, it differs between forges, and an account cannot approve its own PR. Where the forge allows, the reviewer also sets the native state to match (`approve` → Approve, anything else → Request changes), as a convenience for people reading the PR list. Nothing reads it as the decision.
+The forge's native review state (Approve / Request changes / Comment, or approvals) is **not** the verdict: it has no `needs-human`, no verification and no finding ids, it differs between forges, and an account cannot approve its own PR. Where the forge allows, the reviewer also sets the native state to match (`approve` → Approve, anything else → Request changes), as a convenience for people reading the PR list (whether it sets Approve at all is open in ADR-0025 (v)). Nothing reads it as the decision.
 
 ## Fields
 
@@ -33,7 +33,7 @@ findings:
 decisions_for_human: []        # e.g. "Raises the default timeout, a threshold a later PR may revisit (CLAUDE.md §4)"
 ```
 
-**Required fields:** every field above except `previous_head`, which is omitted on a first review. An empty list is written `[]`, never left out. `head` and `previous_head` are quoted strings (an all-digit short SHA would otherwise parse as a number) and hold the full SHA, except in a `pre-push` verdict, whose head may be abbreviated or a working tree.
+**Required fields:** every field above except `previous_head`, which is omitted on a first review. An empty list is written `[]`, never left out. `head` and `previous_head` are quoted strings (an all-digit short SHA would otherwise parse as a number) and hold the full SHA, except in a `pre-push` verdict, whose head may be abbreviated, or the literal `"working-tree"` when it reviews uncommitted changes.
 
 ## Rules
 

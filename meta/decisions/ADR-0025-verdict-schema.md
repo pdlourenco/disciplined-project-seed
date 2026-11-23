@@ -73,7 +73,8 @@ says nothing about what the reviewer actually checked.
    (decided). The native state has at most three values, no
    `needs-human`, verification or ids, differs between forges, and fails
    whenever author and reviewer act through one account. The reviewer sets
-   it to match where the forge allows, as a convenience. **Nothing reads
+   it to match where the forge allows, as a convenience (but see (v)
+   below: setting Approve conflicts with the next rule). **Nothing reads
    the native state as the decision, and branch protection never counts an
    agent's approval as a human approval**; that rule joins §"Merge
    authority", so a bot's approval can never satisfy a gate meant for
