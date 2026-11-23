@@ -59,6 +59,7 @@ tier, with the right seeding, and leaves its marker.
 6. **Push, then record the outcome marker** in the PR description (or the
    commit message summary if no PR exists yet), in the exact shape
    documented in §"Rules of engagement" of the same `CONTRIBUTING.md`
-   section; it summarises the reviewer's `pre-push` verdict. An exempted push records the exemption instead. The marker is
+   section; it summarises the reviewer's `pre-push`
+   verdict. An exempted push records the exemption instead. The marker is
    what makes the ceremony auditable after the fact — a run that leaves no
    marker is indistinguishable from a run that never happened.

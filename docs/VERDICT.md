@@ -15,8 +15,8 @@ The forge's native review state (Approve / Request changes / Comment, or approva
 ```yaml verdict
 schema: 1                      # this document's version
 kind: iteration                # iteration | final | pre-push
-head: 3f2a9c1                  # the commit reviewed (full or abbreviated SHA)
-previous_head: 8b1d04e         # the head of the verdict this one supersedes; omit on a first review
+head: "3f2a9c1e5b7d0a4c6e8f1b3d5a7c9e0f2b4d6a8c"           # the commit reviewed, quoted
+previous_head: "8b1d04e6a2c4f8e0b3d5a7c9e1f3b5d7a9c0e2f4"  # the head of the verdict this one supersedes; omit on a first review
 decision: request-changes      # approve | request-changes | needs-human
 verification:
   level: full                  # full | validation-only | none
@@ -30,14 +30,15 @@ findings:
     claim: The rate limit is stated twice with different values.
     evidence: "SPEC.md:42 says 10/s; SPEC.md:118 says 20/s."   # or a "to reproduce" step
     change: Keep one value and cite it from the other place.
-decisions_for_human:
-  - Raises the default timeout, a threshold a later PR may revisit (CLAUDE.md §4).
+decisions_for_human: []        # e.g. "Raises the default timeout, a threshold a later PR may revisit (CLAUDE.md §4)"
 ```
+
+**Required fields:** every field above except `previous_head`, which is omitted on a first review. An empty list is written `[]`, never left out. `head` and `previous_head` are quoted strings (an all-digit short SHA would otherwise parse as a number) and hold the full SHA, except in a `pre-push` verdict, whose head may be abbreviated or a working tree.
 
 ## Rules
 
 1. **`decision`** follows from the record:
-   - `needs-human` when `decisions_for_human` is not empty, or the reviewer could not do its job (no diff, no access, contradictory contracts). It stops the loop whatever the findings say.
+   - `needs-human` when `decisions_for_human` is not empty, or the reviewer could not do its job (no diff, no access, contradictory contracts; it says why in a blocker finding). It stops the loop whatever the findings say.
    - otherwise `request-changes` when any finding is a `blocker` with status `open`;
    - otherwise `approve`.
 
@@ -47,7 +48,7 @@ decisions_for_human:
 4. **A verdict is about one head.** Once the PR's head moves past `head`, the verdict is stale: it describes a commit that is no longer the PR.
 5. **`verification` tells the truth.** A review that ran no checks says `level: none`; one that read the diff against principles only says `validation-only`. A review that checked nothing must never look like one that did.
 6. **A `pre-push` verdict is never a reviewer verdict.** It uses this shape but counts toward no merge ([ADR-0021](../meta/decisions/ADR-0021-agent-roles-and-topology.md)).
-7. **An unreadable verdict fails closed.** A reader that finds no block, cannot parse it, finds a field missing or a value outside its list, or finds a `decision` that contradicts rule 1, treats the verdict as `needs-human`, never as a pass.
+7. **An unreadable verdict fails closed.** A reader that finds no block, cannot parse it, finds a required field missing or a value outside its list, or finds a `decision` more permissive than rule 1 allows (an `approve` with an open blocker or a decision for a human, a `request-changes` with a decision for a human), treats the verdict as `needs-human`, never as a pass. A decision stricter than rule 1 requires stands.
 
 ## What the verdict is not
 

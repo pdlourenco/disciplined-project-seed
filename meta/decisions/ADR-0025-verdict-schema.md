@@ -12,7 +12,15 @@ approval, and the revision of every place that describes review output.
 Four points #78 left for the draft are proposed below and are the
 maintainer's to settle. Implements the "verdict schema" row of
 [ADR-0020](ADR-0020-provider-and-forge-neutral-interfaces.md)'s neutral
-interfaces. Operationalised in [`docs/VERDICT.md`](../../docs/VERDICT.md),
+interfaces, and amends
+[ADR-0021](ADR-0021-agent-roles-and-topology.md) (what the reviewer
+produces), [ADR-0022](ADR-0022-merge-authority-and-unprompted-work.md)
+("the final review approves" becomes a verdict field, and an agent's
+approval is never a human one) and
+[ADR-0023](ADR-0023-two-plan-carriers.md) (the ledger's "last verdict" is
+the verdict's `decision` and `head`); each gets an "Amended by" note on
+acceptance. Two further questions raised in review are open for the
+maintainer below. Operationalised in [`docs/VERDICT.md`](../../docs/VERDICT.md),
 [`docs/REVIEW_CONTEXT.md`](../../docs/REVIEW_CONTEXT.md) §"Review output
 format", and [`docs/CONTRIBUTING.md`](../../docs/CONTRIBUTING.md)
 §"Pre-push self-review", §"Reviewing an open PR", §"Agent roles",
@@ -42,9 +50,10 @@ says nothing about what the reviewer actually checked.
 1. **One schema, two renderings.** The readable review stays as
    `REVIEW_CONTEXT.md` §"Review output format" describes it; a structured
    block at the end of the same review body carries the same record. The
-   schema is written in `docs/VERDICT.md`; its fields are `schema`,
-   `kind` (`iteration` / `final` / `pre-push`), `head`, `previous_head`,
-   `decision`, `verification`, `findings` and `decisions_for_human`.
+   schema is written in `docs/VERDICT.md` (proposed, (ii) below); its
+   fields are `schema`, `kind` (`iteration` / `final` / `pre-push`),
+   `head`, `previous_head` (proposed, (iii) below), `decision`,
+   `verification`, `findings` and `decisions_for_human`.
 2. **Three decisions** (decided): `approve`, `request-changes`,
    `needs-human`. "Approve with changes" is not a machine value: its
    conditions become blocking findings, so it is `request-changes`.
@@ -101,6 +110,28 @@ says nothing about what the reviewer actually checked.
   as #78 recommends, so people test the format before a machine depends on
   it. The pre-push outcome marker in the PR description keeps its shape and
   summarises the `pre-push` verdict.
+
+### Open questions raised in review (the maintainer's)
+
+- **(v) Setting the native review state.** #78 decided the reviewer also
+  sets the forge's native state to match "where the forge allows". On
+  GitHub, an Approve from any account with write access counts toward a
+  required approving review, so that convenience would make an agent's
+  approval satisfy a gate meant for humans, which the same brief rules
+  out; the seed has no setting that prevents it.
+  - **(a) Recommended:** the reviewer never sets Approve; it uses Comment,
+    or Request changes when the decision is not `approve`. *Why:* it holds
+    on every forge with no setup.
+  - **(b)** Keep setting Approve, and make the setup prevent it from
+    counting: no write-level review rights for the agent's account, or
+    human-only code owners on protected paths. Needs per-repository setup,
+    and fails open when that setup is missing.
+- **(vi) Who may post a verdict that counts.** Any comment ending in a
+  `yaml verdict` block would parse, including one from the author, and
+  accounts may be shared today.
+  - **Recommended:** only a verdict posted with `post-review` by the
+    reviewer role counts, and the orchestrator reads only the reviews it
+    started; in the hand-run flow, the reviewing session's.
 
 ## Consequences
 
