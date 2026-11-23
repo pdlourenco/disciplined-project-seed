@@ -44,7 +44,10 @@ tier, with the right seeding, and leaves its marker.
      do not paste a from-memory copy of the prompt.
    - State the PR's declared purpose so scope drift is checkable.
    - Have it end with a `kind: pre-push` verdict block per
-     `docs/VERDICT.md`; it counts toward no merge.
+     `docs/VERDICT.md`; it counts toward no merge. Pass it the previous
+     pre-push verdict on this branch, if any, so it numbers its own after
+     it and carries the findings forward; otherwise it starts at
+     `number: 1`.
 
 4. **Act on the findings before pushing.** Fix what is right; where you
    disagree with a finding, that is a judgment call — note it in the PR

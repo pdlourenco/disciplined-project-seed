@@ -52,7 +52,7 @@ says nothing about what the reviewer actually checked.
    block at the end of the same review body carries the same record. The
    schema is written in `docs/VERDICT.md` (proposed, (ii) below); its
    fields are `schema`, `kind` (`iteration` / `final` / `pre-push`),
-   `iteration` (proposed, (iii) below), `head`, `decision`,
+   `number` (proposed, (iii) below), `head`, `decision`,
    `verification`, `findings` and `decisions_for_human`.
 2. **Three decisions** (decided): `approve`, `request-changes`,
    `needs-human`. "Approve with changes" is not a machine value: its
@@ -105,20 +105,26 @@ says nothing about what the reviewer actually checked.
   is already the longest file in the seed; a section there would mix a
   machine contract into process prose.
 - **(iii) How a re-review refers to an earlier verdict.** By number:
-  `iteration`, 1 on a first review, and the highest on the PR plus one on
-  a re-review, which supersedes that verdict and carries its findings
-  forward (rule 3). Two verdicts with the same number on one PR fail
-  closed. *Why:* two verdicts can review the same head (a reviewer run
-  again without a push, or two reviewers at once), so a commit SHA cannot
-  say which one a re-review continues; a number can, is the same on every
-  forge, can be written by hand, and counts the iterations the escalation
-  triggers need. `head` still carries the commit for the staleness and
-  merge checks. Revised in review on PR #80, which first proposed
+  `number`, 1 on a first review; a re-review takes the PR's highest plus
+  one, supersedes every verdict at that number and carries their findings
+  forward (rule 3), and only the highest-numbered verdict is read for the
+  decision. Two verdicts at the highest number fail closed until a
+  re-review supersedes both. *Why:* two verdicts can review the same head
+  (a reviewer run again without a push, or two reviewers at once), so a
+  commit SHA cannot say which one a re-review continues; a number can, is
+  the same on every forge, can be written by hand, and makes two reviews
+  run at once show up as a tie instead of forking silently. It also gives
+  the escalation triggers a count to fire on. `head` still carries the
+  commit for the staleness and merge checks. The cost: a reviewer must
+  read the PR's earlier verdicts to number its own, and §"Forge
+  operations" has no operation that reads a PR's reviews yet (see
+  Consequences). Revised in review on PR #80, which first proposed
   `previous_head` (the head of the superseded verdict) and was shown the
-  same-head case. Considered: a `supersedes` field (always `iteration`
-  minus one, since rule 3 makes the chain linear, so left out); a
-  generated verdict id, as the review suggested (unambiguous, but harder
-  to write by hand and no count); a forge review id (forge-specific).
+  same-head case. Considered: a `supersedes` field (redundant, since the
+  re-review supersedes everything at the highest number); a generated
+  verdict id, as the review suggested (unambiguous, but harder to write by
+  hand, and two reviews run at once fork silently); a forge review id
+  (forge-specific).
 - **(iv) When the hand-run flow starts writing the block.** From day one,
   as #78 recommends, so people test the format before a machine depends on
   it. The pre-push outcome marker in the PR description keeps its shape and
@@ -149,9 +155,13 @@ says nothing about what the reviewer actually checked.
 ## Consequences
 
 - **The orchestrator, the ledger and §"Merge authority" read one field.**
-  "The final review approves on the current head" becomes: a `kind: final`
-  verdict (`iteration` in the hand-run flow, which has no final pass) with
-  `decision: approve` and `head` equal to the PR's head.
+  "The final review approves on the current head" becomes: the PR's
+  highest-numbered verdict is `kind: final` (`kind: iteration` in the
+  hand-run flow, which has no final pass), with `decision: approve` and
+  `head` equal to the PR's head.
+- **§"Forge operations" needs an operation that reads a PR's reviews**,
+  for the orchestrator and for a reviewer numbering its verdict; it joins
+  that list with the agent-bindings profile, before an adapter maps it.
 - **The agent-bindings profile's verdict parser** has a written contract to
   parse and test against, including rule 7's failure cases.
 - **Reviews get longer by one block.** The readable review is unchanged;

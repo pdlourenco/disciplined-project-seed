@@ -15,7 +15,7 @@ The forge's native review state (Approve / Request changes / Comment, or approva
 ```yaml verdict
 schema: 1                      # this document's version
 kind: iteration                # iteration | final | pre-push
-iteration: 2                   # this verdict's number in the PR's chain of verdicts; 1 on a first review
+number: 2                      # this verdict's number on the PR; 1 on a first review
 head: "3f2a9c1e5b7d0a4c6e8f1b3d5a7c9e0f2b4d6a8c"           # the commit reviewed, quoted
 decision: request-changes      # approve | request-changes | needs-human
 verification:
@@ -33,7 +33,7 @@ findings:
 decisions_for_human: []        # e.g. "Raises the default timeout, a threshold a later PR may revisit (CLAUDE.md §4)"
 ```
 
-**Required fields:** every field above. An empty list is written `[]`, never left out. `iteration` is a whole number from 1. `head` is a quoted string (an all-digit short SHA would otherwise parse as a number) and holds the full SHA, except in a `pre-push` verdict, whose head may be abbreviated, or the literal `"working-tree"` when it reviews uncommitted changes.
+**Required fields:** every field above. An empty list is written `[]`, never left out. `number` is a whole number from 1. `head` is a quoted string (an all-digit short SHA would otherwise parse as a number) and holds the full SHA, except in a `pre-push` verdict, whose head may be abbreviated, or the literal `"working-tree"` when it reviews uncommitted changes.
 
 ## Rules
 
@@ -44,11 +44,11 @@ decisions_for_human: []        # e.g. "Raises the default timeout, a threshold a
 
    "Approve with changes" is not a value: its conditions are blocking findings, so it is `request-changes`.
 2. **Severity has two values.** A nit is a `non-blocker`.
-3. **Verdicts on a PR form one chain, and finding ids persist along it.** The first review is `iteration: 1`. A re-review takes the highest `iteration` among the PR's verdicts plus one, supersedes that verdict, and lists every finding of it, each with a status: `resolved`, `open` or `disputed` (the author contests it; the reviewer keeps it open or resolves it, never drops it). New findings take new ids. The chain is numbered rather than tied to `head` because two verdicts can review the same head: a reviewer run again without a push, or two reviewers at once. A `pre-push` review numbers its own chain in the authoring session, apart from the PR's (rule 6).
+3. **A PR's verdicts are numbered, and only the highest-numbered one stands.** A first review is `number: 1`. A re-review takes the highest `number` among the PR's verdicts that count (who may post one is open in ADR-0025 (vi)) plus one, and supersedes every verdict at that number: it lists every finding of each, with a status: `resolved`, `open` or `disputed` (the author contests it; the reviewer keeps it open or resolves it, never drops it). New findings take new ids; where two superseded verdicts used one id for different findings, the re-review keeps it for one and gives the other a new id whose `claim` names the old one. A reader takes the decision from the highest-numbered verdict only; a superseded verdict is never read for it. Verdicts are numbered rather than tied to `head` because two can review the same head: a reviewer run again without a push, or two reviewers at once. A `pre-push` review numbers its own chain in the authoring session, apart from the PR's (rule 6): the author gives the reviewer the previous pre-push verdict, if any.
 4. **A verdict is about one head.** Once the PR's head moves past `head`, the verdict is stale: it describes a commit that is no longer the PR.
 5. **`verification` tells the truth.** A review that ran no checks says `level: none`; one that read the diff against principles only says `validation-only`. A review that checked nothing must never look like one that did.
 6. **A `pre-push` verdict is never a reviewer verdict.** It uses this shape but counts toward no merge ([ADR-0021](../meta/decisions/ADR-0021-agent-roles-and-topology.md)).
-7. **An unreadable verdict fails closed.** A reader that finds no block, cannot parse it, finds a required field missing or a value outside its list, finds two verdicts on the PR with the same `iteration` (until a re-review supersedes both), or finds a `decision` more permissive than rule 1 allows (an `approve` with an open blocker or a decision for a human, a `request-changes` with a decision for a human), treats the verdict as `needs-human`, never as a pass. A decision stricter than rule 1 requires stands.
+7. **An unreadable verdict fails closed.** A reader that finds no block, cannot parse it, finds a required field missing or a value outside its list or range, finds two verdicts at the PR's highest `number` (until a re-review supersedes both), or finds a `decision` more permissive than rule 1 allows (an `approve` with an open blocker or a decision for a human, a `request-changes` with a decision for a human), treats the verdict as `needs-human`, never as a pass. A decision stricter than rule 1 requires stands.
 
 ## What the verdict is not
 
