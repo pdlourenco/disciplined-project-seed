@@ -114,7 +114,7 @@ says nothing about what the reviewer actually checked.
   commit SHA cannot say which one a re-review continues; a number can, is
   the same on every forge, can be written by hand, and makes two reviews
   run at once show up as a tie instead of forking silently. It also gives
-  the escalation triggers a count to fire on. `head` still carries the
+  the escalation triggers a count of verdicts (re-runs included) to fire on. `head` still carries the
   commit for the staleness and merge checks. The cost: a reviewer must
   read the PR's earlier verdicts to number its own, and §"Forge
   operations" has no operation that reads a PR's reviews yet (see
