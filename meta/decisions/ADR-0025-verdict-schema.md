@@ -57,8 +57,9 @@ says nothing about what the reviewer actually checked.
 2. **Three decisions** (decided): `approve`, `request-changes`,
    `needs-human`. "Approve with changes" is not a machine value: its
    conditions become blocking findings, so it is `request-changes`.
-   `needs-human` is for a `CLAUDE.md` §4 decision, or a reviewer that
-   could not do its job, and stops the loop whatever the findings say.
+   `needs-human` is for a `CLAUDE.md` §4 decision, a blocker the author
+   disputes and the reviewer still holds, or a reviewer that could not do
+   its job, and stops the loop whatever the findings say.
 3. **Two severities** (decided): `blocker`, `non-blocker`; a nit is a
    non-blocker. **Finding ids persist across iterations** (decided): a
    re-review gives each earlier finding a status, `resolved`, `open` or
@@ -138,9 +139,17 @@ says nothing about what the reviewer actually checked.
   required approving review, so that convenience would make an agent's
   approval satisfy a gate meant for humans, which the same brief rules
   out; the seed has no setting that prevents it.
-  - **(a) Recommended:** the reviewer never sets Approve; it uses Comment,
-    or Request changes when the decision is not `approve`. *Why:* it holds
-    on every forge with no setup.
+  - **(a) Recommended:** the reviewer posts Comment only, never Approve
+    or Request changes. *Why:* it holds on every forge with no setup, and
+    the block is the verdict anyway. On GitHub a Request changes review
+    persists until the same reviewer approves or someone dismisses it; a
+    reviewer that never approves would leave it on every PR it reviewed,
+    which blocks merging wherever an adopter requires reviews (the
+    commented example in `.github/branch-protection.yml`) until a human
+    dismisses it.
+  - **(a′)** Never Approve, but use Request changes when the decision is
+    not `approve`, and make dismissing it part of the flow. Keeps the
+    signal in the PR list, at the cost of a manual step per review.
   - **(b)** Keep setting Approve, and make the setup prevent it from
     counting: no write-level review rights for the agent's account, or
     human-only code owners on protected paths. Needs per-repository setup,
@@ -151,13 +160,17 @@ says nothing about what the reviewer actually checked.
   - **Recommended:** only a verdict posted with `post-review` by the
     reviewer role counts, and the orchestrator reads only the reviews it
     started; in the hand-run flow, the reviewing session's.
+  - **Settle with (v), before merge:** rule 3's numbering and rule 7's tie
+    count only the verdicts that count, so until this is settled an
+    author's comment ending in a verdict block could take a number or
+    force a tie.
 
 ## Consequences
 
 - **The orchestrator, the ledger and §"Merge authority" read one field.**
   "The final review approves on the current head" becomes: the PR's
-  highest-numbered verdict is `kind: final` (`kind: iteration` in the
-  hand-run flow, which has no final pass), with `decision: approve` and
+  highest-numbered verdict is `kind: final` (`kind: iteration` or `final`
+  in the hand-run flow, which has no separate final pass), with `decision: approve` and
   `head` equal to the PR's head.
 - **§"Forge operations" needs an operation that reads a PR's reviews**,
   for the orchestrator and for a reviewer numbering its verdict; it joins
