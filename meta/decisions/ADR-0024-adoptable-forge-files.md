@@ -7,7 +7,9 @@ below rather than #76's `.forge/` copy (alternative A), and the two
 questions this ADR left open answered as recommended (Decision 4 and 5).
 Amends [ADR-0022](ADR-0022-merge-authority-and-unprompted-work.md): two
 roles join its merge-authority list with the implementation (Decision 4
-and 5).
+and 5). Their wording was refined by the maintainer the same day, after
+a pre-push review found the first wording too wide for `forges/` and too
+narrow for required checks.
 Proposed 2026-11-22. Raised by the maintainer in
 [#76](https://github.com/pdlourenco/disciplined-project-seed/issues/76),
 which proposes separating the forge files adopters receive from the ones
@@ -97,20 +99,27 @@ tracked in [#79](https://github.com/pdlourenco/disciplined-project-seed/issues/7
 4. **A change to `forges/` needs a human decision to merge; `agent:auto`
    does not cover it** (#76's question 5).
    CONTRIBUTING §"Merge authority" gains the role "files this repository
-   distributes for others to run as their CI (here `forges/`)". In the
+   distributes for others to run as their CI and does not run itself
+   (here `forges/`)". The last clause keeps `.github/` out: adopters run
+   it too, but the seed runs it as well, so a change there runs in the seed
+   first, and its own roles cover what sets an agent's authority in it. In the
    seed, `forges/` runs nothing and sets no agent's authority, which is
    that list's usual criterion; the concern is different: a change there
    alters what every adopter on that forge will run. The rule sits where
    an agent deciding an `agent:auto` merge reads it, and in an adopter's
    repository it simply matches nothing. Rejected: alternative F.
-5. **§"Merge authority" also covers the scripts a required check runs.**
+5. **§"Merge authority" also covers the scripts and configuration a
+   required check reads.**
    Its roles covered the workflow directory, branch protection and its
    scripts, and the label catalogue, but not `audit-placeholders.py`,
    though it backs a required check: an agent could weaken a required
-   check through its script and merge that under the label. The new role,
-   "the scripts a required check runs", covers it (and its kin) on any
-   forge. The PR and issue templates and `release_changelog.py` stay out:
-   they set no agent's authority (alternative G). This gap existed before this ADR; it is
+   check through its script and merge that under the label. A required
+   check's configuration weakens it the same way (here
+   `.markdownlint-cli2.jsonc`, the markdown-lint check's ignore list and
+   disabled rules). The new role, "the scripts and configuration a
+   required check reads", covers both on any forge. The PR and issue
+   templates and `release_changelog.py` stay out: they set no agent's
+   authority (alternative G). This gap existed before this ADR; it is
    decided here because the same list changes for Decision 4, and closed
    by the implementation PR.
 
@@ -186,5 +195,5 @@ tracked in [#79](https://github.com/pdlourenco/disciplined-project-seed/issues/7
   setup.
 - **G. All of `.github/` under §"Merge authority".** Simple to state.
   Rejected: the PR and issue templates and `release_changelog.py` set no
-  agent's authority; the role "the scripts a required check runs" covers
-  what does, on any forge.
+  agent's authority; the role "the scripts and configuration a required
+  check reads" covers what does, on any forge.
