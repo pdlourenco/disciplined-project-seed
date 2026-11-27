@@ -3,7 +3,7 @@
 ## Status
 
 **Amended by [ADR-0024](ADR-0024-adoptable-forge-files.md)** (Accepted — 2026-11-27):
-two roles join the agent-authority list: files the repository distributes
+two roles join the merge-authority list: files the repository distributes
 for others to run as their CI (here `forges/`), and the scripts a
 required check runs.
 
