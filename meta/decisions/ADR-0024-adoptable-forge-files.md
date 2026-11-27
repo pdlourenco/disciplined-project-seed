@@ -2,12 +2,13 @@
 
 ## Status
 
-Proposed — 2026-11-22. Raised by the maintainer in
+Accepted — 2026-11-27, by maintainer decision on PR #77: the Decision
+below rather than #76's `.forge/` copy (alternative A), and the two
+questions this ADR left open answered as recommended (Decision 4 and 5).
+Proposed 2026-11-22. Raised by the maintainer in
 [#76](https://github.com/pdlourenco/disciplined-project-seed/issues/76),
 which proposes separating the forge files adopters receive from the ones
-the seed runs. This ADR recommends a lighter shape than #76's `.forge/`
-copy; the choice between them, and two open questions below, are the
-maintainer's. Revised after the maintainer's review on PR #77 (2026-11-23):
+the seed runs. Revised after the maintainer's review on PR #77 (2026-11-23):
 seed-only values stay in the workflow, keyed to the seed's repository,
 instead of in repository settings. Builds on
 [ADR-0006](ADR-0006-meta-folder-for-seed-history.md) (`meta/` for the
@@ -90,33 +91,26 @@ tracked in [#79](https://github.com/pdlourenco/disciplined-project-seed/issues/7
    `forges/gitea/workflows/` for what runs from `.gitea/workflows/`), and
    the adopter moves it into place, as a template user strips `meta/` by
    hand today.
-
-## Open questions for the maintainer
-
-1. **Who merges a change to `forges/`?** (#76's question 5) In the seed, `forges/` runs
-   nothing, so it sets no agent's authority, which is CONTRIBUTING
-   §"Merge authority"'s criterion. The concern is different: a change there
-   alters what every adopter on that forge will run. Whatever rule is
-   chosen has to sit where an agent deciding an `agent:auto` merge reads
-   it, or be enforced by the forge; a rule nothing reads binds nobody.
-   - **(a) Recommended:** a role in §"Merge authority" worded so it holds
-     in any repository: "files this repository distributes for others to
-     run as their CI (here `forges/`)". *Why:* agents read it when they
-     decide a merge, agents apply it like the rest of the list, and in an
-     adopter's repository it simply matches nothing.
-   - **(b)** A seed-only rule in `meta/` (for example `meta/README.md`).
-     It keeps CONTRIBUTING free of the case, but no agent reads `meta/`
-     when deciding a merge, so it would need a pointer from §"Merge
-     authority" (seed-specific wording again) or forge enforcement such as
-     a required code-owner review on `forges/**`.
-2. **Widen §"Merge authority" to all of `.github/`?** Its roles cover the
-   workflow directory, branch protection and its scripts, and the label
-   catalogue, but not the PR and issue templates, `release_changelog.py`,
-   or `audit-placeholders.py`, though the last backs a required check. That
-   gap exists today, independent of this ADR. Recommended: add "the scripts
-   a required check runs" as a role, which covers `audit-placeholders.py`
-   (and its kin) on any forge; leave the templates out, since they set no
-   authority.
+4. **A change to `forges/` needs a human merge** (#76's question 5).
+   CONTRIBUTING §"Merge authority" gains the role "files this repository
+   distributes for others to run as their CI (here `forges/`)". In the
+   seed, `forges/` runs nothing and sets no agent's authority, which is
+   that list's usual criterion; the concern is different: a change there
+   alters what every adopter on that forge will run. The rule sits where
+   an agent deciding an `agent:auto` merge reads it, and in an adopter's
+   repository it simply matches nothing. Rejected: a seed-only rule in
+   `meta/`, which no agent reads when deciding a merge, so it would need a
+   pointer from §"Merge authority" or forge enforcement such as a required
+   code-owner review on `forges/**`.
+5. **§"Merge authority" also covers the scripts a required check runs.**
+   Its roles covered the workflow directory, branch protection and its
+   scripts, and the label catalogue, but not `audit-placeholders.py`,
+   though it backs a required check: an agent could weaken a required
+   check through its script and merge that under the label. The new role,
+   "the scripts a required check runs", covers it (and its kin) on any
+   forge. The PR and issue templates and `release_changelog.py` stay out:
+   they set no agent's authority. This gap existed before this ADR; it is
+   closed here because the same list changes for Decision 4.
 
 ## Consequences
 
@@ -145,8 +139,8 @@ tracked in [#79](https://github.com/pdlourenco/disciplined-project-seed/issues/7
   and the hardcoded exclusion in `release.yml` (and its comments, which
   tell adopters to flip or adapt those values), `release_changelog.py`'s
   docstring that names `meta/CHANGELOG.md`, the absolute comment links,
-  CONTRIBUTING and README updates, the lint paths, the answer to the open
-  questions, and a `forges/README.md` explaining the convention. A Gitea
+  CONTRIBUTING and README updates, the lint paths, the two new
+  §"Merge authority" roles (Decision 4 and 5), and a `forges/README.md` explaining the convention. A Gitea
   set arrives when an adopter contributes one.
 
 ## Alternatives considered
