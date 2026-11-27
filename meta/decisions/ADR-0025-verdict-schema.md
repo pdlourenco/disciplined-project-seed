@@ -3,7 +3,7 @@
 ## Status
 
 Accepted — 2026-11-27, by maintainer decision on PR #80: (i)–(iv) as
-proposed, (v) option (a), (vi) as recommended, and the disputed-blocker
+proposed, (v) option (a), (vi) as proposed, and the disputed-blocker
 addition to `needs-human` confirmed. Proposed 2026-11-23. Drafted from
 the maintainer's brief,
 [#78](https://github.com/pdlourenco/disciplined-project-seed/issues/78),
@@ -21,7 +21,7 @@ produces), [ADR-0022](ADR-0022-merge-authority-and-unprompted-work.md)
 ("the final review approves" becomes a verdict field, and an agent's
 approval is never a human one) and
 [ADR-0023](ADR-0023-two-plan-carriers.md) (the ledger's "last verdict" is
-the verdict's `decision` and `head`); each carries an "Amended by" note.
+the highest-numbered verdict's `number`, `decision` and `head`); each carries an "Amended by" note.
 Operationalised in [`docs/VERDICT.md`](../../docs/VERDICT.md),
 [`docs/REVIEW_CONTEXT.md`](../../docs/REVIEW_CONTEXT.md) §"Review output
 format", and [`docs/CONTRIBUTING.md`](../../docs/CONTRIBUTING.md)
@@ -193,17 +193,16 @@ says nothing about what the reviewer actually checked.
 ## Alternatives considered
 
 - **The forge's native review state as the verdict.** Built in, no new
-  format. Not recommended (decided against in #78): three states at most,
+  format. Rejected (decided against in #78): three states at most,
   different per forge, no `needs-human` or verification, and unusable when
   author and reviewer share an account.
-- **Keep the prose verdict line.** No change. Not recommended: no machine
+- **Keep the prose verdict line.** No change. Rejected: no machine
   can act on it safely, and "approve with changes" is a decision with
   conditions nobody checks.
 - **A separate verdict file or artifact per review** (committed, or
-  attached to CI). Keeps the review body clean. Not recommended: it needs a
+  attached to CI). Keeps the review body clean. Rejected: it needs a
   place to live on every forge and a way to tie it to the review; the
   review body already exists on all of them and a person can write it.
-- **More severities** (critical / major / minor / nit). Finer grading. Not
-  recommended (decided against in #78): only "does this block the merge"
+- **More severities** (critical / major / minor / nit). Finer grading. Rejected (decided against in #78): only "does this block the merge"
   drives any decision, and extra grades invite argument without changing
   the outcome.

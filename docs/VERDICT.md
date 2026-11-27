@@ -10,7 +10,7 @@ The verdict is a fenced code block whose info string is `yaml verdict`, at the e
 
 The forge's native review state (Approve / Request changes / Comment, or approvals) is **not** the verdict: it has no `needs-human`, no verification and no finding ids, it differs between forges, and an account cannot approve its own PR. The reviewer posts its review as a Comment and never sets Approve or Request changes: an agent's Approve would count toward approvals meant for humans, and a Request changes stays on the PR until someone dismisses it (ADR-0025 (v)). Nothing reads the native state as the decision.
 
-**Which verdicts count.** Only a verdict the reviewer role posts with `post-review`: in the loop, from a review the orchestrator started; by hand, the reviewing session's. A block anywhere else (the author's comment, a quoted review, a pre-push verdict) is not a verdict: it takes no number and makes no tie (ADR-0025 (vi)).
+**Which verdicts count.** Only a verdict the reviewer role posts with `post-review`: in the loop, from a review the orchestrator started; by hand, the reviewing session's. A block anywhere else (the author's comment, a quoted review) is not one of the PR's verdicts: it takes no number in the PR's chain and makes no tie there (ADR-0025 (vi)). A `pre-push` verdict is not one of them either: it numbers its own chain (rule 3) and counts toward no merge (rule 6).
 
 ## Fields
 
@@ -50,7 +50,7 @@ decisions_for_human: []        # e.g. "Raises the default timeout, a threshold a
 4. **A verdict is about one head.** Once the PR's head moves past `head`, the verdict is stale: it describes a commit that is no longer the PR.
 5. **`verification` tells the truth.** A review that ran no checks says `level: none`; one that read the diff against principles only says `validation-only`. A review that checked nothing must never look like one that did.
 6. **A `pre-push` verdict is never a reviewer verdict.** It uses this shape but counts toward no merge ([ADR-0021](../meta/decisions/ADR-0021-agent-roles-and-topology.md)).
-7. **An unreadable verdict fails closed.** A reader that finds no block, cannot parse it, finds a `schema` it does not know, a required field missing or a value outside its list or range, finds two verdicts at the PR's highest `number` (until a re-review supersedes both), or finds a `decision` more permissive than rule 1 allows (an `approve` with an open or disputed blocker or a decision for a human; a `request-changes` with a disputed blocker or a decision for a human), treats the verdict as `needs-human`, never as a pass. A decision stricter than rule 1 requires stands.
+7. **An unreadable verdict fails closed.** A reader that finds no block, cannot parse it, finds a `schema` it does not know, a required field missing or a value outside its list or range, finds two verdicts at the PR's highest `number` among those that count (§"Where it lives"; until a re-review supersedes both), or finds a `decision` more permissive than rule 1 allows (an `approve` with an open or disputed blocker or a decision for a human; a `request-changes` with a disputed blocker or a decision for a human), treats the verdict as `needs-human`, never as a pass. A decision stricter than rule 1 requires stands.
 
 ## What the verdict is not
 

@@ -500,7 +500,7 @@ The discipline names five forge operations; each forge adapter in the agent-bind
 |---|---|
 | `open-pr` | Open a PR from a pushed branch, with the body filled from the PR template. |
 | `get-diff` | Return the PR's diff against its base. |
-| `post-review` | Post a review ending in its verdict block ([`VERDICT.md`](VERDICT.md)) on the PR, as a review or note from the acting account, so the decision is attributable on the forge (and, per §"Agent roles", ending with the line naming the tool). |
+| `post-review` | Post a review ending in its verdict block ([`VERDICT.md`](VERDICT.md)) on the PR, as a comment-type review or note from the acting account (never Approve or Request changes: [`VERDICT.md`](VERDICT.md) §"Where it lives"), so the decision is attributable on the forge (and, per §"Agent roles", ending with the line naming the tool). |
 | `ci-status` | Report each required check on the PR head as passed, failed or pending. |
 | `merge` | Merge the PR by the project's merge method. Who may call it is a merge-authority decision, not an adapter's. |
 
