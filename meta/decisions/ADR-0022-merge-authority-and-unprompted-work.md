@@ -2,6 +2,12 @@
 
 ## Status
 
+**Amended by [ADR-0025](ADR-0025-verdict-schema.md)** (Accepted — 2026-11-27):
+"the final review approves on the current head" means the PR's
+highest-numbered verdict is `kind: final` (`iteration` by hand) with
+`decision: approve` and `head` equal to the PR's head, and an agent's
+approval never counts toward a requirement meant for humans.
+
 **Amended 2026-11-22** (maintainer review of PR #75): the agent-authority
 list names roles (the directories the forge runs workflows from, the
 branch-protection settings and the scripts that write or check them, the

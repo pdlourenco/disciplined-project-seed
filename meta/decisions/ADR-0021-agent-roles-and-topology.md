@@ -2,6 +2,10 @@
 
 ## Status
 
+**Amended by [ADR-0025](ADR-0025-verdict-schema.md)** (Accepted — 2026-11-27):
+the reviewer's output is a review ending in a verdict block
+(`docs/VERDICT.md`), posted as a Comment; only that verdict counts.
+
 **Amended by [ADR-0023](ADR-0023-two-plan-carriers.md)** (Accepted — 2026-11-21):
 the planner produces a plan in its carrier, the orchestrator runs plan items
 through the plan operations, and the ledger lives per carrier.

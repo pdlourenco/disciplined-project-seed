@@ -2,6 +2,10 @@
 
 ## Status
 
+**Amended by [ADR-0025](ADR-0025-verdict-schema.md)** (Accepted — 2026-11-27):
+the ledger's "last verdict" is the highest-numbered verdict's
+`number`, `decision` and `head`.
+
 Accepted — 2026-11-21, with the maintainer's review of PR #72 applied.
 Maintainer direction (conversation, 2026-11-21):
 the agent machinery serves two kinds of work, and each should be planned in

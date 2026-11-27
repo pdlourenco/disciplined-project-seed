@@ -2,15 +2,18 @@
 
 ## Status
 
-Proposed — 2026-11-23. Drafted from the maintainer's brief,
+Accepted — 2026-11-27, by maintainer decision on PR #80: (i)–(iv) as
+proposed, (v) option (a), (vi) as recommended, and the disputed-blocker
+addition to `needs-human` confirmed. Proposed 2026-11-23. Drafted from
+the maintainer's brief,
 [#78](https://github.com/pdlourenco/disciplined-project-seed/issues/78),
 whose decisions are marked there as decided and are recorded here as
 given: the three `decision` values, the two severities, finding ids that
 persist across iterations, the review body (not the forge's review state)
 as the verdict, the rule that an agent's approval never counts as a human
 approval, and the revision of every place that describes review output.
-Four points #78 left for the draft are proposed below and are the
-maintainer's to settle. Implements the "verdict schema" row of
+Four points #78 left for the draft, and two raised in review, are settled
+below. Implements the "verdict schema" row of
 [ADR-0020](ADR-0020-provider-and-forge-neutral-interfaces.md)'s neutral
 interfaces, and amends
 [ADR-0021](ADR-0021-agent-roles-and-topology.md) (what the reviewer
@@ -18,9 +21,8 @@ produces), [ADR-0022](ADR-0022-merge-authority-and-unprompted-work.md)
 ("the final review approves" becomes a verdict field, and an agent's
 approval is never a human one) and
 [ADR-0023](ADR-0023-two-plan-carriers.md) (the ledger's "last verdict" is
-the verdict's `decision` and `head`); each gets an "Amended by" note on
-acceptance. Two further questions raised in review are open for the
-maintainer below. Operationalised in [`docs/VERDICT.md`](../../docs/VERDICT.md),
+the verdict's `decision` and `head`); each carries an "Amended by" note.
+Operationalised in [`docs/VERDICT.md`](../../docs/VERDICT.md),
 [`docs/REVIEW_CONTEXT.md`](../../docs/REVIEW_CONTEXT.md) §"Review output
 format", and [`docs/CONTRIBUTING.md`](../../docs/CONTRIBUTING.md)
 §"Pre-push self-review", §"Reviewing an open PR", §"Agent roles",
@@ -50,17 +52,17 @@ says nothing about what the reviewer actually checked.
 1. **One schema, two renderings.** The readable review stays as
    `REVIEW_CONTEXT.md` §"Review output format" describes it; a structured
    block at the end of the same review body carries the same record. The
-   schema is written in `docs/VERDICT.md` (proposed, (ii) below); its
+   schema is written in `docs/VERDICT.md` ((ii) below); its
    fields are `schema`, `kind` (`iteration` / `final` / `pre-push`),
-   `number` (proposed, (iii) below), `head`, `decision`,
+   `number` ((iii) below), `head`, `decision`,
    `verification`, `findings` and `decisions_for_human`.
 2. **Three decisions** (decided): `approve`, `request-changes`,
    `needs-human`. "Approve with changes" is not a machine value: its
    conditions become blocking findings, so it is `request-changes`.
    `needs-human` is for a `CLAUDE.md` §4 decision, or a reviewer that
-   could not do its job (and, revised in review on PR #80 and the
-   maintainer's to confirm, a blocker the author disputes and the
-   reviewer still holds), and stops the loop whatever the findings say.
+   could not do its job (and, added in review on PR #80 and confirmed by
+   the maintainer, a blocker the author disputes and the reviewer still
+   holds), and stops the loop whatever the findings say.
 3. **Two severities** (decided): `blocker`, `non-blocker`; a nit is a
    non-blocker. **Finding ids persist across iterations** (decided): a
    re-review gives each earlier finding a status, `resolved`, `open` or
@@ -74,9 +76,9 @@ says nothing about what the reviewer actually checked.
 6. **The review body is the verdict, not the forge's review state**
    (decided). The native state has at most three values, no
    `needs-human`, verification or ids, differs between forges, and fails
-   whenever author and reviewer act through one account. The reviewer sets
-   it to match where the forge allows, as a convenience (but see (v)
-   below: setting Approve conflicts with the next rule). **Nothing reads
+   whenever author and reviewer act through one account. The reviewer
+   posts its review as a Comment and never sets Approve or Request
+   changes ((v) below). **Nothing reads
    the native state as the decision, and branch protection never counts an
    agent's approval as a human approval**; that rule joins §"Merge
    authority", so a bot's approval can never satisfy a gate meant for
@@ -94,7 +96,7 @@ says nothing about what the reviewer actually checked.
    merge-authority, interfaces and forge-operation sections, the README's
    left/right-side paragraph, and the `pre-push-review` skill.
 
-### Proposed for the points #78 left to the draft (the maintainer's to settle)
+### Settled for the points #78 left to the draft
 
 - **(i) Format and how a reader finds it.** YAML in a fenced block whose
   info string is `yaml verdict`, at the end of the body; a reader takes the
@@ -134,7 +136,7 @@ says nothing about what the reviewer actually checked.
   it. The pre-push outcome marker in the PR description keeps its shape and
   summarises the `pre-push` verdict.
 
-### Open questions raised in review (the maintainer's)
+### Settled in review
 
 - **(v) Setting the native review state.** #78 decided the reviewer also
   sets the forge's native state to match "where the forge allows". On
@@ -142,11 +144,11 @@ says nothing about what the reviewer actually checked.
   required approving review, so that convenience would make an agent's
   approval satisfy a gate meant for humans, which the same brief rules
   out; the seed has no setting that prevents it.
-  - **(a) Recommended:** the reviewer posts Comment only, never Approve
+  - **(a) Chosen:** the reviewer posts Comment only, never Approve
     or Request changes. *Why:* it holds on every forge with no setup, and
     the block is the verdict anyway. Cost: the PR list shows no decision;
     a reader opens the review to see it.
-  - **(a′)** Never Approve, but post Request changes when the decision is
+  - **(a′) Rejected:** Never Approve, but post Request changes when the decision is
     not `approve`. Keeps a signal in the PR list. Cost: on GitHub a
     Request changes review persists until the same reviewer approves or
     someone dismisses it, so a reviewer that never approves leaves it on
@@ -157,20 +159,17 @@ says nothing about what the reviewer actually checked.
     but that needs dismissal rights, a new forge operation, and fails
     where the repository restricts who may dismiss; otherwise a human
     dismisses it.
-  - **(b)** Keep setting Approve, and make the setup prevent it from
+  - **(b) Rejected:** Keep setting Approve, and make the setup prevent it from
     counting: no write-level review rights for the agent's account, or
     human-only code owners on protected paths. Needs per-repository setup,
     and fails open when that setup is missing.
 - **(vi) Who may post a verdict that counts.** Any comment ending in a
   `yaml verdict` block would parse, including one from the author, and
   accounts may be shared today.
-  - **Recommended:** only a verdict posted with `post-review` by the
-    reviewer role counts, and the orchestrator reads only the reviews it
-    started; in the hand-run flow, the reviewing session's.
-  - **Settle with (v), before merge:** rule 3's numbering and rule 7's tie
-    count only the verdicts that count, so until this is settled an
-    author's comment ending in a verdict block could take a number or
-    force a tie.
+  - **Chosen:** only a verdict posted with `post-review` by the reviewer
+    role counts; the orchestrator reads only the reviews it started; in
+    the hand-run flow, the reviewing session's. A block anywhere else
+    takes no number and makes no tie (rule 3, rule 7).
 
 ## Consequences
 
