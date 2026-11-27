@@ -2,6 +2,11 @@
 
 ## Status
 
+**Amended by [ADR-0024](ADR-0024-adoptable-forge-files.md)** (Accepted — 2026-11-27):
+two roles join the agent-authority list: files the repository distributes
+for others to run as their CI (here `forges/`), and the scripts a
+required check runs.
+
 **Amended 2026-11-22** (maintainer review of PR #75): the agent-authority
 list names roles (the directories the forge runs workflows from, the
 branch-protection settings and the scripts that write or check them, the

@@ -5,6 +5,8 @@
 Accepted — 2026-11-27, by maintainer decision on PR #77: the Decision
 below rather than #76's `.forge/` copy (alternative A), and the two
 questions this ADR left open answered as recommended (Decision 4 and 5).
+Amends [ADR-0022](ADR-0022-merge-authority-and-unprompted-work.md): two
+roles join its merge-authority list (Decision 4 and 5).
 Proposed 2026-11-22. Raised by the maintainer in
 [#76](https://github.com/pdlourenco/disciplined-project-seed/issues/76),
 which proposes separating the forge files adopters receive from the ones
@@ -91,17 +93,15 @@ tracked in [#79](https://github.com/pdlourenco/disciplined-project-seed/issues/7
    `forges/gitea/workflows/` for what runs from `.gitea/workflows/`), and
    the adopter moves it into place, as a template user strips `meta/` by
    hand today.
-4. **A change to `forges/` needs a human merge** (#76's question 5).
+4. **A change to `forges/` needs a human decision to merge; `agent:auto`
+   does not cover it** (#76's question 5).
    CONTRIBUTING §"Merge authority" gains the role "files this repository
    distributes for others to run as their CI (here `forges/`)". In the
    seed, `forges/` runs nothing and sets no agent's authority, which is
    that list's usual criterion; the concern is different: a change there
    alters what every adopter on that forge will run. The rule sits where
    an agent deciding an `agent:auto` merge reads it, and in an adopter's
-   repository it simply matches nothing. Rejected: a seed-only rule in
-   `meta/`, which no agent reads when deciding a merge, so it would need a
-   pointer from §"Merge authority" or forge enforcement such as a required
-   code-owner review on `forges/**`.
+   repository it simply matches nothing. Rejected: alternative F.
 5. **§"Merge authority" also covers the scripts a required check runs.**
    Its roles covered the workflow directory, branch protection and its
    scripts, and the label catalogue, but not `audit-placeholders.py`,
@@ -109,7 +109,7 @@ tracked in [#79](https://github.com/pdlourenco/disciplined-project-seed/issues/7
    check through its script and merge that under the label. The new role,
    "the scripts a required check runs", covers it (and its kin) on any
    forge. The PR and issue templates and `release_changelog.py` stay out:
-   they set no agent's authority. This gap existed before this ADR; it is
+   they set no agent's authority (alternative G). This gap existed before this ADR; it is
    closed here because the same list changes for Decision 4.
 
 ## Consequences
@@ -140,8 +140,11 @@ tracked in [#79](https://github.com/pdlourenco/disciplined-project-seed/issues/7
   tell adopters to flip or adapt those values), `release_changelog.py`'s
   docstring that names `meta/CHANGELOG.md`, the absolute comment links,
   CONTRIBUTING and README updates, the lint paths, the two new
-  §"Merge authority" roles (Decision 4 and 5), and a `forges/README.md` explaining the convention. A Gitea
-  set arrives when an adopter contributes one.
+  §"Merge authority" roles (Decision 4 and 5; the list's lead-in, "changes
+  nothing that sets an agent's own authority", is reworded so that it
+  also covers files others run, which set no authority here), and a
+  `forges/README.md` explaining the convention. A Gitea set arrives when
+  an adopter contributes one.
 
 ## Alternatives considered
 
@@ -149,26 +152,37 @@ tracked in [#79](https://github.com/pdlourenco/disciplined-project-seed/issues/7
   separates the seed's files from the adopters', and the release archive
   could place `.forge/github/` into `.github/`. A placement step for
   template users would cost about what they already pay, since they strip
-  `meta/` by hand. Not recommended: it duplicates every GitHub file and
+  `meta/` by hand. Rejected by the maintainer (PR #77): it duplicates every GitHub file and
   needs a CI check to keep the two copies identical, for a coupling that
   comes down to one value and one block of text, which repository-keyed
   values handle without a copy.
 - **B. Status quo: adopters edit the seed-only parts themselves.** No work.
-  Not recommended: every adopter has to find and flip `CHANGELOG_PATH`, and
+  Rejected: every adopter has to find and flip `CHANGELOG_PATH`, and
   a missed flip points their release gate at the seed's history; and every
   adopter's releases carry the seed's footer until someone notices.
 - **C. A hidden `.forge/` directory for other forges** (#76's question 6). Matches the forges'
-  own dot-directories. Not recommended, for the reason ADR-0006 gave for
+  own dot-directories. Rejected, for the reason ADR-0006 gave for
   `meta/`: adopters who want these files should not have to discover a
   hidden directory.
 - **D. Seed-only parts marked by comments inside shared files.** No new
-  mechanism. Not recommended: a comment does not stop an adopter's copy
+  mechanism. Rejected: a comment does not stop an adopter's copy
   from running seed behaviour; a repository-keyed condition does.
 - **E. Actions repository variables with adopter defaults**
   (`vars.CHANGELOG_PATH || 'CHANGELOG.md'`, and the footer text as a
   variable). This ADR's first draft. Keeps the seed's name out of
-  adopters' files. Not recommended: it puts the seed's release behaviour
+  adopters' files. Rejected: it puts the seed's release behaviour
   in settings nobody reviews or diffs, the gap ADR-0005 closed for branch
   protection ("the prose claim and the live config are independent;
   nothing enforces that they match"), and an unset footer variable would
   fail quietly.
+- **F. A seed-only merge rule for `forges/` in `meta/`** (for example
+  `meta/README.md`). Keeps CONTRIBUTING, which adopters receive, free of a
+  case that is mostly the seed's. Rejected: no agent reads `meta/` when
+  deciding a merge, so the rule would bind nobody without a pointer from
+  §"Merge authority" (seed-specific wording again) or forge enforcement
+  such as a required code-owner review on `forges/**`, which is per-forge
+  setup.
+- **G. All of `.github/` under §"Merge authority".** Simple to state.
+  Rejected: the PR and issue templates and `release_changelog.py` set no
+  agent's authority; the role "the scripts a required check runs" covers
+  what does, on any forge.
