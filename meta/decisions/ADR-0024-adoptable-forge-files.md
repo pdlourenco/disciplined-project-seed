@@ -6,7 +6,8 @@ Accepted — 2026-11-27, by maintainer decision on PR #77: the Decision
 below rather than #76's `.forge/` copy (alternative A), and the two
 questions this ADR left open answered as recommended (Decision 4 and 5).
 Amends [ADR-0022](ADR-0022-merge-authority-and-unprompted-work.md): two
-roles join its merge-authority list (Decision 4 and 5).
+roles join its merge-authority list with the implementation (Decision 4
+and 5).
 Proposed 2026-11-22. Raised by the maintainer in
 [#76](https://github.com/pdlourenco/disciplined-project-seed/issues/76),
 which proposes separating the forge files adopters receive from the ones
@@ -110,7 +111,8 @@ tracked in [#79](https://github.com/pdlourenco/disciplined-project-seed/issues/7
    "the scripts a required check runs", covers it (and its kin) on any
    forge. The PR and issue templates and `release_changelog.py` stay out:
    they set no agent's authority (alternative G). This gap existed before this ADR; it is
-   closed here because the same list changes for Decision 4.
+   decided here because the same list changes for Decision 4, and closed
+   by the implementation PR.
 
 ## Consequences
 
