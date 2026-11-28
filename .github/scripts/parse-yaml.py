@@ -35,7 +35,9 @@ def main(paths: list[str]) -> int:
     failed = 0
     for path in paths:
         try:
-            with open(path, encoding="utf-8") as handle:
+            # Binary mode: PyYAML detects the encoding and reports a bad
+            # byte as a YAMLError instead of a traceback.
+            with open(path, "rb") as handle:
                 for _ in yaml.load_all(handle, Loader=_Loader):  # noqa: S506 (SafeLoader subclass)
                     pass
         except (OSError, yaml.YAMLError) as err:
