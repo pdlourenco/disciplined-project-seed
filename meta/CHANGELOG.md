@@ -18,7 +18,7 @@ From ADR-0019 on, each entry names the layer it touches — discipline, agent bi
 
 ### Added
 
-- `forges/README.md` — the convention for working files for forges other than GitHub: one adopter-contributed set per forge under `forges/<forge>/`, mirroring that forge's layout, recording the seed version it matches, not run by the seed; `actionlint` covers `forges/*/workflows/` in the workflow-lint job and `scripts/local-ci.sh` when files exist. Layer: discipline. MINOR. ([ADR-0024](decisions/ADR-0024-adoptable-forge-files.md))
+- `forges/README.md` — the convention for working files for forges other than GitHub: one adopter-contributed set per forge under `forges/<forge>/`, mirroring that forge's layout, recording the seed version it matches, not run by the seed; `actionlint` covers `forges/*/workflows/`, and every YAML file under `forges/` must parse (`.github/scripts/parse-yaml.py`, forge tags accepted), in the workflow-lint job and `scripts/local-ci.sh` when files exist. Layer: discipline. MINOR. ([ADR-0024](decisions/ADR-0024-adoptable-forge-files.md))
 
 - `docs/VERDICT.md` — the verdict schema, a neutral interface: one record, the readable review plus a fenced `yaml verdict` block in the same review body; `kind`, `number`, `head`, `decision` (`approve` / `request-changes` / `needs-human`), `verification`, findings with persistent ids and two severities, `decisions_for_human`; unreadable verdicts fail closed; only the reviewer role's verdicts count. Layer: discipline. MINOR. ([ADR-0025](decisions/ADR-0025-verdict-schema.md))
 

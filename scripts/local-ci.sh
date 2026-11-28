@@ -98,6 +98,14 @@ elif command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
 else
   warn "no actionlint binary and no running docker daemon — skipped (install actionlint or start docker)"; skipped=1
 fi
+# Every YAML file under forges/ must parse, as ci.yml's workflow-lint job
+# checks (ADR-0024); PyYAML, which step 5 already needs.
+shopt -s nullglob globstar dotglob
+yaml_files=(forges/**/*.yml forges/**/*.yaml)
+shopt -u nullglob globstar dotglob
+if [ "${#yaml_files[@]}" -gt 0 ]; then
+  python3 .github/scripts/parse-yaml.py "${yaml_files[@]}" || die "YAML parse (forges/)"
+fi
 
 # 5. branch-protection contexts consistency — static, token-free, no network.
 step "Tier 3 — Branch-protection contexts consistency"

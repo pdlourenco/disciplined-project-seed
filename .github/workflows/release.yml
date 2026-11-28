@@ -42,7 +42,7 @@ env:
   # repo-root-relative). Default: seed-meta only — see ADR-0015 for why
   # scripts/, .github/, and .claude/ stay in. `.git` never appears in a
   # `git archive` stream, so it needs no entry here. Harmless in a copy
-  # with no meta/; one that keeps a meta/ of its own removes it here.
+  # with no meta/; one that keeps a meta/ of its own drops `meta` from this list.
   ARCHIVE_EXCLUDES: meta
 
 jobs:

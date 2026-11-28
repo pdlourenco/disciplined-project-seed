@@ -53,6 +53,7 @@
 │   ├── scripts/
 │   │   ├── audit-placeholders.py   # tier-3 audit (see CONTRIBUTING.md)
 │   │   ├── check-bp-contexts.py    # tier-3 check: required contexts ↔ ci.yml jobs
+│   │   ├── parse-yaml.py           # forges/ YAML parse check (ADR-0024)
 │   │   └── release_changelog.py    # release.yml gate: tag ↔ CHANGELOG
 │   ├── workflows/                  # CI definitions
 │   │   ├── check-branch-protection.yml  # weekly drift check (read-only)
