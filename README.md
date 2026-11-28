@@ -29,7 +29,7 @@ CI and packaging examples assume GitHub Actions and common tooling; adapt to you
 
 ### On a forge other than GitHub
 
-The discipline names no forge ([`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) §"Neutral interfaces"), but some of the scaffolding is GitHub's. The table lists those files and sections, with the fallback one adopter on Gitea chose for each ([#70](https://github.com/pdlourenco/disciplined-project-seed/issues/70) item 3). Other forges (Forgejo, GitLab) raise the same questions; check each answer against your forge's own documentation, since directory names and workflow syntax differ (GitLab CI, for one, uses a different file and syntax altogether). Record each choice in `DISCIPLINE_ADOPTION.md`, adding a row where its table has none.
+The discipline names no forge ([`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) §"Neutral interfaces"), but some of the scaffolding is GitHub's. The table lists those files and sections, with the fallback one adopter on Gitea chose for each ([#70](https://github.com/pdlourenco/disciplined-project-seed/issues/70) item 3). Other forges (Forgejo, GitLab) raise the same questions; check each answer against your forge's own documentation, since directory names and workflow syntax differ (GitLab CI, for one, uses a different file and syntax altogether). Record each choice in `DISCIPLINE_ADOPTION.md`, adding a row where its table has none. When an adopter contributes a working set of files for a forge, it lives under `forges/<forge>/` (the convention is in `forges/README.md`); there is none yet.
 
 | GitHub-specific artifact | The Gitea adopter's fallback |
 |---|---|
@@ -40,7 +40,7 @@ The discipline names no forge ([`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) §
 | `release.yml` | Reduced to the gate (tag matches CHANGELOG, notes extracted); the release created by hand. |
 | CONTRIBUTING §"Required status checks", §"Workflow permissions", §"`gh` CLI in workflows", and the GitHub MCP tools named in §"Reviewing an open PR" | Rewritten for the forge's CLI, permissions model and check names, or dropped. |
 
-CONTRIBUTING §"Merge authority" names its agent-authority paths by role (the directories the forge runs workflows from, the branch-protection settings and the scripts that write or check them, the label catalogue); this table shows where one adopter put them on Gitea.
+CONTRIBUTING §"Merge authority" names its agent-authority paths by role (the directories the forge runs workflows from, the branch-protection settings and the scripts that write or check them, the label catalogue, the scripts and configuration a required check reads); this table shows where one adopter put them on Gitea.
 
 ## Adopting at small scale — choosing a profile
 

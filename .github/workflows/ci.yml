@@ -128,10 +128,28 @@ jobs:
       - name: Lint workflow YAML with actionlint
         # actionlint binary via Docker image, tag-pinned. The upstream
         # repo isn't itself a GitHub Action; the Docker image is the
-        # supported invocation path.
+        # supported invocation path. A second pass lints the workflow
+        # sets adopters contribute under forges/<forge>/workflows/ (ADR-0024);
+        # it runs only when such files exist.
         run: |
           docker run --rm -v "${PWD}:/repo" -w /repo \
             rhysd/actionlint:1.7.12 -color
+          shopt -s nullglob
+          forge_files=(forges/*/workflows/*.yml forges/*/workflows/*.yaml)
+          if [ "${#forge_files[@]}" -gt 0 ]; then
+            docker run --rm -v "${PWD}:/repo" -w /repo \
+              rhysd/actionlint:1.7.12 -color "${forge_files[@]}"
+          fi
+      - name: Parse every YAML file under forges/
+        # ADR-0024: whatever forge syntax a set uses, its YAML must parse.
+        # PyYAML is what check-bp-contexts.py already uses. Forge-specific
+        # tags (GitLab's !reference, say) are accepted, not interpreted.
+        run: |
+          shopt -s nullglob globstar dotglob
+          yaml_files=(forges/**/*.yml forges/**/*.yaml)
+          if [ "${#yaml_files[@]}" -gt 0 ]; then
+            python3 .github/scripts/parse-yaml.py "${yaml_files[@]}"
+          fi
 
   check-bp-contexts:
     name: Tier 3 — Branch-protection contexts consistency

@@ -31,13 +31,18 @@ permissions:
   contents: write
 
 env:
-  # The changelog the gate reads. The seed keeps its own history under
-  # meta/; an adopter flips this to their root CHANGELOG.md.
-  CHANGELOG_PATH: meta/CHANGELOG.md
+  # The changelog the gate reads: the seed's own history (meta/) in the
+  # seed's repository, the root CHANGELOG.md in any copy or fork, with
+  # nothing to set (ADR-0024). The middle value is never empty, so the
+  # expression cannot fall through by accident. If the seed repository is
+  # renamed, change the name here and in the footer step below; otherwise
+  # the seed's release gate reads the root CHANGELOG.md and fails loudly.
+  CHANGELOG_PATH: ${{ github.repository == 'pdlourenco/disciplined-project-seed' && 'meta/CHANGELOG.md' || 'CHANGELOG.md' }}
   # Paths excluded from the curated template archive (space-separated,
   # repo-root-relative). Default: seed-meta only — see ADR-0015 for why
   # scripts/, .github/, and .claude/ stay in. `.git` never appears in a
-  # `git archive` stream, so it needs no entry here. Adopters adapt this.
+  # `git archive` stream, so it needs no entry here. Harmless in a copy
+  # with no meta/; one that keeps a meta/ of its own drops `meta` from this list.
   ARCHIVE_EXCLUDES: meta
 
 jobs:
@@ -58,6 +63,13 @@ jobs:
           version="${GITHUB_REF_NAME#v}"
           python3 .github/scripts/release_changelog.py extract \
             --changelog "$CHANGELOG_PATH" --version "$version" > release-notes.md
+
+      # Seed-only (ADR-0024): the footer is about the seed's own template
+      # archive, so it is appended only in the seed's repository; a copy or
+      # fork has another name and skips it.
+      - name: Append the seed's adoption footer
+        if: github.repository == 'pdlourenco/disciplined-project-seed'
+        run: |
           # Single-quoted heredoc: literal text (the markdown backticks
           # never trigger shell expansion). Body and terminator sit at the
           # block-scalar indent so YAML dedents them uniformly.

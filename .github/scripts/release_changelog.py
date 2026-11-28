@@ -15,9 +15,9 @@ one-liners so the gate logic is exercisable without pushing a tag:
   extract   Print that version's CHANGELOG section body — used verbatim
             as the GitHub release body.
 
-The CHANGELOG path is a parameter, not hard-coded: the seed passes
-meta/CHANGELOG.md; an adopter points it at their root CHANGELOG.md. This
-mirrors the workflow's single CHANGELOG_PATH variable.
+The CHANGELOG path is a parameter, not hard-coded: the workflow's
+CHANGELOG_PATH passes meta/CHANGELOG.md in the seed's own repository and
+the root CHANGELOG.md in any copy or fork (ADR-0024).
 
 Section-heading shapes recognised (Keep a Changelog):
 

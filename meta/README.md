@@ -18,6 +18,15 @@ When you use this seed via *Use this template*, you inherit this `meta/` directo
 
 Pulling upstream refinements (the seed itself evolves; see the *How the seed evolves* section in the root `README.md`) is easier with `meta/` kept — `meta/CHANGELOG.md` tells you what changed between your snapshot and the latest seed.
 
+## Seed-only parts of the shared files
+
+The seed runs the same `.github/` files adopters receive ([ADR-0024](decisions/ADR-0024-adoptable-forge-files.md)). The few parts that are the seed's own are keyed to the seed's repository name inside the file, so a template copy or fork, which has another name, gets the adopter's behaviour with nothing to set:
+
+- `release.yml`'s `CHANGELOG_PATH`: `meta/CHANGELOG.md` in the seed, the root `CHANGELOG.md` elsewhere;
+- `release.yml`'s "Adopting?" footer on release notes, a step that runs only in the seed.
+
+`ARCHIVE_EXCLUDES: meta` is shared: it is harmless where there is no `meta/`. A seed-only step that cannot be a keyed value would live in a workflow named `seed-*.yml`; there is none today. If the seed repository is renamed, the two keyed expressions in `release.yml` change with it.
+
 ## ADR numbering
 
 Seed-meta ADRs (`meta/decisions/`) and adopter ADRs (`docs/decisions/`) share **no numbering**. Both start from ADR-0001 in their own directories. Cross-references stay within each directory.
