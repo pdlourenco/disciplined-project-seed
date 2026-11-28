@@ -281,7 +281,9 @@ When reviewing a PR, structure feedback as:
 2. **What works well** — brief, to acknowledge good work.
 3. **Issues to address before merge** — numbered, each with file/line reference, severity (blocker / non-blocker), and concrete suggested change.
 4. **Follow-up suggestions** — non-blocking items that could land in this PR or a later one.
-5. **Verdict** — approve / approve with changes / request changes, with a clear conditional if "approve with changes".
+5. **Verdict** — `approve` / `request-changes` / `needs-human`, and what was verified (`full` / `validation-only` / `none`). There is no "approve with changes": its conditions are blocking issues, so the verdict is `request-changes`.
+
+End the review with the structured verdict block of [`VERDICT.md`](VERDICT.md): the same record in a form the orchestrator, the ledger and §"Merge authority" can act on. Give each issue a finding id there, and keep it across iterations.
 
 Cite line numbers when referring to specific content. Quote the problematic text when it's short. Propose concrete replacement wording when you disagree with something — don't just say "this is wrong," say "this should read X because Y."
 

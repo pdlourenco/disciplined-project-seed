@@ -74,6 +74,7 @@
 │   ├── REVIEW_CONTEXT.md
 │   ├── RISKS.md                    # OPTIONAL — regulated / life-safety / hard-reliability only
 │   ├── STRUCTURE.md                # this file
+│   ├── VERDICT.md                  # the verdict schema reviews end with
 │   ├── analyses/                   # OPTIONAL — dated, immutable analysis snapshots
 │   │   └── README.md               # the four-rule convention
 │   ├── decisions/                  # adopter ADRs (your project's decisions)

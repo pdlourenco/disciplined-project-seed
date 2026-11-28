@@ -2,12 +2,18 @@
 
 ## Status
 
+**Amended by [ADR-0025](ADR-0025-verdict-schema.md)** (Accepted — 2026-11-27):
+"the final review approves on the current head" means the PR's
+highest-numbered verdict is `kind: final` (`iteration` by hand) with
+`decision: approve` and `head` equal to the PR's head, and an agent's
+approval never counts toward a requirement meant for humans.
+
 **Amended by [ADR-0024](ADR-0024-adoptable-forge-files.md)** (Accepted — 2026-11-27):
 two roles join the merge-authority list with ADR-0024's implementation:
 files the repository distributes for others to run as their CI and does
 not run itself (here `forges/`), and the scripts and configuration a
-required check reads. Until then,
-CONTRIBUTING §"Merge authority" does not list them.
+required check reads. Until then, CONTRIBUTING §"Merge authority" does
+not list them.
 
 **Amended 2026-11-22** (maintainer review of PR #75): the agent-authority
 list names roles (the directories the forge runs workflows from, the

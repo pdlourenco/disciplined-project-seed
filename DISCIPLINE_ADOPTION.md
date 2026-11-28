@@ -33,6 +33,7 @@
 | `docs/ROADMAP.md` | <!-- status --> | |
 | `docs/CONTRIBUTING.md` | <!-- status --> | |
 | `docs/REVIEW_CONTEXT.md` | <!-- status --> | |
+| `docs/VERDICT.md` | <!-- status --> | |
 | `docs/LABELS.md` + `.github/labels.yml` | <!-- status --> | |
 | `.github/branch-protection.yml` + apply script | <!-- status --> | |
 | `docs/plans/` | <!-- status --> | |
