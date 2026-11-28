@@ -4,9 +4,9 @@
 #   - scripts/setup-branch-protection.sh (apply this YAML to GitHub)
 #   - .github/workflows/check-branch-protection.yml (weekly drift check)
 #
-# See meta/decisions/ADR-0005-branch-protection-as-code-classic.md for
-# the choice of B (human-triggered apply + scheduled drift check) over
-# A (auto-sync via Action), and classic schema over rulesets.
+# See https://github.com/pdlourenco/disciplined-project-seed/blob/main/meta/decisions/ADR-0005-branch-protection-as-code-classic.md
+# for the choice of B (human-triggered apply + scheduled drift check)
+# over A (auto-sync via Action), and classic schema over rulesets.
 #
 # Schema: GitHub's CLASSIC branch protection
 # https://docs.github.com/en/rest/branches/branch-protection?apiVersion=2022-11-28#update-branch-protection

@@ -3,8 +3,8 @@
 # on the current repo. Uses the adopter's `gh auth` credentials — no
 # secret is stored in the repo.
 #
-# See meta/decisions/ADR-0005-branch-protection-as-code-classic.md for
-# the rationale (human-in-the-loop apply vs auto-sync via Action).
+# See https://github.com/pdlourenco/disciplined-project-seed/blob/main/meta/decisions/ADR-0005-branch-protection-as-code-classic.md
+# for the rationale (human-in-the-loop apply vs auto-sync via Action).
 #
 # Prerequisites:
 #   - `gh` CLI authenticated with admin scope on this repo
