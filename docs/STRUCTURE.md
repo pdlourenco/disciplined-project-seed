@@ -52,6 +52,7 @@
 │   ├── labels.yml                  # machine source for label catalogue
 │   ├── scripts/
 │   │   ├── audit-placeholders.py   # tier-3 audit (see CONTRIBUTING.md)
+│   │   ├── check-bp-contexts.py    # tier-3 check: required contexts ↔ ci.yml jobs
 │   │   └── release_changelog.py    # release.yml gate: tag ↔ CHANGELOG
 │   ├── workflows/                  # CI definitions
 │   │   ├── check-branch-protection.yml  # weekly drift check (read-only)
@@ -59,6 +60,9 @@
 │   │   ├── release.yml             # tag-push release + CHANGELOG gate (ADR-0015)
 │   │   └── sync-labels.yml         # reconciles labels.yml → live repo
 │   └── pull_request_template.md
+│
+├── forges/                         # working files for other forges, adopter-contributed, not run
+│   └── README.md                   # the convention (ADR-0024)
 │
 ├── scripts/                        # human-triggered repo-level scripts
 │   ├── local-ci.sh                 # runs the doc-CI suite locally (pre-push)

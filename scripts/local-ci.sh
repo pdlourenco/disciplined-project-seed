@@ -79,11 +79,22 @@ fi
 
 # 4. workflow YAML lint — actionlint binary if present, else the Docker
 #    image ci.yml uses (tag-pinned identically).
+#    A second pass covers forges/<forge>/workflows/ when it holds files
+#    (ADR-0024), as ci.yml does.
 step "Tier 3 — Workflow YAML lint (actionlint)"
+shopt -s nullglob
+forge_files=(forges/*/workflows/*.yml forges/*/workflows/*.yaml)
+shopt -u nullglob
 if command -v actionlint >/dev/null 2>&1; then
   actionlint -color || die "workflow lint"
+  if [ "${#forge_files[@]}" -gt 0 ]; then
+    actionlint -color "${forge_files[@]}" || die "workflow lint (forges/)"
+  fi
 elif command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
   docker run --rm -v "${PWD}:/repo" -w /repo rhysd/actionlint:1.7.12 -color || die "workflow lint"
+  if [ "${#forge_files[@]}" -gt 0 ]; then
+    docker run --rm -v "${PWD}:/repo" -w /repo rhysd/actionlint:1.7.12 -color "${forge_files[@]}" || die "workflow lint (forges/)"
+  fi
 else
   warn "no actionlint binary and no running docker daemon — skipped (install actionlint or start docker)"; skipped=1
 fi
